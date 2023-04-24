@@ -30,3 +30,14 @@ authenticator.use(
   }),
   "user-pass"
 );
+
+export const requireUser = async (
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+) => {
+  const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: `/admin?${searchParams}`
+  });
+  return user;
+};
