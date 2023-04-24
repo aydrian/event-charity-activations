@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+a:focus,
+input:focus,
+button:focus {
+  @apply border-transparent outline outline-4 outline-brand-focus;
+}
