@@ -12,7 +12,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function AdminDashboard() {
-  const { user } = useLoaderData();
+  const { user } = useLoaderData<typeof loader>();
   return (
     <section>
       <h1>Admin Dashboard</h1>

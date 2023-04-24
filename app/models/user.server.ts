@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "~/services/db.server";
 
 const userWithoutPassword = Prisma.validator<Prisma.UserArgs>()({
-  select: { passwordHash: false }
+  select: { id: true, email: true, fullName: true }
 });
 export type UserWithoutPassword = Prisma.UserGetPayload<
   typeof userWithoutPassword
