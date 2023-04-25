@@ -10,13 +10,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../erd.md"
+}
+
 model User {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email        String    @unique
   passwordHash String    @map("password_hash")
   fullName     String    @map("full_name")
   Events       Event[]
-  Charity      Charity[]
+  Charities    Charity[]
 
   @@map("users")
 }
@@ -28,10 +33,10 @@ model Event {
   startDate DateTime             @map("start_date") @db.Timestamptz()
   endDate   DateTime             @map("end_date") @db.Timestamptz()
   location  String
-  ownerId   String               @map("owner_id") @db.Uuid
+  createdBy String               @map("created_by") @db.Uuid
   createdAt DateTime             @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
-  Owner     User                 @relation(fields: [ownerId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Creator   User                 @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Restrict)
   Charities CharitiesForEvents[]
   Donations Donation[]
 
