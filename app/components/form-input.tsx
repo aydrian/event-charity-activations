@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { useField } from "remix-validated-form";
 
 type FormInputProps = {
@@ -5,11 +6,10 @@ type FormInputProps = {
   label: string;
 };
 
-export const FormInput = ({
-  name,
-  label,
-  ...rest
-}: FormInputProps & React.HTMLProps<HTMLInputElement>) => {
+export const FormInput = forwardRef<
+  HTMLInputElement,
+  FormInputProps & React.HTMLProps<HTMLInputElement>
+>(function FormInput({ name, label, ...rest }, ref) {
   const { error, getInputProps } = useField(name);
   return (
     <div>
@@ -22,6 +22,7 @@ export const FormInput = ({
             id: name,
             className:
               "p-2 rounded-none border-b border-b-brand-deep-purple font-normal !text-brand-gray",
+            ref,
             ...rest
           })}
         />
@@ -31,4 +32,4 @@ export const FormInput = ({
       ) : undefined}
     </div>
   );
-};
+});
