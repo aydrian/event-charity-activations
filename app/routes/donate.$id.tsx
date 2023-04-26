@@ -21,6 +21,7 @@ export const loader = async ({ params }: LoaderArgs) => {
       Charities: {
         select: {
           donation: true,
+          color: true,
           Charity: { select: { id: true, name: true } }
         }
       }
@@ -34,6 +35,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const { Charities, ...rest } = event;
   const charities = Charities.map((item) => ({
     donation: item.donation,
+    color: item.color,
     ...item.Charity
   }));
   return json({ event: rest, charities });
@@ -82,20 +84,26 @@ export default function EventDonate() {
         <FormInput name="company" label="Company" type="text" />
         <FormInput name="jobRole" label="Job Title" type="text" />
         <fieldset>
-          <legend className="font-bold !text-brand-deep-purple">
+          <legend className="mb mb-2 font-bold !text-brand-deep-purple">
             Select a charity
           </legend>
           <div className="flex flex-col gap-1">
             {charities.map((charity, index) => (
-              <div className="flex gap-1">
+              <div className="flex justify-items-stretch gap-1">
                 <input
                   id={`charity${index}`}
                   type="radio"
                   name="charityId"
                   value={charity.id}
                   defaultChecked={index === 0}
+                  className="peer sr-only"
                 />
-                <label htmlFor={`charity${index}`}>{charity.name}</label>
+                <label
+                  htmlFor={`charity${index}`}
+                  className={`grow cursor-pointer rounded-lg border border-gray-300 bg-white p-5 hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-green-500`}
+                >
+                  {charity.name}
+                </label>
               </div>
             ))}
           </div>
