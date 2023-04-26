@@ -51,6 +51,7 @@ erDiagram
     String charity_id 
     SourceType source 
     Json source_meta "❓"
+    DateTime created_at 
     }
   
 

@@ -34,7 +34,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     });
   }
   const qrcode = await QRCode.toDataURL(
-    `https://${process.env.VERCEL_URL}/donation/${event.id}`
+    `https://${process.env.VERCEL_URL}/donate/${event.id}`
   );
   return json({ event, qrcode });
 };
