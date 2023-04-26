@@ -29,7 +29,7 @@ model User {
 model Event {
   id        String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
-  slug      String
+  slug      String               @unique
   startDate DateTime             @map("start_date") @db.Timestamptz()
   endDate   DateTime             @map("end_date") @db.Timestamptz()
   location  String
@@ -82,6 +82,7 @@ model Donation {
   charityId  String     @map("charity_id") @db.Uuid
   source     SourceType @default(FORM)
   sourceMeta Json?      @map("source_meta") @db.JsonB
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamptz
   Lead       Lead?
   Event      Event      @relation(fields: [eventId], references: [id])
   Charity    Charity    @relation(fields: [charityId], references: [id])

@@ -7,31 +7,33 @@ import { prisma } from "~/services/db.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUser(request);
-  const charities = await prisma.charity.findMany({
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      Creator: { select: { fullName: true } }
-    }
-  });
-  const events = await prisma.event.findMany({
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      startDate: true,
-      endDate: true,
-      location: true
-    }
-  });
+  const [charities, events] = await Promise.all([
+    prisma.charity.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        Creator: { select: { fullName: true } }
+      }
+    }),
+    prisma.event.findMany({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        startDate: true,
+        endDate: true,
+        location: true
+      }
+    })
+  ]);
   return json({ charities, events });
 };
 
 export default function AdminDashboard() {
   const { charities, events } = useLoaderData<typeof loader>();
   return (
-    <section className="prose mx-auto grid max-w-4xl ">
+    <section className="prose mx-auto grid max-w-4xl">
       <h1 className="text-white">Admin Dashboard</h1>
       <div className="flex justify-between gap-12">
         <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
