@@ -19,6 +19,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     select: {
       id: true,
       name: true,
+      slug: true,
       startDate: true,
       endDate: true,
       location: true
@@ -30,39 +31,49 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function AdminDashboard() {
   const { charities, events } = useLoaderData<typeof loader>();
   return (
-    <section>
-      <h1>Admin Dashboard</h1>
-      <h2>Charities</h2>
-      {charities.length > 0 ? (
-        <dl>
-          {charities.map((charity) => (
-            <Fragment key={charity.id}>
-              <dt>{charity.name}</dt>
-              <dd>
-                <div>{charity.description}</div>
-                <div>Added by {charity.Creator.fullName}</div>
-              </dd>
-            </Fragment>
-          ))}
-        </dl>
-      ) : (
-        <div>There are no charities</div>
-      )}
-      <Link to="/admin/charities/new">Add Charity</Link>
-      <h2>Events</h2>
-      {events.length > 0 ? (
-        <dl>
-          {events.map((event) => (
-            <Fragment key={event.id}>
-              <dt>{event.name}</dt>
-              <dd>{event.location}</dd>
-            </Fragment>
-          ))}
-        </dl>
-      ) : (
-        <div>There are no events</div>
-      )}
-      <Link to="/admin/events/new">Add Event</Link>
+    <section className="prose mx-auto grid max-w-4xl ">
+      <h1 className="text-white">Admin Dashboard</h1>
+      <div className="flex justify-between gap-12">
+        <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+          <h2 className="mt-0 font-bold text-brand-deep-purple">Events</h2>
+          {events.length > 0 ? (
+            <dl>
+              {events.map((event) => (
+                <Fragment key={event.id}>
+                  <dt className="font-semibold">
+                    <Link to={`/dashboard/${event.slug}`}>{event.name}</Link>
+                  </dt>
+                  <dd className="text-sm">{event.location}</dd>
+                </Fragment>
+              ))}
+            </dl>
+          ) : (
+            <div>There are no events</div>
+          )}
+          <Link to="/admin/events/new">Add Event</Link>
+        </div>
+        <div className="shrink rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+          <h2 className="mt-0 font-bold text-brand-deep-purple">Charities</h2>
+          {charities.length > 0 ? (
+            <dl>
+              {charities.map((charity) => (
+                <Fragment key={charity.id}>
+                  <dt className="font-semibold">{charity.name}</dt>
+                  <dd>
+                    <div className="text-sm">{charity.description}</div>
+                    <div className="text-xs">
+                      Added by {charity.Creator.fullName}
+                    </div>
+                  </dd>
+                </Fragment>
+              ))}
+            </dl>
+          ) : (
+            <div>There are no charities</div>
+          )}
+          <Link to="/admin/charities/new">Add Charity</Link>
+        </div>
+      </div>
     </section>
   );
 }

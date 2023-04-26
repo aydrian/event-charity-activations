@@ -42,35 +42,41 @@ export default function AddCharity() {
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nameValue = event.target.value;
     if (slugRef.current?.value.length === 0) {
-      slugRef.current.value = slugify(nameValue);
+      slugRef.current.value = slugify(nameValue, { lower: true });
     }
   };
 
   return (
-    <section>
-      <h1>Create Charity</h1>
-      <ValidatedForm validator={validator} method="post">
-        <FormInput
-          name="name"
-          label="Name"
-          type="text"
-          onBlur={handleOnChange}
-        />
-        <FormInput name="slug" label="Slug" type="text" ref={slugRef} />
-        <FormInput name="description" label="Description" type="text" />
-        {data && (
-          <div className="pt-1 text-red-700">
-            <div>{data.title}</div>
-            <div>{data.description}</div>
-          </div>
-        )}
-        <button
-          type="submit"
-          className="mt-4 min-w-[150px] rounded bg-brand-electric-purple px-6 py-2 font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start"
+    <section className="prose mx-auto grid max-w-4xl gap-12">
+      <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+        <h2 className="m-0 font-bold text-brand-deep-purple">Create Charity</h2>
+        <ValidatedForm
+          validator={validator}
+          method="post"
+          className="mb-8 flex flex-col sm:mb-4"
         >
-          Add
-        </button>
-      </ValidatedForm>
+          <FormInput
+            name="name"
+            label="Name"
+            type="text"
+            onBlur={handleOnChange}
+          />
+          <FormInput name="slug" label="Slug" type="text" ref={slugRef} />
+          <FormInput name="description" label="Description" type="text" />
+          {data && (
+            <div className="pt-1 text-red-700">
+              <div>{data.title}</div>
+              <div>{data.description}</div>
+            </div>
+          )}
+          <button
+            type="submit"
+            className="mt-4 min-w-[150px] rounded bg-brand-electric-purple px-6 py-2 font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start"
+          >
+            Add
+          </button>
+        </ValidatedForm>
+      </div>
     </section>
   );
 }
