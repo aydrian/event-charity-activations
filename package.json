@@ -8,9 +8,11 @@
     "build": "remix build",
     "dev": "remix dev",
     "typecheck": "tsc",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "test": "ts-node --require tsconfig-paths/register prisma/test.ts"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.12",
     "@prisma/client": "^4.13.0",
     "@remix-run/node": "^1.15.0",
     "@remix-run/react": "^1.15.0",
@@ -21,6 +23,8 @@
     "chart.js": "^4.2.1",
     "clsx": "^1.2.1",
     "downshift": "^7.6.0",
+    "graphql": "^16.6.0",
+    "graphql-ws": "^5.12.1",
     "isbot": "^3.6.8",
     "qrcode": "^1.5.3",
     "react": "^18.2.0",
