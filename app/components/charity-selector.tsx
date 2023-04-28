@@ -3,11 +3,17 @@ import { useCombobox, useMultipleSelection } from "downshift";
 import { clsx } from "clsx";
 import type { CharityItem } from "~/models/charity.server";
 
+import { ColorSelector } from "./color-selector";
+
 type CharitySelectorProps = {
   charities: CharityItem[];
+  maxItems?: number;
 };
 
-export function CharitySelector({ charities }: CharitySelectorProps) {
+export function CharitySelector({
+  charities,
+  maxItems = 4
+}: CharitySelectorProps) {
   function getFilteredCharities(
     selectedItems: CharityItem[],
     inputValue: string
@@ -119,13 +125,13 @@ export function CharitySelector({ charities }: CharitySelectorProps) {
                   index
                 })}
               >
+                <ColorSelector name={`charities[${index}][color]`} />
                 <span>{selectedItemForRender.name}</span>
                 <input
                   type="hidden"
                   name={`charities[${index}][charityId]`}
                   value={selectedItemForRender.id}
                 />
-                <input type="color" name={`charities[${index}][color]`} />
                 <span
                   className="cursor-pointer px-1"
                   onClick={(e) => {
@@ -138,20 +144,24 @@ export function CharitySelector({ charities }: CharitySelectorProps) {
               </span>
             );
           })}
-          <div className="flex grow gap-0.5">
-            <input
-              className="w-full rounded-none border-b border-b-brand-deep-purple p-2 font-normal !text-brand-gray"
-              {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
-            />
-            <button
-              aria-label="toggle menu"
-              className="px-2"
-              type="button"
-              {...getToggleButtonProps()}
-            >
-              &#8595;
-            </button>
-          </div>
+          {selectedItems.length < maxItems ? (
+            <div className="flex grow gap-0.5">
+              <input
+                className="w-full rounded-none border-b border-b-brand-deep-purple p-2 font-normal !text-brand-gray"
+                {...getInputProps(
+                  getDropdownProps({ preventKeyAction: isOpen })
+                )}
+              />
+              <button
+                aria-label="toggle menu"
+                className="px-2"
+                type="button"
+                {...getToggleButtonProps()}
+              >
+                &#8595;
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
       <ul

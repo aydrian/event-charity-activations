@@ -99,7 +99,7 @@ export default function EventDonate() {
             <>
               <FormInput name="firstName" label="First Name" type="text" />
               <FormInput name="lastName" label="Last Name" type="text" />
-              <FormInput name="email" label="Email" type="email" />
+              <FormInput name="email" label="Company Email" type="email" />
               <FormInput name="company" label="Company" type="text" />
               <FormInput name="jobRole" label="Job Title" type="text" />
             </>
@@ -107,7 +107,7 @@ export default function EventDonate() {
             <>
               <input type="hidden" name="firstName" value="nothing" />
               <input type="hidden" name="lastName" value="nothing" />
-              <input type="hidden" name="email" value="nothin@nothing.com" />
+              <input type="hidden" name="email" value="nothing@nothing.com" />
               <input type="hidden" name="company" value="nothing" />
               <input type="hidden" name="jobRole" value="nothing" />
             </>

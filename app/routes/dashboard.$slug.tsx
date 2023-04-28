@@ -21,6 +21,11 @@ import { gql, useSubscription } from "@apollo/client";
 import { prisma } from "~/services/db.server";
 import { initApollo } from "~/services/apollo";
 
+const USDollar = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD"
+});
+
 const client = initApollo();
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
@@ -130,11 +135,11 @@ export default function EventDashboard() {
   }, [data]);
 
   return (
-    <section className="prose mx-auto grid max-w-5xl">
+    <section className="prose mx-auto grid max-w-7xl">
       <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
         {event.name}
       </h1>
-      <div className="flex justify-items-stretch gap-12">
+      <div className="flex justify-stretch gap-12">
         <div className="grow rounded border border-brand-gray-b bg-white p-1">
           <Bar
             options={{
@@ -156,7 +161,20 @@ export default function EventDashboard() {
               ]
             }}
           />
-          Donations: {charities.reduce((acc, cur) => acc + cur.count, 0)}
+          <div>
+            <div>
+              Donations: {charities.reduce((acc, cur) => acc + cur.count, 0)}
+            </div>
+            <div>
+              Total Donated:{" "}
+              {USDollar.format(
+                charities.reduce(
+                  (acc, cur) => acc + cur.count * Number(cur.donation),
+                  0
+                )
+              )}
+            </div>
+          </div>
         </div>
         <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
           <img src={qrcode} alt="Scan me" className="aspect-square h-48" />

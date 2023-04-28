@@ -2,7 +2,15 @@
 erDiagram
 
         source_type {
-            FORM FORM
+            FORM form
+        }
+    
+
+
+        lead_score {
+            BADGE_SCAN badge_scan
+CONVERSATION conversation
+MEETING_REQUESTED meeting_requested
         }
     
   "users" {
@@ -21,6 +29,7 @@ erDiagram
     DateTime end_date 
     String location 
     Boolean collect_leads 
+    String legal_blurb "❓"
     String created_by 
     DateTime created_at 
     DateTime updated_at 
@@ -63,7 +72,8 @@ erDiagram
     String email 
     String company 
     String job_role 
-    String marketo_id "❓"
+    LeadScore score 
+    String notes "❓"
     String donation_id 
     }
   
@@ -88,5 +98,6 @@ erDiagram
     "donations" o{--}o "leads" : "Lead"
     "donations" o|--|| "events" : "Event"
     "donations" o|--|| "charities" : "Charity"
+    "leads" o|--|| "LeadScore" : "enum:score"
     "leads" o|--|| "donations" : "Donation"
 ```

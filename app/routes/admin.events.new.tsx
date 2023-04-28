@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { ChangeEvent } from "react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { json, redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { ValidatedForm, validationError } from "remix-validated-form";
@@ -28,6 +28,8 @@ const validator = withZod(
     startDate: z.coerce.date({ required_error: "Start Date is required" }),
     endDate: z.coerce.date({ required_error: "End Date is required" }),
     location: z.string({ required_error: "Location is required" }),
+    collectLeads: z.coerce.boolean(),
+    legalBlurb: z.string().optional(),
     charities: z.array(z.object({ charityId: z.string(), color: z.string() }))
   })
 );
@@ -51,6 +53,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function AddEvent() {
   const slugRef = useRef<HTMLInputElement>(null);
+  const [collectLeads, setCollectLeads] = useState(false);
   const { charities } = useLoaderData<typeof loader>();
   const data = useActionData();
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +94,20 @@ export default function AddEvent() {
             />
           </div>
           <FormInput name="location" label="Location" type="text" />
+          <div className="flex flex-row gap-1">
+            <label className="font-bold !text-brand-deep-purple">
+              Collect lead data?
+            </label>
+            <input
+              type="checkbox"
+              name="collectLeads"
+              checked={collectLeads}
+              onChange={(e) => setCollectLeads(!collectLeads)}
+            />
+          </div>
+          {collectLeads ? (
+            <FormInput name="legalBlurb" label="Legal Blurb" className="grow" />
+          ) : null}
           <h3>Which charities will this event support?</h3>
           <CharitySelector charities={charities} />
           {data && (

@@ -35,6 +35,7 @@ model Event {
   endDate      DateTime             @map("end_date") @db.Timestamptz()
   location     String
   collectLeads Boolean              @default(false) @map("collect_leads")
+  legalBlurb   String?              @map("legal_blurb")
   createdBy    String               @map("created_by") @db.Uuid
   createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt    DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
@@ -73,9 +74,17 @@ model CharitiesForEvents {
 }
 
 enum SourceType {
-  FORM
+  FORM @map("form")
 
   @@map("source_type")
+}
+
+enum LeadScore {
+  BADGE_SCAN        @map("badge_scan")
+  CONVERSATION      @map("conversation")
+  MEETING_REQUESTED @map("meeting_requested")
+
+  @@map("lead_score")
 }
 
 model Donation {
@@ -93,15 +102,16 @@ model Donation {
 }
 
 model Lead {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  firstName  String   @map("first_name")
-  lastName   String   @map("last_name")
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName  String    @map("first_name")
+  lastName   String    @map("last_name")
   email      String
   company    String
-  jobRole    String   @map("job_role")
-  marketoId  String?  @map("marketo_id")
-  Donation   Donation @relation(fields: [donationId], references: [id], onDelete: Cascade, onUpdate: Restrict)
-  donationId String   @unique @map("donation_id") @db.Uuid
+  jobRole    String    @map("job_role")
+  score      LeadScore @default(BADGE_SCAN)
+  notes      String?
+  Donation   Donation  @relation(fields: [donationId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  donationId String    @unique @map("donation_id") @db.Uuid
 
   @@map("leads")
 }
