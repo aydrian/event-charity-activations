@@ -1,4 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
+import type { GroupedDonation } from "@prisma/client";
 import { json, Response } from "@remix-run/node";
 import {
   isRouteErrorResponse,
@@ -26,13 +27,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 const GET_DONATIONS = gql`
   subscription DonationAdded($event_id: uuid) {
-    donations(
-      where: { event_id: { _eq: $event_id } }
-      order_by: { created_at: desc }
-      limit: 1
-    ) {
-      id
+    grouped_donations(where: { event_id: { _eq: $event_id } }) {
       charity_id
+      event_id
+      count
     }
   }
 `;
@@ -54,14 +52,13 @@ function hexToRgbA(hex: string, alpha: number = 1) {
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { slug } = params;
-  const event = await prisma.event.findUnique({
+  const result = await prisma.event.findUnique({
     where: { slug },
     select: {
       id: true,
       name: true,
       startDate: true,
       endDate: true,
-      Donations: { select: { charityId: true } },
       Charities: {
         select: {
           charityId: true,
@@ -72,25 +69,29 @@ export const loader = async ({ params }: LoaderArgs) => {
       }
     }
   });
-  if (!event) {
+  if (!result) {
     throw new Response("Not Found", {
       status: 404
     });
   }
-  const counts = await prisma.donation.groupBy({
-    by: ["charityId"],
-    where: { eventId: event.id },
-    _count: { charityId: true }
+  const { Charities, ...event } = result;
+  const groupedResults = await prisma.groupedDonation.findMany({
+    where: { event_id: event.id },
+    select: { charity_id: true, count: true }
   });
-  const charities = event.Charities.map((charity) => {
+  const counts: { [key: string]: number } = groupedResults.reduce(
+    (obj, item) => {
+      return { ...obj, [item.charity_id]: item.count };
+    },
+    {}
+  );
+  const charities = Charities.map((charity) => {
     return {
-      id: charity.charityId,
+      charity_id: charity.charityId,
       color: charity.color,
       donation: charity.donation,
       name: charity.Charity.name,
-      count:
-        counts.find((item) => item.charityId === charity.charityId)?._count
-          ?.charityId || 0
+      count: counts[charity.charityId] || 0
     };
   });
   const qrcode = await QRCode.toDataURL(
@@ -112,18 +113,22 @@ export default function EventDashboard() {
   });
 
   useEffect(() => {
-    if (!data?.donations) return;
+    if (!data?.grouped_donations) return;
+    const grouptedDonations: GroupedDonation[] = data.grouped_donations;
+    const counts: { [key: string]: number } = grouptedDonations.reduce(
+      (obj, item) => {
+        return { ...obj, [item.charity_id]: item.count };
+      },
+      {}
+    );
 
     const newCharities = charities.map((charity) => {
-      if (charity.id === data.donations[0].charity_id) {
-        charity.count++;
-      }
+      charity.count = counts[charity.charity_id] || charity.count;
       return charity;
     });
     setCharities(newCharities);
   }, [data]);
 
-  console.log({ data, error });
   return (
     <section className="prose mx-auto grid max-w-5xl">
       <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
@@ -140,7 +145,7 @@ export default function EventDashboard() {
               labels: charities.map((charity) => charity.name),
               datasets: [
                 {
-                  label: "total count",
+                  label: "total donations",
                   data: charities.map((charity) => charity.count),
                   backgroundColor: charities.map((charity) =>
                     hexToRgbA(charity.color, 0.5)

@@ -18,6 +18,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     select: {
       id: true,
       name: true,
+      collectLeads: true,
       Charities: {
         select: {
           donation: true,
@@ -49,21 +50,23 @@ const validator = withZod(
     email: z.string({ required_error: "Email is required" }).email(),
     company: z.string({ required_error: "Company is required" }),
     jobRole: z.string({ required_error: "Job Title is required" }),
-    charityId: z.string({ required_error: "Charity is required" })
+    charityId: z.string({ required_error: "Charity is required" }),
+    collectLeads: z.coerce.boolean()
   })
 );
 
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const result = await validator.validate(formData);
+  console.log({ result });
   if (result.error) return validationError(result.error);
-  const { eventId, charityId, ...lead } = result.data;
+  const { eventId, charityId, collectLeads, ...lead } = result.data;
 
   const donation = await prisma.donation.create({
     data: {
       eventId,
       charityId,
-      Lead: { create: lead }
+      ...(collectLeads && { Lead: { create: lead } })
     },
     select: { id: true }
   });
@@ -73,48 +76,78 @@ export const action = async ({ request }: ActionArgs) => {
 export default function EventDonate() {
   const { event, charities } = useLoaderData<typeof loader>();
   return (
-    <section>
-      <h2>Donation form for event: {event.name}</h2>
-
-      <ValidatedForm validator={validator} method="post">
-        <input type="hidden" name="eventId" value={event.id} />
-        <FormInput name="firstName" label="First Name" type="text" />
-        <FormInput name="lastName" label="Last Name" type="text" />
-        <FormInput name="email" label="Email" type="email" />
-        <FormInput name="company" label="Company" type="text" />
-        <FormInput name="jobRole" label="Job Title" type="text" />
-        <fieldset>
-          <legend className="mb mb-2 font-bold !text-brand-deep-purple">
-            Select a charity
-          </legend>
-          <div className="flex flex-col gap-1">
-            {charities.map((charity, index) => (
-              <div className="flex justify-items-stretch gap-1">
-                <input
-                  id={`charity${index}`}
-                  type="radio"
-                  name="charityId"
-                  value={charity.id}
-                  defaultChecked={index === 0}
-                  className="peer sr-only"
-                />
-                <label
-                  htmlFor={`charity${index}`}
-                  className={`grow cursor-pointer rounded-lg border border-gray-300 bg-white p-5 hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-green-500`}
-                >
-                  {charity.name}
-                </label>
-              </div>
-            ))}
-          </div>
-        </fieldset>
-        <button
-          type="submit"
-          className="mt-4 min-w-[150px] rounded bg-brand-electric-purple px-6 py-2 font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start"
+    <section className="mx-auto max-w-4xl">
+      <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
+        {event.name}
+      </h1>
+      <p className="text-center text-white">
+        Complete the form and we'll donate to your selected charity.
+      </p>
+      <div className="rounded border border-brand-gray-b bg-white p-4 sm:px-16">
+        <ValidatedForm
+          validator={validator}
+          method="post"
+          className="flex flex-col gap-1 sm:mb-4"
         >
-          Submit
-        </button>
-      </ValidatedForm>
+          <input type="hidden" name="eventId" value={event.id} />
+          <input
+            type="hidden"
+            name="collectLeads"
+            value={String(event.collectLeads)}
+          />
+          {event.collectLeads ? (
+            <>
+              <FormInput name="firstName" label="First Name" type="text" />
+              <FormInput name="lastName" label="Last Name" type="text" />
+              <FormInput name="email" label="Email" type="email" />
+              <FormInput name="company" label="Company" type="text" />
+              <FormInput name="jobRole" label="Job Title" type="text" />
+            </>
+          ) : (
+            <>
+              <input type="hidden" name="firstName" value="nothing" />
+              <input type="hidden" name="lastName" value="nothing" />
+              <input type="hidden" name="email" value="nothin@nothing.com" />
+              <input type="hidden" name="company" value="nothing" />
+              <input type="hidden" name="jobRole" value="nothing" />
+            </>
+          )}
+          <fieldset>
+            <legend className="mb mb-2 font-bold !text-brand-deep-purple">
+              Select a charity
+            </legend>
+            <div className="mx-2 flex flex-col gap-3">
+              {charities.map((charity, index) => (
+                <div
+                  className="flex justify-items-stretch gap-1"
+                  key={charity.id}
+                >
+                  <input
+                    id={`charity${index}`}
+                    type="radio"
+                    name="charityId"
+                    value={charity.id}
+                    defaultChecked={index === 0}
+                    className="peer sr-only"
+                  />
+                  <label
+                    htmlFor={`charity${index}`}
+                    className={`grow cursor-pointer rounded-lg border border-gray-300 bg-white p-5 text-center font-semibold hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-green-500 peer-checked:bg-[${charity.color.toLowerCase()}]`}
+                  >
+                    {charity.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+          <button
+            type="submit"
+            className="mt-4 min-w-[150px] rounded bg-brand-electric-purple px-6 py-2 text-xl font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start"
+          >
+            Submit
+          </button>
+        </ValidatedForm>
+      </div>
     </section>
   );
 }

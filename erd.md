@@ -20,6 +20,7 @@ erDiagram
     DateTime start_date 
     DateTime end_date 
     String location 
+    Boolean collect_leads 
     String created_by 
     DateTime created_at 
     DateTime updated_at 
@@ -64,6 +65,13 @@ erDiagram
     String job_role 
     String marketo_id "❓"
     String donation_id 
+    }
+  
+
+  "grouped_donations" {
+    String charity_id 
+    String event_id 
+    Int count 
     }
   
     "users" o{--}o "events" : "Events"
