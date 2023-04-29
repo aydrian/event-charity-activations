@@ -132,7 +132,7 @@ export default function EventDonate() {
                   />
                   <label
                     htmlFor={`charity${index}`}
-                    className={`grow cursor-pointer rounded-lg border border-gray-300 bg-white p-5 text-center font-semibold hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-green-500 peer-checked:bg-[${charity.color.toLowerCase()}]`}
+                    className={`grow cursor-pointer rounded-lg border border-gray-300 bg-white p-5 text-center font-semibold hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-green-500`}
                   >
                     {charity.name}
                   </label>

@@ -5,6 +5,8 @@ import { Fragment } from "react";
 import { requireUser } from "~/services/auth.server";
 import { prisma } from "~/services/db.server";
 
+import EventCard from "~/components/event-card";
+
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUser(request);
   const [charities, events] = await Promise.all([
@@ -23,7 +25,8 @@ export const loader = async ({ request }: LoaderArgs) => {
         slug: true,
         startDate: true,
         endDate: true,
-        location: true
+        location: true,
+        collectLeads: true
       }
     })
   ]);
@@ -39,16 +42,11 @@ export default function AdminDashboard() {
         <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
           <h2 className="mt-0 font-bold text-brand-deep-purple">Events</h2>
           {events.length > 0 ? (
-            <dl>
+            <div className="flex flex-col gap-4">
               {events.map((event) => (
-                <Fragment key={event.id}>
-                  <dt className="font-semibold">
-                    <Link to={`/dashboard/${event.slug}`}>{event.name}</Link>
-                  </dt>
-                  <dd className="text-sm">{event.location}</dd>
-                </Fragment>
+                <EventCard key={event.id} event={event} />
               ))}
-            </dl>
+            </div>
           ) : (
             <div>There are no events</div>
           )}
