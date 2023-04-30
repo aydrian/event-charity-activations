@@ -1,10 +1,9 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { Fragment } from "react";
 import { requireUser } from "~/services/auth.server";
 import { prisma } from "~/services/db.server";
-
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import EventCard from "~/components/event-card";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -38,9 +37,20 @@ export default function AdminDashboard() {
   return (
     <section className="prose mx-auto grid max-w-4xl">
       <h1 className="text-white">Admin Dashboard</h1>
-      <div className="flex justify-between gap-12">
+      <div className="flex flex-col justify-between gap-6 md:flex-row md:gap-12">
         <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
-          <h2 className="mt-0 font-bold text-brand-deep-purple">Events</h2>
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="mb-0 mt-0 font-bold text-brand-deep-purple">
+              Events
+            </h2>
+            <Link to="/admin/events/new">
+              <PlusCircleIcon
+                title="Add Charity"
+                className="aspect-square h-6"
+              />
+              <span className="sr-only">Add Event</span>
+            </Link>
+          </div>
           {events.length > 0 ? (
             <div className="flex flex-col gap-4">
               {events.map((event) => (
@@ -50,28 +60,34 @@ export default function AdminDashboard() {
           ) : (
             <div>There are no events</div>
           )}
-          <Link to="/admin/events/new">Add Event</Link>
         </div>
         <div className="shrink rounded border border-brand-gray-b bg-white p-8 sm:px-16">
-          <h2 className="mt-0 font-bold text-brand-deep-purple">Charities</h2>
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="mb-0 mt-0 font-bold text-brand-deep-purple">
+              Charities
+            </h2>
+            <Link to="/admin/charities/new">
+              <PlusCircleIcon
+                title="Add Charity"
+                className="aspect-square h-6"
+              />
+              <span className="sr-only">Add Charity</span>
+            </Link>
+          </div>
           {charities.length > 0 ? (
-            <dl>
+            <dl className=" divide-y divide-gray-200">
               {charities.map((charity) => (
-                <Fragment key={charity.id}>
+                <div key={charity.id} className="flex flex-col pb-3">
                   <dt className="font-semibold">{charity.name}</dt>
                   <dd>
                     <div className="text-sm">{charity.description}</div>
-                    <div className="text-xs">
-                      Added by {charity.Creator.fullName}
-                    </div>
                   </dd>
-                </Fragment>
+                </div>
               ))}
             </dl>
           ) : (
             <div>There are no charities</div>
           )}
-          <Link to="/admin/charities/new">Add Charity</Link>
         </div>
       </div>
     </section>
