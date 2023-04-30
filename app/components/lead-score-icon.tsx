@@ -7,66 +7,66 @@ import {
   XCircleIcon
 } from "@heroicons/react/24/outline";
 
-type ScoreIconProps = {
+type LeadScoreIconProps = {
   score: LeadScore;
   className?: string;
 };
 
-export function ScoreIcon({ score, className = "" }: ScoreIconProps) {
+export function LeadScoreIcon({ score, className = "" }: LeadScoreIconProps) {
   const title = titleCase(score);
   if (score === "BADGE_SCAN") {
     return (
-      <ScoreIconWrapper
+      <LeadScoreIconWrapper
         title={title}
         bgColor="bg-red-500"
         className={className}
       >
         <IdentificationIcon className="aspect-square w-full text-gray-50" />
-      </ScoreIconWrapper>
+      </LeadScoreIconWrapper>
     );
   }
   if (score === "CONVERSATION") {
     return (
-      <ScoreIconWrapper
+      <LeadScoreIconWrapper
         title={title}
         bgColor="bg-yellow-500"
         className={className}
       >
         <ChatBubbleBottomCenterTextIcon className="aspect-square w-full text-gray-50" />
-      </ScoreIconWrapper>
+      </LeadScoreIconWrapper>
     );
   }
   if (score === "MEETING_REQUESTED") {
     return (
-      <ScoreIconWrapper
+      <LeadScoreIconWrapper
         title={title}
         bgColor="bg-green-500"
         className={className}
       >
         <CalendarDaysIcon className="aspect-square w-full text-gray-50" />
-      </ScoreIconWrapper>
+      </LeadScoreIconWrapper>
     );
   }
   return (
-    <ScoreIconWrapper title={title} className={className}>
+    <LeadScoreIconWrapper title={title} className={className}>
       <XCircleIcon className="aspect-square w-full text-gray-50" />
-    </ScoreIconWrapper>
+    </LeadScoreIconWrapper>
   );
 }
 
-type ScoreIconWrapperProps = {
+type LeadScoreIconWrapperProps = {
   children: React.ReactNode;
   className?: string;
   title: string;
   bgColor?: string;
 };
 
-function ScoreIconWrapper({
+function LeadScoreIconWrapper({
   children,
   className = "",
   title,
   bgColor = "bg-gray-500"
-}: ScoreIconWrapperProps) {
+}: LeadScoreIconWrapperProps) {
   return (
     <div
       title={title}
