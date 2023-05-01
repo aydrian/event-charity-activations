@@ -30,10 +30,19 @@ export const loader = async ({ params }: LoaderArgs) => {
 export default function DonateConfirm() {
   const { donation } = useLoaderData<typeof loader>();
   return (
-    <div>
-      Thank you for helping us donate to {donation.Charity.name} at{" "}
-      {donation.Event.name}
-    </div>
+    <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
+      <section className="mx-auto max-w-4xl">
+        <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
+          {donation.Event.name}
+        </h1>
+        <div className="rounded border border-brand-gray-b bg-white p-4 sm:px-16">
+          <div>
+            Thank you for helping us donate to {donation.Charity.name} at{" "}
+            {donation.Event.name}.
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
 

@@ -12,13 +12,14 @@ import { FormInput } from "~/components/form-input";
 import { prisma } from "~/services/db.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const { id } = params;
+  const { eventId } = params;
   const event = await prisma.event.findUnique({
-    where: { id },
+    where: { id: eventId },
     select: {
       id: true,
       name: true,
       collectLeads: true,
+      legalBlurb: true,
       Charities: {
         select: {
           donation: true,
@@ -51,7 +52,7 @@ const validator = withZod(
     company: z.string({ required_error: "Company is required" }),
     jobRole: z.string({ required_error: "Job Title is required" }),
     charityId: z.string({ required_error: "Charity is required" }),
-    collectLeads: z.coerce.boolean()
+    collectLeads: z.string()
   })
 );
 
@@ -61,12 +62,13 @@ export const action = async ({ request }: ActionArgs) => {
   console.log({ result });
   if (result.error) return validationError(result.error);
   const { eventId, charityId, collectLeads, ...lead } = result.data;
+  console.log({ collectLeads });
 
   const donation = await prisma.donation.create({
     data: {
       eventId,
       charityId,
-      ...(collectLeads && { Lead: { create: lead } })
+      ...(collectLeads === "true" && { Lead: { create: lead } })
     },
     select: { id: true }
   });
@@ -75,6 +77,7 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function EventDonate() {
   const { event, charities } = useLoaderData<typeof loader>();
+  console.log({ collectLeads: event.collectLeads });
   return (
     <section className="mx-auto max-w-4xl">
       <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
@@ -146,6 +149,9 @@ export default function EventDonate() {
           >
             Submit
           </button>
+          {event.collectLeads ? (
+            <div className=" text-xs text-gray-700">{event.legalBlurb}</div>
+          ) : null}
         </ValidatedForm>
       </div>
     </section>
