@@ -28,8 +28,11 @@ MEETING_REQUESTED meeting_requested
     DateTime start_date 
     DateTime end_date 
     String location 
+    String twitter "❓"
+    Decimal donation_amount 
     Boolean collect_leads 
     String legal_blurb "❓"
+    String tweet_template 
     String created_by 
     DateTime created_at 
     DateTime updated_at 
@@ -41,6 +44,9 @@ MEETING_REQUESTED meeting_requested
     String name 
     String slug 
     String description 
+    String website "❓"
+    String twitter "❓"
+    String logo_svg "❓"
     String created_by 
     DateTime created_at 
     DateTime updated_at 
@@ -50,7 +56,6 @@ MEETING_REQUESTED meeting_requested
   "charities_events" {
     String event_id 
     String charity_id 
-    Decimal donation 
     String color 
     }
   

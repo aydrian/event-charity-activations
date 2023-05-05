@@ -28,20 +28,23 @@ model User {
 }
 
 model Event {
-  id           String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  slug         String               @unique
-  startDate    DateTime             @map("start_date") @db.Timestamptz()
-  endDate      DateTime             @map("end_date") @db.Timestamptz()
-  location     String
-  collectLeads Boolean              @default(false) @map("collect_leads")
-  legalBlurb   String?              @map("legal_blurb")
-  createdBy    String               @map("created_by") @db.Uuid
-  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt    DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
-  Creator      User                 @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  Charities    CharitiesForEvents[]
-  Donations    Donation[]
+  id             String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  slug           String               @unique
+  startDate      DateTime             @map("start_date") @db.Timestamptz()
+  endDate        DateTime             @map("end_date") @db.Timestamptz()
+  location       String
+  twitter        String?
+  donationAmount Decimal              @default(3.00) @map("donation_amount")
+  collectLeads   Boolean              @default(false) @map("collect_leads")
+  legalBlurb     String?              @map("legal_blurb")
+  tweetTemplate  String               @default("I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}.") @map("tweet_template")
+  createdBy      String               @map("created_by") @db.Uuid
+  createdAt      DateTime             @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt      DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  Creator        User                 @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Charities      CharitiesForEvents[]
+  Donations      Donation[]
 
   @@map("events")
 }
@@ -51,6 +54,9 @@ model Charity {
   name        String
   slug        String
   description String
+  website     String?
+  twitter     String?
+  logoSVG     String?              @map("logo_svg")
   createdBy   String               @map("created_by") @db.Uuid
   createdAt   DateTime             @default(now()) @map("created_at") @db.Timestamptz
   updatedAt   DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -64,7 +70,6 @@ model Charity {
 model CharitiesForEvents {
   eventId   String  @map("event_id") @db.Uuid
   charityId String  @map("charity_id") @db.Uuid
-  donation  Decimal @default(3)
   color     String
   Event     Event   @relation(fields: [eventId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   Charity   Charity @relation(fields: [charityId], references: [id], onDelete: Restrict, onUpdate: Restrict)

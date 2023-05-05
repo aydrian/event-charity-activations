@@ -9,12 +9,14 @@ module.exports = {
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // publicPath: "/build/",
+  serverModuleFormat: "cjs",
+  postcss: true,
+  tailwind: true,
   future: {
+    unstable_dev: true,
     v2_errorBoundary: true,
     v2_meta: true,
     v2_normalizeFormMethod: true,
-    v2_routeConvention: true,
-    unstable_postcss: true,
-    unstable_tailwind: true
+    v2_routeConvention: true
   }
 };

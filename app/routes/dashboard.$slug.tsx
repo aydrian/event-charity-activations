@@ -48,13 +48,13 @@ export const loader = async ({ params }: LoaderArgs) => {
     select: {
       id: true,
       name: true,
+      donationAmount: true,
       startDate: true,
       endDate: true,
       Charities: {
         select: {
           charityId: true,
           color: true,
-          donation: true,
           Charity: { select: { name: true } }
         }
       }
@@ -80,7 +80,6 @@ export const loader = async ({ params }: LoaderArgs) => {
     return {
       charity_id: charity.charityId,
       color: charity.color,
-      donation: charity.donation,
       name: charity.Charity.name,
       count: counts[charity.charityId] || 0
     };
@@ -155,7 +154,7 @@ export default function EventDashboard() {
               Total Donated:{" "}
               {USDollar.format(
                 charities.reduce(
-                  (acc, cur) => acc + cur.count * Number(cur.donation),
+                  (acc, cur) => acc + cur.count * Number(event.donationAmount),
                   0
                 )
               )}

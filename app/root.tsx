@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration
 } from "@remix-run/react";
+import { ExternalScripts } from "remix-utils";
 
 import styles from "./tailwind.css";
 
@@ -28,6 +29,7 @@ export default function App() {
       <body>
         <Outlet />
         <ScrollRestoration />
+        <ExternalScripts />
         <Scripts />
         <LiveReload />
       </body>

@@ -109,7 +109,7 @@ export function CharitySelector({
     <div className="w-full">
       <div className="flex flex-col gap-1">
         <label className="w-fit" {...getLabelProps()}>
-          Select some charities:
+          Select up to {maxItems} charities:
         </label>
         <div className="inline-flex flex-wrap items-center gap-2 bg-white p-1.5 shadow-sm">
           {selectedItems.map(function renderSelectedItem(

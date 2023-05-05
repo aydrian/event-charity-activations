@@ -1,10 +1,12 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { ExternalScriptsFunction } from "remix-utils";
 import { json } from "@remix-run/node";
 import {
   isRouteErrorResponse,
   useLoaderData,
   useRouteError
 } from "@remix-run/react";
+import handlebars from "handlebars";
 
 import { prisma } from "~/services/db.server";
 
@@ -14,8 +16,15 @@ export const loader = async ({ params }: LoaderArgs) => {
     where: { id: donationId },
     select: {
       id: true,
-      Event: { select: { name: true } },
-      Charity: { select: { name: true } }
+      Event: {
+        select: {
+          name: true,
+          donationAmount: true,
+          twitter: true,
+          tweetTemplate: true
+        }
+      },
+      Charity: { select: { name: true, twitter: true } }
     }
   });
   if (!donation) {
@@ -24,11 +33,45 @@ export const loader = async ({ params }: LoaderArgs) => {
     });
   }
 
-  return json({ donation });
+  const currencyFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+  });
+
+  const tweetTemplate = handlebars.compile(donation.Event.tweetTemplate);
+  const tweetText = tweetTemplate({
+    donationAmount: new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0
+    }).format(donation.Event.donationAmount.toNumber()),
+    event: donation.Event.twitter
+      ? `@${donation.Event.twitter}`
+      : donation.Event.name,
+    charity: donation.Charity.twitter
+      ? `@${donation.Charity.twitter}`
+      : donation.Charity.name
+  });
+
+  return json({ donation, tweetText });
 };
 
+let scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = () => {
+  return [
+    {
+      async: true,
+      src: "https://platform.twitter.com/widgets.js"
+    }
+  ];
+};
+export let handle = { scripts };
+
 export default function DonateConfirm() {
-  const { donation } = useLoaderData<typeof loader>();
+  const { donation, tweetText } = useLoaderData<typeof loader>();
+  const searchParams = new URLSearchParams();
+  searchParams.append("text", tweetText);
+  searchParams.append("url", "https://cockroachlabs.com/");
+  searchParams.append("via", "CockroachDB");
   return (
     <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
       <section className="mx-auto max-w-4xl">
@@ -40,6 +83,13 @@ export default function DonateConfirm() {
             Thank you for helping us donate to {donation.Charity.name} at{" "}
             {donation.Event.name}.
           </div>
+          <a
+            className="twitter-share-button"
+            data-size="large"
+            href={`https://twitter.com/intent/tweet?${searchParams}`}
+          >
+            Tweet
+          </a>
         </div>
       </section>
     </main>
@@ -58,16 +108,6 @@ export function ErrorBoundary() {
         <p>{error.data}</p>
       </div>
     );
-  } else if (error instanceof Error) {
-    return (
-      <div>
-        <h1>Error</h1>
-        <p>{error.message}</p>
-        <p>The stack trace is:</p>
-        <pre>{error.stack}</pre>
-      </div>
-    );
-  } else {
-    return <h1>Unknown Error</h1>;
   }
+  throw error;
 }

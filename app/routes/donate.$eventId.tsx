@@ -18,11 +18,11 @@ export const loader = async ({ params }: LoaderArgs) => {
     select: {
       id: true,
       name: true,
+      donationAmount: true,
       collectLeads: true,
       legalBlurb: true,
       Charities: {
         select: {
-          donation: true,
           color: true,
           Charity: { select: { id: true, name: true } }
         }
@@ -36,7 +36,6 @@ export const loader = async ({ params }: LoaderArgs) => {
   }
   const { Charities, ...rest } = event;
   const charities = Charities.map((item) => ({
-    donation: item.donation,
     color: item.color,
     ...item.Charity
   }));

@@ -21,15 +21,17 @@ function formatDates(startDate: string, endDate: string) {
   const start = new Date(startDate);
   const end = new Date(endDate);
   const sameYear = start.getFullYear() === end.getFullYear();
-  const sameMonth = start.getMonth() === end.getMonth();
+  // const sameMonth = start.getMonth() === end.getMonth();
   return `${start.toLocaleDateString("en-us", {
     ...(!sameYear && { year: "numeric" }),
     month: "short",
-    day: "numeric"
+    day: "numeric",
+    timeZone: "UTC"
   })} - ${end.toLocaleDateString("en-us", {
     year: "numeric",
     month: "short",
-    day: "numeric"
+    day: "numeric",
+    timeZone: "UTC"
   })}`;
 }
 

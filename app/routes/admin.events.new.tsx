@@ -2,12 +2,13 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { ChangeEvent } from "react";
 import { useRef, useState } from "react";
 import { json, redirect } from "@remix-run/node";
-import { Link, useActionData, useLoaderData } from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { withZod } from "@remix-validated-form/with-zod";
 import { z } from "zod";
 import slugify from "slugify";
 import { FormInput } from "~/components/form-input";
+import { FormTextArea } from "~/components/form-textarea";
 import { requireUser } from "~/services/auth.server";
 import { prisma } from "~/services/db.server";
 
@@ -25,9 +26,11 @@ const validator = withZod(
   z.object({
     name: z.string({ required_error: "Name is required" }),
     slug: z.string({ required_error: "Slug is required" }),
+    donationAmount: z.coerce.number().default(3.0),
     startDate: z.coerce.date({ required_error: "Start Date is required" }),
     endDate: z.coerce.date({ required_error: "End Date is required" }),
     location: z.string({ required_error: "Location is required" }),
+    tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
     collectLeads: z.coerce.boolean(),
     legalBlurb: z.string().optional(),
     charities: z.array(z.object({ charityId: z.string(), color: z.string() }))
@@ -71,6 +74,11 @@ export default function AddEvent() {
           validator={validator}
           method="post"
           className="mb-8 flex flex-col sm:mb-4"
+          defaultValues={{
+            donationAmount: 3.0,
+            tweetTemplate:
+              "I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}."
+          }}
         >
           <FormInput
             name="name"
@@ -94,6 +102,16 @@ export default function AddEvent() {
             />
           </div>
           <FormInput name="location" label="Location" type="text" />
+          <div className="flex w-full flex-row justify-between gap-1">
+            <FormInput
+              name="donationAmount"
+              label="Donation Amount"
+              inputMode="numeric"
+              pattern="\d*"
+              className="grow"
+            />
+            <FormInput name="twitter" label="Twitter" className="grow" />
+          </div>
           <div className="flex flex-row gap-1">
             <label className="font-bold !text-brand-deep-purple">
               Collect lead data?
@@ -105,6 +123,7 @@ export default function AddEvent() {
               onChange={(e) => setCollectLeads(!collectLeads)}
             />
           </div>
+          <FormTextArea name="tweetTemplate" label="Tweet Template" />
           {collectLeads ? (
             <FormInput name="legalBlurb" label="Legal Blurb" className="grow" />
           ) : null}
