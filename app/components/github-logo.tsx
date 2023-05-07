@@ -4,7 +4,9 @@ type GitHubLogoType = {
   className?: string;
 };
 
-const GitHubLogo = ({ className = "" }: GitHubLogoType) => {
+const GitHubLogo = ({
+  className = "h-7 w-7 text-brand-deep-purple"
+}: GitHubLogoType) => {
   return (
     <Fragment>
       <span className="sr-only">GitHub Logo</span>
@@ -12,7 +14,7 @@ const GitHubLogo = ({ className = "" }: GitHubLogoType) => {
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
         viewBox="0 0 24 24"
-        className={`h-7 w-7 text-brand-deep-purple ${className}`}
+        className={className}
       >
         <g>
           <path

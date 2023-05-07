@@ -84,17 +84,19 @@ export const loader = async ({ params }: LoaderArgs) => {
       count: counts[charity.charityId] || 0
     };
   });
-  const qrcode = await QRCode.toDataURL(
-    `https://${process.env.VERCEL_URL}/donate/${event.id}`
-  );
-  return json({ charities, event, qrcode });
+  const donateLink = `${
+    process.env.NODE_ENV === "development" ? "http" : "https"
+  }://${process.env.VERCEL_URL}/donate/${event.id}`;
+  const qrcode = await QRCode.toDataURL(donateLink);
+  return json({ charities, event, qrcode, donateLink });
 };
 
 export default function EventDashboard() {
   const {
     charities: initCharities,
     event,
-    qrcode
+    qrcode,
+    donateLink
   } = useLoaderData<typeof loader>();
   const [charities, setCharities] = useState(initCharities);
   const { data, error } = useSubscription(GET_DONATIONS, {
@@ -120,52 +122,57 @@ export default function EventDashboard() {
   }, [data]);
 
   return (
-    <section className="prose mx-auto grid max-w-7xl">
-      <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
-        {event.name}
-      </h1>
-      <div className="flex justify-stretch gap-12">
-        <div className="grow rounded border border-brand-gray-b bg-white p-1">
-          <Bar
-            options={{
-              responsive: true,
-              scales: { y: { ticks: { stepSize: 1 } } }
-            }}
-            data={{
-              labels: charities.map((charity) => charity.name),
-              datasets: [
-                {
-                  label: "total donations",
-                  data: charities.map((charity) => charity.count),
-                  backgroundColor: charities.map((charity) =>
-                    hexToRgbA(charity.color, 0.5)
-                  ),
-                  borderColor: charities.map((charity) => charity.color),
-                  borderWidth: 1
-                }
-              ]
-            }}
-          />
-          <div>
+    <main className="min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
+      <section className="prose mx-auto grid max-w-7xl">
+        <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
+          {event.name}
+        </h1>
+        <div className="flex justify-stretch gap-12">
+          <div className="grow rounded border border-brand-gray-b bg-white p-1">
+            <Bar
+              options={{
+                responsive: true,
+                scales: { y: { ticks: { stepSize: 1 } } }
+              }}
+              data={{
+                labels: charities.map((charity) => charity.name),
+                datasets: [
+                  {
+                    label: "total donations",
+                    data: charities.map((charity) => charity.count),
+                    backgroundColor: charities.map((charity) =>
+                      hexToRgbA(charity.color, 0.5)
+                    ),
+                    borderColor: charities.map((charity) => charity.color),
+                    borderWidth: 1
+                  }
+                ]
+              }}
+            />
             <div>
-              Donations: {charities.reduce((acc, cur) => acc + cur.count, 0)}
-            </div>
-            <div>
-              Total Donated:{" "}
-              {USDollar.format(
-                charities.reduce(
-                  (acc, cur) => acc + cur.count * Number(event.donationAmount),
-                  0
-                )
-              )}
+              <div>
+                Donations: {charities.reduce((acc, cur) => acc + cur.count, 0)}
+              </div>
+              <div>
+                Total Donated:{" "}
+                {USDollar.format(
+                  charities.reduce(
+                    (acc, cur) =>
+                      acc + cur.count * Number(event.donationAmount),
+                    0
+                  )
+                )}
+              </div>
             </div>
           </div>
+          <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+            <a href={donateLink} target="_blank">
+              <img src={qrcode} alt="Scan me" className="aspect-square h-48" />
+            </a>
+          </div>
         </div>
-        <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
-          <img src={qrcode} alt="Scan me" className="aspect-square h-48" />
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }
 
@@ -181,16 +188,7 @@ export function ErrorBoundary() {
         <p>{error.data}</p>
       </div>
     );
-  } else if (error instanceof Error) {
-    return (
-      <div className="bg-white">
-        <h1>Error</h1>
-        <p>{error.message}</p>
-        <p>The stack trace is:</p>
-        <pre>{error.stack}</pre>
-      </div>
-    );
-  } else {
-    return <h1>Unknown Error</h1>;
   }
+
+  throw error;
 }

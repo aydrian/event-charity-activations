@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/services/auth.server";
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
+import Footer from "~/components/footer";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
@@ -43,6 +44,7 @@ export default function AdminLayout() {
       <main className="min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
         <Outlet />
       </main>
+      <Footer />
     </>
   );
 }
