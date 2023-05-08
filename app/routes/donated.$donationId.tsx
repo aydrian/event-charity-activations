@@ -71,8 +71,11 @@ export default function DonateConfirm() {
   const { donation, tweetText } = useLoaderData<typeof loader>();
   const searchParams = new URLSearchParams();
   searchParams.append("text", tweetText);
-  searchParams.append("url", "https://cockroachlabs.com/");
-  searchParams.append("via", "CockroachDB");
+  searchParams.append(
+    "url",
+    "https://www.cockroachlabs.com/events/remix-conf-2023/"
+  );
+  // searchParams.append("via", "CockroachDB");
   return (
     <>
       <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
