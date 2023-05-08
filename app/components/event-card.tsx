@@ -4,6 +4,7 @@ import {
   UserGroupIcon,
   DocumentArrowDownIcon
 } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 type EventCardProps = {
   event: {
@@ -39,7 +40,16 @@ export default function EventCard({ event }: EventCardProps) {
   return (
     <div className="rounded border border-brand-gray-b bg-white">
       <div className="px-6 py-4">
-        <div className="text-xl font-semibold">{event.name}</div>
+        <div className="flex items-center justify-between">
+          <div className="text-xl font-semibold">{event.name}</div>
+          <Link to={`/admin/events/${event.id}/edit`}>
+            <PencilIcon
+              title="Edit Event"
+              className="aspect-square h-5 text-gray-800"
+            />
+            <span className="sr-only">Edit Event</span>
+          </Link>
+        </div>
         <div className="text-lg font-medium text-gray-800">
           {formatDates(event.startDate, event.endDate)}
         </div>

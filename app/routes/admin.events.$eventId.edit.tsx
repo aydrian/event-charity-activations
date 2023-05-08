@@ -1,7 +1,7 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { ChangeEvent } from "react";
 import { useRef, useState } from "react";
-import { json, redirect } from "@remix-run/node";
+import { json, redirect, Response } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { withZod } from "@remix-validated-form/with-zod";
@@ -14,16 +14,51 @@ import { prisma } from "~/services/db.server";
 
 import { CharitySelector } from "~/components/charity-selector";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   await requireUser(request);
+  const { eventId } = params;
+  const findEvent = await prisma.event.findUnique({
+    where: { id: eventId },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      startDate: true,
+      endDate: true,
+      location: true,
+      donationAmount: true,
+      twitter: true,
+      tweetTemplate: true,
+      collectLeads: true,
+      legalBlurb: true,
+      Charities: {
+        select: { color: true, Charity: { select: { id: true, name: true } } }
+      }
+    }
+  });
+  if (!findEvent) {
+    throw new Response("Not Found", {
+      status: 404
+    });
+  }
   const charities = await prisma.charity.findMany({
     select: { id: true, name: true }
   });
-  return json({ charities });
+  const { Charities, ...event } = findEvent;
+
+  const selectedCharities = Charities.map((charity) => {
+    return {
+      ...charity.Charity,
+      color: charity.color
+    };
+  });
+
+  return json({ charities, event, selectedCharities });
 };
 
 const validator = withZod(
   z.object({
+    id: z.string(),
     name: z.string({ required_error: "Name is required" }),
     slug: z.string({ required_error: "Slug is required" }),
     donationAmount: z.coerce.number().default(3.0),
@@ -39,26 +74,29 @@ const validator = withZod(
 );
 
 export const action = async ({ request }: ActionArgs) => {
-  const user = await requireUser(request);
+  await requireUser(request);
   const formData = await request.formData();
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
-  const { charities, ...rest } = result.data;
 
-  await prisma.event.create({
+  const { id, charities, ...rest } = result.data;
+
+  // TODO: Handle updating charities
+
+  await prisma.event.update({
+    where: { id },
     data: {
-      ...rest,
-      createdBy: user.id,
-      Charities: { create: charities }
+      ...rest
     }
   });
   return redirect("/admin/dashboard");
 };
 
-export default function AddEvent() {
+export default function EditEvent() {
   const slugRef = useRef<HTMLInputElement>(null);
-  const [collectLeads, setCollectLeads] = useState(false);
-  const { charities } = useLoaderData<typeof loader>();
+  const { charities, event, selectedCharities } =
+    useLoaderData<typeof loader>();
+  const [collectLeads, setCollectLeads] = useState(event.collectLeads);
   const data = useActionData();
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nameValue = event.target.value;
@@ -70,17 +108,27 @@ export default function AddEvent() {
   return (
     <section className="prose mx-auto grid max-w-4xl gap-12">
       <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
-        <h2 className="m-0 font-bold text-brand-deep-purple">Create Event</h2>
+        <h2 className="m-0 font-bold text-brand-deep-purple">Edit Event</h2>
         <ValidatedForm
           validator={validator}
           method="post"
           className="mb-8 flex flex-col sm:mb-4"
           defaultValues={{
-            donationAmount: 3.0,
-            tweetTemplate:
-              "I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}."
+            name: event.name,
+            slug: event.slug,
+            // @ts-ignore
+            startDate: event.startDate.split("T")[0],
+            // @ts-ignore
+            endDate: event.endDate.split("T")[0],
+            location: event.location,
+            donationAmount: Number(event.donationAmount),
+            twitter: event.twitter || undefined,
+            tweetTemplate: event.tweetTemplate,
+            collectLeads: event.collectLeads,
+            legalBlurb: event.legalBlurb || undefined
           }}
         >
+          <input type="hidden" name="id" value={event.id} />
           <FormInput
             name="name"
             label="Name"
@@ -129,7 +177,10 @@ export default function AddEvent() {
             <FormTextArea name="legalBlurb" label="Legal Blurb" />
           ) : null}
           <h3>Which charities will this event support?</h3>
-          <CharitySelector charities={charities} />
+          <CharitySelector
+            charities={charities}
+            selectedCharities={selectedCharities}
+          />
           {data && (
             <div className="pt-1 text-red-700">
               <div>{data.title}</div>
@@ -140,7 +191,7 @@ export default function AddEvent() {
             type="submit"
             className="mt-4 min-w-[150px] rounded bg-brand-electric-purple px-6 py-2 font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start"
           >
-            Add
+            Update
           </button>
         </ValidatedForm>
       </div>

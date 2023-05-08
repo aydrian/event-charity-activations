@@ -1,35 +1,42 @@
 import React from "react";
-import { useCombobox, useMultipleSelection } from "downshift";
+import { resetIdCounter, useCombobox, useMultipleSelection } from "downshift";
 import { clsx } from "clsx";
 import type { CharityItem } from "~/models/charity.server";
 
 import { ColorSelector } from "./color-selector";
 
+type CharityItemWithColor = CharityItem & { color?: string };
+
 type CharitySelectorProps = {
-  charities: CharityItem[];
+  name?: string;
+  charities: CharityItemWithColor[];
   maxItems?: number;
+  selectedCharities?: CharityItemWithColor[];
 };
 
 export function CharitySelector({
+  name = "charities",
   charities,
-  maxItems = 4
+  maxItems = 4,
+  selectedCharities = []
 }: CharitySelectorProps) {
   function getFilteredCharities(
-    selectedItems: CharityItem[],
+    selectedItems: CharityItemWithColor[],
     inputValue: string
   ) {
     const lowerCasedInputValue = inputValue.toLowerCase();
 
     return charities.filter(function filterCharity(charity) {
       return (
-        !selectedItems.includes(charity) &&
+        !selectedItems.find((item) => item.id === charity.id) &&
         charity.name.toLowerCase().includes(lowerCasedInputValue)
       );
     });
   }
 
   const [inputValue, setInputValue] = React.useState("");
-  const [selectedItems, setSelectedItems] = React.useState<CharityItem[]>([]);
+  const [selectedItems, setSelectedItems] =
+    React.useState<CharityItemWithColor[]>(selectedCharities);
   const items = React.useMemo(
     () => getFilteredCharities(selectedItems, inputValue),
     [selectedItems, inputValue]
@@ -104,6 +111,7 @@ export function CharitySelector({
       }
     }
   });
+  resetIdCounter();
 
   return (
     <div className="w-full">
@@ -125,11 +133,14 @@ export function CharitySelector({
                   index
                 })}
               >
-                <ColorSelector name={`charities[${index}][color]`} />
+                <ColorSelector
+                  name={`${name}[${index}][color]`}
+                  selectedColor={selectedItemForRender.color}
+                />
                 <span>{selectedItemForRender.name}</span>
                 <input
                   type="hidden"
-                  name={`charities[${index}][charityId]`}
+                  name={`${name}[${index}][charityId]`}
                   value={selectedItemForRender.id}
                 />
                 <span
@@ -144,24 +155,24 @@ export function CharitySelector({
               </span>
             );
           })}
-          {selectedItems.length < maxItems ? (
-            <div className="flex grow gap-0.5">
-              <input
-                className="w-full rounded-none border-b border-b-brand-deep-purple p-2 font-normal !text-brand-gray"
-                {...getInputProps(
-                  getDropdownProps({ preventKeyAction: isOpen })
-                )}
-              />
-              <button
-                aria-label="toggle menu"
-                className="px-2"
-                type="button"
-                {...getToggleButtonProps()}
-              >
-                &#8595;
-              </button>
-            </div>
-          ) : null}
+          <div
+            className={`flex grow gap-0.5 ${
+              selectedItems.length >= maxItems && "hidden"
+            }`}
+          >
+            <input
+              className="w-full rounded-none border-b border-b-brand-deep-purple p-2 font-normal !text-brand-gray"
+              {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+            />
+            <button
+              aria-label="toggle menu"
+              className="px-2"
+              type="button"
+              {...getToggleButtonProps()}
+            >
+              &#8595;
+            </button>
+          </div>
         </div>
       </div>
       <ul

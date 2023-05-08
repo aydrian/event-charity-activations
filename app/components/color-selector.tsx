@@ -1,9 +1,14 @@
-import { useSelect } from "downshift";
+import { useSelect, resetIdCounter } from "downshift";
 import { clsx } from "clsx";
 
 type Item = {
   name: string;
   hex: string;
+};
+
+type ColorSelectorProps = {
+  name?: string;
+  selectedColor?: string;
 };
 
 const colors = [
@@ -17,7 +22,15 @@ function itemToString(item: Item | null) {
   return item ? item.name : "";
 }
 
-export function ColorSelector({ name = "color" }) {
+function getColorByHex(hex?: string) {
+  if (!hex) return colors[0];
+  return colors.find((item) => item.hex === hex) || colors[0];
+}
+
+export function ColorSelector({
+  name = "color",
+  selectedColor
+}: ColorSelectorProps) {
   const {
     isOpen,
     selectedItem,
@@ -29,8 +42,9 @@ export function ColorSelector({ name = "color" }) {
   } = useSelect({
     items: colors,
     itemToString,
-    defaultSelectedItem: colors[0]
+    defaultSelectedItem: getColorByHex(selectedColor)
   });
+  resetIdCounter();
 
   return (
     <div>

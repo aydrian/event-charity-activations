@@ -31,8 +31,8 @@ model Event {
   id             String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name           String
   slug           String               @unique
-  startDate      DateTime             @map("start_date") @db.Timestamptz()
-  endDate        DateTime             @map("end_date") @db.Timestamptz()
+  startDate      DateTime             @map("start_date") @db.Date()
+  endDate        DateTime             @map("end_date") @db.Date()
   location       String
   twitter        String?
   donationAmount Decimal              @default(3.00) @map("donation_amount")
