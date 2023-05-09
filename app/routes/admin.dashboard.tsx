@@ -14,6 +14,7 @@ export const loader = async ({ request }: LoaderArgs) => {
         id: true,
         name: true,
         description: true,
+        logoSVG: true,
         Creator: { select: { fullName: true } }
       }
     }),
@@ -78,7 +79,15 @@ export default function AdminDashboard() {
             <dl className=" divide-y divide-gray-200">
               {charities.map((charity) => (
                 <div key={charity.id} className="flex flex-col pb-3">
-                  <dt className="font-semibold">{charity.name}</dt>
+                  <dt>
+                    {charity.logoSVG ? (
+                      <img
+                        src={`data:image/svg+xml,${charity.logoSVG}`}
+                        className="my-0 h-12 text-black"
+                      />
+                    ) : null}
+                    <div className="font-semibold">{charity.name}</div>
+                  </dt>
                   <dd>
                     <div className="text-sm">{charity.description}</div>
                   </dd>
