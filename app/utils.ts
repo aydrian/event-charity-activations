@@ -18,3 +18,9 @@ export function hexToRgbA(hex: string, alpha: number = 1) {
   }
   throw new Error("Bad Hex");
 }
+
+export const USDollar = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0
+});

@@ -9,6 +9,7 @@ import {
 import handlebars from "handlebars";
 
 import { prisma } from "~/services/db.server";
+import { USDollar } from "~/utils";
 import Footer from "~/components/footer";
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -85,15 +86,18 @@ export default function DonateConfirm() {
           </h1>
           <div className="rounded border border-brand-gray-b bg-white p-4 sm:px-16">
             <div>
-              Thank you for helping us donate to {donation.Charity.name} at{" "}
-              {donation.Event.name}.
+              Thank you for helping us donate{" "}
+              {USDollar.format(Number(donation.Event.donationAmount))} to{" "}
+              {donation.Charity.name} at {donation.Event.name}. You may place a
+              peg in the board.
             </div>
+            <div>Share to Twitter</div>
             <a
               className="twitter-share-button"
               data-size="large"
               href={`https://twitter.com/intent/tweet?${searchParams}`}
             >
-              Tweet
+              Share to Twitter
             </a>
           </div>
         </section>

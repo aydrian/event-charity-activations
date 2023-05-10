@@ -60,10 +60,8 @@ const validator = withZod(
 export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const result = await validator.validate(formData);
-  console.log({ result });
   if (result.error) return validationError(result.error);
   const { eventId, charityId, collectLeads, ...lead } = result.data;
-  console.log({ collectLeads });
 
   const donation = await prisma.donation.create({
     data: {
@@ -78,7 +76,6 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function EventDonate() {
   const { event, charities } = useLoaderData<typeof loader>();
-  console.log({ collectLeads: event.collectLeads });
   return (
     <>
       <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">

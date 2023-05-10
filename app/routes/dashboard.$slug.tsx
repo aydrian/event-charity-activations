@@ -23,12 +23,7 @@ import { prisma } from "~/services/db.server";
 import { initApollo } from "~/services/apollo";
 import { hexToRgbA } from "~/utils";
 import { BanknotesIcon, GiftIcon } from "@heroicons/react/24/outline";
-
-const USDollar = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  minimumFractionDigits: 0
-});
+import { USDollar } from "~/utils";
 
 const client = initApollo();
 
