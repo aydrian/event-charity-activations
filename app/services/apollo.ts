@@ -24,7 +24,7 @@ export function initApollo() {
         },
         new GraphQLWsLink(
           createClient({
-            url: `ws://${domain}`,
+            url: `wss://${domain}`,
             connectionParams: {
               headers: {
                 "x-hasura-admin-secret":
