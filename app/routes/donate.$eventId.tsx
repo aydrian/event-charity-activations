@@ -12,6 +12,7 @@ import { FormInput } from "~/components/form-input";
 import { prisma } from "~/services/db.server";
 import { hexToRgbA } from "~/utils";
 import Footer from "~/components/footer";
+import { SubmitButton } from "~/components/submit-button";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId } = params;
@@ -150,12 +151,9 @@ export default function EventDonate() {
                   ))}
                 </div>
               </fieldset>
-              <button
-                type="submit"
-                className="mt-4 min-w-[150px] rounded bg-brand-electric-purple px-6 py-2 text-xl font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start"
-              >
+              <SubmitButton className="mt-4 min-w-[150px] px-6 py-2 sm:self-start">
                 Submit
-              </button>
+              </SubmitButton>
               {event.collectLeads ? (
                 <div className=" text-xs text-gray-700">{event.legalBlurb}</div>
               ) : null}

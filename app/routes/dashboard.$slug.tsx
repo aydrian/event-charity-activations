@@ -1,5 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import type { GroupedDonation } from "@prisma/client";
+import React from "react";
 import { json, Response } from "@remix-run/node";
 import {
   isRouteErrorResponse,
@@ -201,15 +202,14 @@ export default function EventDashboard() {
               </h2>
               <div className="flex items-center justify-around">
                 {charities.map((charity) => (
-                  <>
+                  <React.Fragment key={charity.charity_id}>
                     {charity.logoSVG ? (
                       <SVG
-                        key={charity.charity_id}
                         src={charity.logoSVG}
                         className="h-12 text-brand-deep-purple"
                       />
                     ) : null}
-                  </>
+                  </React.Fragment>
                 ))}
               </div>
             </div>
