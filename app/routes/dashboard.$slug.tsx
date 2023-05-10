@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { gql, useSubscription } from "@apollo/client";
+import SVG from "react-inlinesvg";
 import { prisma } from "~/services/db.server";
 import { initApollo } from "~/services/apollo";
 import { hexToRgbA } from "~/utils";
@@ -25,7 +26,8 @@ import { BanknotesIcon, GiftIcon } from "@heroicons/react/24/outline";
 
 const USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",
-  currency: "USD"
+  currency: "USD",
+  minimumFractionDigits: 0
 });
 
 const client = initApollo();
@@ -184,8 +186,12 @@ export default function EventDashboard() {
               </div>
             </div>
           </div>
-          <div className="flex shrink gap-6 rounded border border-brand-gray-b bg-white p-2">
-            <a href={donateLink} target="_blank" className="grow">
+          <div className="flex shrink gap-4 rounded border border-brand-gray-b bg-white p-2">
+            <a
+              href={donateLink}
+              target="_blank"
+              className="flex grow justify-center"
+            >
               <img
                 src={qrcode}
                 alt="Scan me"
@@ -195,21 +201,20 @@ export default function EventDashboard() {
             <div className="flex shrink flex-col justify-center gap-4">
               <h2 className="my-0 text-brand-deep-purple">
                 Scan the QR Code and we'll donate{" "}
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  minimumFractionDigits: 0
-                }).format(Number(event.donationAmount))}{" "}
-                USD to your choice of the following charities:
+                {USDollar.format(Number(event.donationAmount))} USD to your
+                choice of the following charities:
               </h2>
               <div className="flex items-center justify-around">
                 {charities.map((charity) => (
-                  <img
-                    key={charity.charity_id}
-                    alt={charity.name}
-                    src={`data:image/svg+xml,${charity.logoSVG}`}
-                    className="my-0 h-12 text-brand-deep-purple"
-                  />
+                  <>
+                    {charity.logoSVG ? (
+                      <SVG
+                        key={charity.charity_id}
+                        src={charity.logoSVG}
+                        className="h-12 text-brand-deep-purple"
+                      />
+                    ) : null}
+                  </>
                 ))}
               </div>
             </div>

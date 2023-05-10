@@ -1,6 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import SVG from "react-inlinesvg";
 import { requireUser } from "~/services/auth.server";
 import { prisma } from "~/services/db.server";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
@@ -81,9 +82,9 @@ export default function AdminDashboard() {
                 <div key={charity.id} className="flex flex-col pb-3">
                   <dt>
                     {charity.logoSVG ? (
-                      <img
-                        src={`data:image/svg+xml,${charity.logoSVG}`}
-                        className="my-0 h-12 text-black"
+                      <SVG
+                        src={charity.logoSVG}
+                        className="h-12 text-brand-deep-purple"
                       />
                     ) : null}
                     <div className="font-semibold">{charity.name}</div>
