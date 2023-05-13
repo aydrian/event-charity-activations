@@ -69,7 +69,10 @@ const validator = withZod(
     tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
     collectLeads: z.coerce.boolean(),
     legalBlurb: z.string().optional(),
-    charities: z.array(z.object({ charityId: z.string(), color: z.string() }))
+    charities: z
+      .array(z.object({ charityId: z.string(), color: z.string() }))
+      .max(4, "A max of 4 charities is allowed")
+      .min(1, "At least 1 charity is required")
   })
 );
 
@@ -81,14 +84,35 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { id, charities, ...rest } = result.data;
 
-  // TODO: Handle updating charities
-
-  await prisma.event.update({
+  const eventUpdate = prisma.event.update({
     where: { id },
     data: {
       ...rest
     }
   });
+
+  const charitiesDelete = prisma.charitiesForEvents.deleteMany({
+    where: { charityId: { notIn: charities.map((c) => c.charityId) } }
+  });
+
+  const charityUpserts = charities.map((charity) => {
+    return prisma.charitiesForEvents.upsert({
+      update: {
+        color: charity.color
+      },
+      create: {
+        eventId: id,
+        charityId: charity.charityId,
+        color: charity.color
+      },
+      where: {
+        eventId_charityId: { eventId: id, charityId: charity.charityId }
+      }
+    });
+  });
+
+  await prisma.$transaction([eventUpdate, charitiesDelete, ...charityUpserts]);
+
   return redirect("/admin/dashboard");
 };
 

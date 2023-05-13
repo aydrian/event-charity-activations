@@ -34,7 +34,10 @@ const validator = withZod(
     tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
     collectLeads: z.coerce.boolean(),
     legalBlurb: z.string().optional(),
-    charities: z.array(z.object({ charityId: z.string(), color: z.string() }))
+    charities: z
+      .array(z.object({ charityId: z.string(), color: z.string() }))
+      .max(4, "A max of 4 charities is allowed")
+      .min(1, "At least 1 charity is required")
   })
 );
 
