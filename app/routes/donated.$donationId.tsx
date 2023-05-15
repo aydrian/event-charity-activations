@@ -10,6 +10,7 @@ import handlebars from "handlebars";
 
 import { prisma } from "~/services/db.server";
 import { USDollar } from "~/utils";
+import TweetButton from "~/components/tweet-button";
 import Footer from "~/components/footer";
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -35,18 +36,9 @@ export const loader = async ({ params }: LoaderArgs) => {
     });
   }
 
-  const currencyFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD"
-  });
-
   const tweetTemplate = handlebars.compile(donation.Event.tweetTemplate);
   const tweetText = tweetTemplate({
-    donationAmount: new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0
-    }).format(donation.Event.donationAmount.toNumber()),
+    donationAmount: USDollar.format(donation.Event.donationAmount.toNumber()),
     event: donation.Event.twitter
       ? `@${donation.Event.twitter}`
       : donation.Event.name,
@@ -58,25 +50,8 @@ export const loader = async ({ params }: LoaderArgs) => {
   return json({ donation, tweetText });
 };
 
-let scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = () => {
-  return [
-    {
-      async: true,
-      src: "https://platform.twitter.com/widgets.js"
-    }
-  ];
-};
-export let handle = { scripts };
-
 export default function DonateConfirm() {
   const { donation, tweetText } = useLoaderData<typeof loader>();
-  const searchParams = new URLSearchParams();
-  searchParams.append("text", tweetText);
-  searchParams.append(
-    "url",
-    "https://www.cockroachlabs.com/events/remix-conf-2023/"
-  );
-  // searchParams.append("via", "CockroachDB");
   return (
     <>
       <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
@@ -91,14 +66,7 @@ export default function DonateConfirm() {
               {donation.Charity.name} at {donation.Event.name}. You may place a
               peg in the board.
             </div>
-            <div>Share to Twitter</div>
-            <a
-              className="twitter-share-button"
-              data-size="large"
-              href={`https://twitter.com/intent/tweet?${searchParams}`}
-            >
-              Share to Twitter
-            </a>
+            <TweetButton tweetText={tweetText} />
           </div>
         </section>
       </main>
