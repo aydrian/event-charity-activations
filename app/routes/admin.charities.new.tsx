@@ -2,12 +2,13 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { ChangeEvent } from "react";
 import { useRef } from "react";
 import { redirect } from "@remix-run/node";
-import { Link, useActionData } from "@remix-run/react";
+import { useActionData } from "@remix-run/react";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { withZod } from "@remix-validated-form/with-zod";
 import { z } from "zod";
 import slugify from "slugify";
 import { FormInput } from "~/components/form-input";
+import { FileUploader } from "~/routes/resources.upload";
 import { requireUser } from "~/services/auth.server";
 import { prisma } from "~/services/db.server";
 
@@ -65,6 +66,7 @@ export default function AddCharity() {
           />
           <FormInput name="slug" label="Slug" type="text" ref={slugRef} />
           <FormInput name="description" label="Description" type="text" />
+          <FileUploader name="logoSVG" label="Logo (1 color svg)" />
           <FormInput name="website" label="Website" type="text" />
           <FormInput name="twitter" label="Twitter" type="text" />
           {data && (
