@@ -19,7 +19,9 @@ const validator = withZod(
   z.object({
     name: z.string({ required_error: "Name is required" }),
     slug: z.string({ required_error: "Slug is required" }),
-    description: z.string({ required_error: "Description is required" })
+    description: z.string({ required_error: "Description is required" }),
+    website: z.string().url().optional(),
+    twitter: z.string().optional()
   })
 );
 
@@ -28,10 +30,10 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
-  const { name, description, slug } = result.data;
+  const { name, description, slug, website, twitter } = result.data;
 
   await prisma.charity.create({
-    data: { name, slug, description, createdBy: user.id }
+    data: { name, slug, description, website, twitter, createdBy: user.id }
   });
   return redirect("/admin/dashboard");
 };
@@ -63,6 +65,8 @@ export default function AddCharity() {
           />
           <FormInput name="slug" label="Slug" type="text" ref={slugRef} />
           <FormInput name="description" label="Description" type="text" />
+          <FormInput name="website" label="Website" type="text" />
+          <FormInput name="twitter" label="Twitter" type="text" />
           {data && (
             <div className="pt-1 text-red-700">
               <div>{data.title}</div>
