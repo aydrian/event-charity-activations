@@ -7,6 +7,7 @@ import { ValidatedForm, validationError } from "remix-validated-form";
 import { withZod } from "@remix-validated-form/with-zod";
 import { z } from "zod";
 import slugify from "slugify";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { FormInput } from "~/components/form-input";
 import { FileUploader } from "~/routes/resources.upload";
 import { requireUser } from "~/services/auth.server";
@@ -22,7 +23,8 @@ const validator = withZod(
     slug: z.string({ required_error: "Slug is required" }),
     description: z.string({ required_error: "Description is required" }),
     website: z.string().url().optional(),
-    twitter: z.string().optional()
+    twitter: z.string().optional(),
+    logoSVG: z.string().optional()
   })
 );
 
@@ -31,10 +33,12 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await request.formData();
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
-  const { name, description, slug, website, twitter } = result.data;
 
   await prisma.charity.create({
-    data: { name, slug, description, website, twitter, createdBy: user.id }
+    data: {
+      ...result.data,
+      createdBy: user.id
+    }
   });
   return redirect("/admin/dashboard");
 };
@@ -66,7 +70,18 @@ export default function AddCharity() {
           />
           <FormInput name="slug" label="Slug" type="text" ref={slugRef} />
           <FormInput name="description" label="Description" type="text" />
-          <FileUploader name="logoSVG" label="Logo (1 color svg)" />
+          <div className="flex flex-col gap-1">
+            <span className="font-bold !text-brand-deep-purple">Logo</span>
+            <FileUploader
+              name="logoSVG"
+              fileTypes=".svg"
+              UploadIcon={PhotoIcon}
+              className="h-52"
+            />
+            <span className=" text-xs italic text-gray-700">
+              Please use a 1-color svg file.
+            </span>
+          </div>
           <FormInput name="website" label="Website" type="text" />
           <FormInput name="twitter" label="Twitter" type="text" />
           {data && (

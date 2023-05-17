@@ -3,6 +3,7 @@ import { json, unstable_parseMultipartFormData } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import React from "react";
 import SVG from "react-inlinesvg";
+import { DocumentPlusIcon } from "@heroicons/react/24/outline";
 import { requireUser } from "~/services/auth.server";
 
 const uploadHandler: UploadHandler = async ({
@@ -34,16 +35,24 @@ export const action = async ({ request }: ActionArgs) => {
 
 type UploaderProps = {
   name: string;
-  label: string;
   className?: string;
+  UploadIcon?: typeof DocumentPlusIcon;
+  fileTypes?: string;
+  maxFileSize?: string;
+  multiple?: boolean;
 };
 
-export function FileUploader({ name, label, className }: UploaderProps) {
+export function FileUploader({
+  name,
+  className = "",
+  fileTypes,
+  multiple = false,
+  UploadIcon = DocumentPlusIcon,
+  maxFileSize = "1MB"
+}: UploaderProps) {
   const fetcher = useFetcher<typeof action>();
-  const id = `${name}-${React.useId()}`;
   const svgString = fetcher.data?.svgString || "";
   const [draggingOver, setDraggingOver] = React.useState(false);
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const preventDefaults = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -75,45 +84,48 @@ export function FileUploader({ name, label, className }: UploaderProps) {
   };
 
   return (
-    <div className={className}>
-      <label htmlFor={id} className="font-bold !text-brand-deep-purple">
-        {label}
-      </label>
-      <div
-        className={`${
-          draggingOver
-            ? "border-rounded border-4 border-dashed border-yellow-300"
-            : ""
-        } group relative flex h-24 w-24 cursor-pointer items-center justify-center rounded bg-gray-400 transition duration-300 ease-in-out hover:bg-gray-500`}
-        onDragEnter={() => setDraggingOver(true)}
-        onDragLeave={() => setDraggingOver(false)}
-        onDrag={preventDefaults}
-        onDragStart={preventDefaults}
-        onDragEnd={preventDefaults}
-        onDragOver={preventDefaults}
-        onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        {svgString ? (
-          <SVG
-            src={svgString}
-            className="h-full w-full text-brand-deep-purple"
-          />
-        ) : (
-          <p className="pointer-events-none z-10 cursor-pointer select-none text-4xl font-extrabold text-gray-200 transition duration-300 ease-in-out group-hover:opacity-0">
-            +
-          </p>
-        )}
-        <input
-          id={id}
-          type="file"
-          accept=".svg"
-          ref={fileInputRef}
-          onChange={handleChange}
-          className="hidden"
+    <div
+      className={`${
+        draggingOver ? "border-4 border-yellow-300" : "border-2 border-gray-400"
+      } not-prose border-rounded flex items-center justify-center rounded border-dashed transition duration-300 ease-in-out ${className}`}
+      onDragEnter={() => setDraggingOver(true)}
+      onDragLeave={() => setDraggingOver(false)}
+      onDrag={preventDefaults}
+      onDragStart={preventDefaults}
+      onDragEnd={preventDefaults}
+      onDragOver={preventDefaults}
+      onDrop={handleDrop}
+    >
+      {svgString ? (
+        <SVG
+          src={svgString}
+          className="aspect-auto h-full text-brand-deep-purple"
         />
-        <input type="hidden" name={name} value={svgString} />
-      </div>
+      ) : (
+        <div className="pointer-events-none flex select-none flex-col items-center">
+          <UploadIcon
+            title="Upload File"
+            className="h-12 w-12 text-gray-500"
+            aria-hidden="true"
+          />
+          <p className="text-xl text-gray-700">Drop file to upload</p>
+          <p className="mb-2 text-gray-700">or</p>
+          <label className="pointer-events-auto inline-flex h-9 cursor-pointer items-center rounded border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2">
+            Select file
+            <input
+              type="file"
+              accept={fileTypes}
+              onChange={handleChange}
+              className="sr-only"
+              multiple={multiple}
+            />
+          </label>
+          <p className="mt-4 text-xs text-gray-600">
+            Maximum upload file size: {maxFileSize}.
+          </p>
+        </div>
+      )}
+      <input type="hidden" name={name} value={svgString} />
     </div>
   );
 }

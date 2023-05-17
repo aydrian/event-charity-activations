@@ -14,8 +14,8 @@ export const loader = async ({ request }: LoaderArgs) => {
       select: {
         id: true,
         name: true,
-        description: true,
         logoSVG: true,
+        website: true,
         Creator: { select: { fullName: true } }
       }
     }),
@@ -90,7 +90,20 @@ export default function AdminDashboard() {
                     <div className="font-semibold">{charity.name}</div>
                   </dt>
                   <dd>
-                    <div className="text-sm">{charity.description}</div>
+                    <div className="text-sm">
+                      <a
+                        href={
+                          charity.website ||
+                          `https://google.com/search?${new URLSearchParams([
+                            ["q", charity.name]
+                          ])}`
+                        }
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        {charity.website}
+                      </a>
+                    </div>
                   </dd>
                 </div>
               ))}
