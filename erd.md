@@ -16,7 +16,9 @@ MEETING_REQUESTED meeting_requested
   "users" {
     String id "🗝️"
     String email 
-    String password_hash 
+    String password_hash "❓"
+    String first_name 
+    String last_name 
     String full_name 
     }
   

@@ -1,9 +1,12 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 export default {
   content: ["./app/**/*.{ts,tsx,jsx,js}"],
   theme: {
     extend: {
+      animation: {
+        "spin-slow": "spin 3s linear infinite"
+      },
       colors: {
         brand: {
           blue: "#0788ff",

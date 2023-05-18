@@ -5,7 +5,13 @@ import bcrypt from "bcryptjs";
 import { prisma } from "~/services/db.server";
 
 const userWithoutPassword = Prisma.validator<Prisma.UserArgs>()({
-  select: { id: true, email: true, fullName: true }
+  select: {
+    id: true,
+    email: true,
+    fullName: true,
+    firstName: true,
+    lastName: true
+  }
 });
 export type UserWithoutPassword = Prisma.UserGetPayload<
   typeof userWithoutPassword
@@ -16,7 +22,7 @@ export async function verifyLogin(email: User["email"], password: string) {
     where: { email }
   });
 
-  if (!userWithPassword) {
+  if (!userWithPassword || !userWithPassword.passwordHash) {
     return null;
   }
 

@@ -1,55 +1,59 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { /*ActionArgs,*/ LoaderArgs } from "@remix-run/node";
+// import { json } from "@remix-run/node";
 import {
-  useActionData,
-  useLoaderData,
+  Form,
+  // useActionData,
+  // useLoaderData,
+  useNavigation,
   useSearchParams
 } from "@remix-run/react";
-import { ValidatedForm, validationError } from "remix-validated-form";
-import { withZod } from "@remix-validated-form/with-zod";
-import { z } from "zod";
-import { getSession } from "~/services/session.server";
+// import { ValidatedForm, validationError } from "remix-validated-form";
+// import { withZod } from "@remix-validated-form/with-zod";
+// import { z } from "zod";
+// import { getSession } from "~/services/session.server";
 import { authenticator } from "~/services/auth.server";
 
-import { FormInput } from "~/components/form-input";
+// import { FormInput } from "~/components/form-input";
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
 import GitHubLogo from "~/components/github-logo";
+import { OktaLoginButton } from "~/components/okta-login-button";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  await authenticator.isAuthenticated(request, {
+  return await authenticator.isAuthenticated(request, {
     successRedirect: "/admin/dashboard"
   });
-  let session = await getSession(request.headers.get("cookie"));
-  let error = session.get(authenticator.sessionErrorKey);
-  return json({ error });
+  // let session = await getSession(request.headers.get("cookie"));
+  // let error = session.get(authenticator.sessionErrorKey);
+  // return json({ error });
 };
 
-const validator = withZod(
-  z.object({
-    email: z
-      .string({ required_error: "Email is required" })
-      .email("Must be a valid email"),
-    password: z.string().min(6, "Password must be at least 6 characters long"),
-    redirectTo: z.string().default("/admin/dashboard")
-  })
-);
+// const validator = withZod(
+//   z.object({
+//     email: z
+//       .string({ required_error: "Email is required" })
+//       .email("Must be a valid email"),
+//     password: z.string().min(6, "Password must be at least 6 characters long"),
+//     redirectTo: z.string().default("/admin/dashboard")
+//   })
+// );
 
-export const action = async ({ request }: ActionArgs) => {
-  const formData = await request.formData();
-  const result = await validator.validate(formData);
-  if (result.error) return validationError(result.error);
-  const { redirectTo } = result.data;
+// export const action = async ({ request }: ActionArgs) => {
+//   const formData = await request.formData();
+//   const result = await validator.validate(formData);
+//   if (result.error) return validationError(result.error);
+//   const { redirectTo } = result.data;
 
-  return await authenticator.authenticate("user-pass", request, {
-    successRedirect: redirectTo || "/admin/dashboard",
-    failureRedirect: "/admin",
-    context: { formData }
-  });
-};
+//   return await authenticator.authenticate("user-pass", request, {
+//     successRedirect: redirectTo || "/admin/dashboard",
+//     failureRedirect: "/admin",
+//     context: { formData }
+//   });
+// };
 
 export default function AdminIndex() {
-  const { error } = useLoaderData<typeof loader>();
-  const data = useActionData();
+  // const { error } = useLoaderData<typeof loader>();
+  // const data = useActionData();
+  const navigation = useNavigation();
   const [searchParams] = useSearchParams();
   return (
     <>
@@ -83,9 +87,9 @@ export default function AdminIndex() {
           </div>
           <div className="rounded border border-brand-gray-b bg-white p-8 pt-16 sm:px-16">
             <h3 className="m-0 font-bold text-brand-deep-purple">Login</h3>
-            <ValidatedForm
+            {/* <ValidatedForm
               validator={validator}
-              method="post"
+              method="POST"
               className="mb-8 flex flex-col sm:mb-4"
             >
               <input
@@ -110,7 +114,15 @@ export default function AdminIndex() {
               >
                 Login
               </button>
-            </ValidatedForm>
+            </ValidatedForm> */}
+            <Form method="POST" action="/auth/okta">
+              <input
+                type="hidden"
+                name="redirectTo"
+                value={searchParams.get("redirectTo") ?? undefined}
+              />
+              <OktaLoginButton state={navigation.state} className="mt-4" />
+            </Form>
           </div>
         </section>
       </main>

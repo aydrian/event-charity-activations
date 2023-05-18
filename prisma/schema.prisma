@@ -19,7 +19,9 @@ generator erd {
 model User {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email        String    @unique
-  passwordHash String    @map("password_hash")
+  passwordHash String?   @map("password_hash")
+  firstName    String    @map("first_name")
+  lastName     String    @map("last_name")
   fullName     String    @map("full_name")
   Events       Event[]
   Charities    Charity[]

@@ -28,7 +28,8 @@ export const loader = async ({ request }: LoaderArgs) => {
         endDate: true,
         location: true,
         collectLeads: true
-      }
+      },
+      orderBy: { endDate: "desc" }
     })
   ]);
   return json({ charities, events });

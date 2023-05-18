@@ -30,7 +30,7 @@ export default function AdminLayout() {
           <nav className="ml-5 inline-flex h-full items-center md:ml-0 md:w-2/6 md:justify-end">
             <div className="flex items-center gap-1">
               <span className="hidden text-sm md:inline-block">
-                Welcome, {user.fullName}
+                Welcome, {user.firstName}
               </span>
               <form method="get" action="/admin/logout">
                 <button className="rounded bg-brand-electric-purple px-2 py-1 text-sm font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start">
