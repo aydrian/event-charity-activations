@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.12",
+    "@conform-to/react": "^0.6.1",
+    "@conform-to/zod": "^0.6.1",
     "@heroicons/react": "^2.0.17",
     "@prisma/client": "^4.13.0",
     "@remix-run/node": "^1.15.0",
