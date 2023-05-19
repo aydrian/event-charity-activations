@@ -1,4 +1,4 @@
-import { Fieldset, useForm } from "@conform-to/react";
+import { type Fieldset, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
@@ -42,7 +42,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
     schema: DonationFormSchema,
     acceptMultipleErrors: () => true
   });
-  console.log(submission);
   if (!submission.value) {
     return json(
       {
@@ -51,6 +50,9 @@ export const action = async ({ request }: DataFunctionArgs) => {
       } as const,
       { status: 400 }
     );
+  }
+  if (submission.intent !== "submit") {
+    return json({ status: "success", submission } as const);
   }
 
   const { collectLeads, ...data } = submission.value;

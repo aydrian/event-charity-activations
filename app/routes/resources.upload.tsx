@@ -40,18 +40,20 @@ type UploaderProps = {
   fileTypes?: string;
   maxFileSize?: string;
   multiple?: boolean;
+  defaultValue?: string;
 };
 
 export function FileUploader({
   name,
   className = "",
+  defaultValue = "",
   fileTypes,
   multiple = false,
   UploadIcon = DocumentPlusIcon,
   maxFileSize = "1MB"
 }: UploaderProps) {
   const fetcher = useFetcher<typeof action>();
-  const svgString = fetcher.data?.svgString || "";
+  const svgString = fetcher.data?.svgString || defaultValue;
   const [draggingOver, setDraggingOver] = React.useState(false);
 
   const preventDefaults = (e: React.DragEvent<HTMLDivElement>) => {

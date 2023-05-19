@@ -88,7 +88,11 @@ export default function AdminDashboard() {
                         className="h-12 text-brand-deep-purple"
                       />
                     ) : null}
-                    <div className="font-semibold">{charity.name}</div>
+                    <div className="font-semibold">
+                      <Link to={`/admin/charities/${charity.id}/edit`}>
+                        {charity.name}
+                      </Link>
+                    </div>
                   </dt>
                   <dd>
                     <div className="text-sm">
