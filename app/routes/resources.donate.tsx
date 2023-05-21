@@ -1,4 +1,4 @@
-import { type Fieldset, useForm } from "@conform-to/react";
+import { useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
@@ -7,13 +7,10 @@ import { prisma } from "~/services/db.server";
 import { ErrorList, Field, SubmitButton } from "~/utils/forms";
 import { CharityPicker } from "~/components/charity-picker";
 
-export const DonationSchema = z.object({
+const DonationWithLeads = z.object({
   eventId: z.string(),
   charityId: z.string(),
-  collectLeads: z.coerce.boolean()
-});
-
-export const LeadSchema = z.object({
+  collectLeads: z.literal("true"),
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Company email is invalid" }),
@@ -21,20 +18,16 @@ export const LeadSchema = z.object({
   jobRole: z.string().min(1, { message: "Job title is required" })
 });
 
-export const DonationWithLeadSchema = DonationSchema.merge(LeadSchema);
+const DonationWithoutLeads = z.object({
+  eventId: z.string(),
+  charityId: z.string(),
+  collectLeads: z.literal("false")
+});
 
-export const DonationFormSchema = z
-  .discriminatedUnion("collectLeads", [
-    z
-      .object({
-        collectLeads: z.literal("true")
-      })
-      .merge(LeadSchema),
-    z.object({
-      collectLeads: z.literal("")
-    })
-  ])
-  .and(DonationSchema.omit({ collectLeads: true }));
+const DonationFormSchema = z.discriminatedUnion("collectLeads", [
+  DonationWithLeads,
+  DonationWithoutLeads
+]);
 
 export const action = async ({ request }: DataFunctionArgs) => {
   const formData = await request.formData();
@@ -64,36 +57,34 @@ export const action = async ({ request }: DataFunctionArgs) => {
   return redirect(`/donated/${donation.id}`);
 };
 
-type EventType = {
-  id: string;
-  name: string;
-  donationAmount: string;
-  collectLeads: boolean;
-  legalBlurb: string | null;
-  charities: {
+export function DonationForm({
+  event
+}: {
+  event: {
     id: string;
     name: string;
-    color: string;
-  }[];
-};
-
-export function DonationForm({
-  event,
-  schema = DonationSchema,
-  children
-}: {
-  event: EventType;
-  schema?: z.AnyZodObject;
-  children?({ fields }: { fields: Fieldset<Record<string, any>> }): JSX.Element;
+    donationAmount: string;
+    collectLeads: boolean;
+    legalBlurb: string | null;
+    charities: {
+      id: string;
+      name: string;
+      color: string;
+    }[];
+  };
 }) {
   const donationFormFetcher = useFetcher<typeof action>();
 
   const [form, fields] = useForm({
     id: "donation-form",
-    constraint: getFieldsetConstraint(schema),
+    constraint: getFieldsetConstraint(
+      event.collectLeads ? DonationWithLeads : DonationWithoutLeads
+    ) as any,
     lastSubmission: donationFormFetcher.data?.submission,
     onValidate({ formData }) {
-      return parse(formData, { schema });
+      const blah = parse(formData, { schema: DonationFormSchema });
+      console.log({ blah });
+      return blah;
     },
     shouldRevalidate: "onBlur"
   });
@@ -109,34 +100,9 @@ export function DonationForm({
       <input
         type="hidden"
         name="collectLeads"
-        value={event.collectLeads ? "true" : ""}
+        value={String(event.collectLeads)}
       />
-      {children ? children({ fields }) : null}
-      <CharityPicker
-        name={fields.charityId.name}
-        label="Select a charity"
-        charities={event.charities}
-        errors={fields.charityId.errors}
-      />
-      <ErrorList errors={form.errors} id={form.errorId} />
-      <SubmitButton
-        type="submit"
-        className="mt-4 px-6 py-2 md:min-w-[150px] md:self-start"
-        state={donationFormFetcher.state}
-      >
-        Submit
-      </SubmitButton>
       {event.collectLeads ? (
-        <div className=" text-xs text-gray-700">{event.legalBlurb}</div>
-      ) : null}
-    </donationFormFetcher.Form>
-  );
-}
-
-export function DonationWithLeadForm({ event }: { event: EventType }) {
-  return (
-    <DonationForm event={event} schema={DonationWithLeadSchema}>
-      {({ fields }) => (
         <>
           <Field
             labelProps={{
@@ -182,7 +148,24 @@ export function DonationWithLeadForm({ event }: { event: EventType }) {
             errors={fields.jobRole.errors}
           />
         </>
-      )}
-    </DonationForm>
+      ) : null}
+      <CharityPicker
+        name={fields.charityId.name}
+        label="Select a charity"
+        charities={event.charities}
+        errors={fields.charityId.errors}
+      />
+      <ErrorList errors={form.errors} id={form.errorId} />
+      <SubmitButton
+        type="submit"
+        className="mt-4 px-6 py-2 md:min-w-[150px] md:self-start"
+        state={donationFormFetcher.state}
+      >
+        Submit
+      </SubmitButton>
+      {event.collectLeads ? (
+        <div className=" text-xs text-gray-700">{event.legalBlurb}</div>
+      ) : null}
+    </donationFormFetcher.Form>
   );
 }

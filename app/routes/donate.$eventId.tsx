@@ -7,7 +7,7 @@ import {
 } from "@remix-run/react";
 import { prisma } from "~/services/db.server";
 import Footer from "~/components/footer";
-import { DonationForm, DonationWithLeadForm } from "./resources.donate";
+import { DonationForm } from "./resources.donate";
 import { USDollar } from "~/utils";
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -56,11 +56,7 @@ export default function EventDonate() {
             charity.
           </p>
           <div className="rounded border border-brand-gray-b bg-white p-4 sm:px-16">
-            {event.collectLeads ? (
-              <DonationWithLeadForm event={event} />
-            ) : (
-              <DonationForm event={event} />
-            )}
+            <DonationForm event={event} />
           </div>
         </section>
       </main>
