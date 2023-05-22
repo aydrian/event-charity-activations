@@ -74,7 +74,7 @@ authenticator.use(oktaStrategy);
 //     }
 //     return user;
 //   }),
-//   "user-pass"
+//   FormStrategy.name
 // );
 
 export const requireUser = async (
