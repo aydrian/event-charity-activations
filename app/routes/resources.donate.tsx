@@ -1,4 +1,4 @@
-import { useForm } from "@conform-to/react";
+import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
@@ -109,7 +109,10 @@ export function DonationForm({
               htmlFor: fields.firstName.id,
               children: "First Name"
             }}
-            inputProps={{ ...fields.firstName, autoComplete: "given-name" }}
+            inputProps={{
+              ...conform.input(fields.firstName),
+              autoComplete: "given-name"
+            }}
             errors={fields.firstName.errors}
           />
           <Field
@@ -117,7 +120,10 @@ export function DonationForm({
               htmlFor: fields.lastName.id,
               children: "Last Name"
             }}
-            inputProps={{ ...fields.lastName, autoComplete: "family-name" }}
+            inputProps={{
+              ...conform.input(fields.lastName),
+              autoComplete: "family-name"
+            }}
             errors={fields.lastName.errors}
           />
           <Field
@@ -125,7 +131,10 @@ export function DonationForm({
               htmlFor: fields.email.id,
               children: "Company Email"
             }}
-            inputProps={{ ...fields.email, autoComplete: "email" }}
+            inputProps={{
+              ...conform.input(fields.email),
+              autoComplete: "email"
+            }}
             errors={fields.email.errors}
           />
           <Field
@@ -133,7 +142,10 @@ export function DonationForm({
               htmlFor: fields.company.id,
               children: "Company"
             }}
-            inputProps={{ ...fields.company, autoComplete: "organization" }}
+            inputProps={{
+              ...conform.input(fields.company),
+              autoComplete: "organization"
+            }}
             errors={fields.company.errors}
           />
           <Field
@@ -142,7 +154,7 @@ export function DonationForm({
               children: "Job Title"
             }}
             inputProps={{
-              ...fields.jobRole,
+              ...conform.input(fields.jobRole),
               autoComplete: "organization-title"
             }}
             errors={fields.jobRole.errors}

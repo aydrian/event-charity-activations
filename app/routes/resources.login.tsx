@@ -1,4 +1,4 @@
-import { useForm } from "@conform-to/react";
+import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, type DataFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
@@ -60,7 +60,7 @@ export const action = async ({ request }: DataFunctionArgs) => {
   return json({ status: "success", submission } as const);
 };
 
-export function LoginForm({
+export function FormLoginForm({
   redirectTo,
   formError
 }: {
@@ -70,7 +70,7 @@ export function LoginForm({
   const loginFetcher = useFetcher<typeof action>();
 
   const [form, fields] = useForm({
-    id: "inline-login",
+    id: "form-login-form",
     constraint: getFieldsetConstraint(LoginFormSchema),
     lastSubmission: loginFetcher.data?.submission,
     onValidate({ formData }) {
@@ -86,15 +86,19 @@ export function LoginForm({
       {...form.props}
       className="mb-8 flex flex-col sm:mb-4"
     >
-      <input value={redirectTo} {...fields.redirectTo} type="hidden" />
+      <input
+        {...conform.input(fields.redirectTo)}
+        type="hidden"
+        value={redirectTo}
+      />
       <Field
         labelProps={{ htmlFor: fields.email.id, children: "Email" }}
-        inputProps={{ ...fields.email }}
+        inputProps={{ ...conform.input(fields.email) }}
         errors={fields.email.errors}
       />
       <Field
         labelProps={{ htmlFor: fields.password.id, children: "Password" }}
-        inputProps={{ ...fields.password, type: "password" }}
+        inputProps={{ ...conform.input(fields.password), type: "password" }}
         errors={fields.password.errors}
       />
       <ErrorList errors={formError ? [formError] : []} />

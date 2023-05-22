@@ -1,5 +1,5 @@
 import { type ChangeEvent, useRef } from "react";
-import { useForm } from "@conform-to/react";
+import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
@@ -103,7 +103,7 @@ export function CharityEditor({
       <Field
         labelProps={{ htmlFor: fields.name.id, children: "Name" }}
         inputProps={{
-          ...fields.name,
+          ...conform.input(fields.name),
           defaultValue: charity?.name,
           onBlur: handleOnChange
         }}
@@ -112,7 +112,7 @@ export function CharityEditor({
       <Field
         labelProps={{ htmlFor: fields.slug.id, children: "Slug" }}
         inputProps={{
-          ...fields.slug,
+          ...conform.input(fields.slug),
           defaultValue: charity?.slug,
           ref: slugRef
         }}
@@ -121,7 +121,7 @@ export function CharityEditor({
       <Field
         labelProps={{ htmlFor: fields.description.id, children: "Description" }}
         inputProps={{
-          ...fields.description,
+          ...conform.input(fields.description),
           defaultValue: charity?.description
         }}
         errors={fields.description.errors}
@@ -133,7 +133,7 @@ export function CharityEditor({
           fileTypes=".svg"
           UploadIcon={PhotoIcon}
           className="h-52"
-          defaultValue={charity?.logoSVG ?? ""}
+          defaultValue={charity?.logoSVG ?? undefined}
         />
         <span className=" text-xs italic text-gray-700">
           Please use a 1-color svg file.
@@ -142,16 +142,16 @@ export function CharityEditor({
       <Field
         labelProps={{ htmlFor: fields.website.id, children: "Website" }}
         inputProps={{
-          ...fields.website,
-          defaultValue: charity?.website ?? ""
+          ...conform.input(fields.website),
+          defaultValue: charity?.website ?? undefined
         }}
         errors={fields.website.errors}
       />
       <Field
         labelProps={{ htmlFor: fields.twitter.id, children: "Twitter" }}
         inputProps={{
-          ...fields.twitter,
-          defaultValue: charity?.twitter ?? ""
+          ...conform.input(fields.twitter),
+          defaultValue: charity?.twitter ?? undefined
         }}
         errors={fields.twitter.errors}
       />

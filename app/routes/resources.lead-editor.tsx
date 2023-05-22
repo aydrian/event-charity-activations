@@ -1,5 +1,5 @@
 import { LeadScore } from "@prisma/client";
-import { useForm } from "@conform-to/react";
+import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
@@ -77,8 +77,8 @@ export function LeadEditor({ lead }: { lead: LeadType }) {
         <TextareaField
           labelProps={{ htmlFor: fields.notes.id, children: "Notes:" }}
           textareaProps={{
-            ...fields.notes,
-            defaultValue: lead.notes ?? ""
+            ...conform.textarea(fields.notes),
+            defaultValue: lead.notes ?? undefined
           }}
           errors={fields.notes.errors}
           className="flex grow flex-col"

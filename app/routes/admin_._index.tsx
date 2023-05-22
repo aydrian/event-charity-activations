@@ -12,7 +12,7 @@ import { authenticator } from "~/services/auth.server";
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
 import GitHubLogo from "~/components/github-logo";
 import { OktaLoginButton } from "~/components/okta-login-button";
-// import { LoginForm } from "./resources.login";
+// import { FormLoginForm } from "./resources.login";
 
 export const loader = async ({ request }: LoaderArgs) => {
   return await authenticator.isAuthenticated(request, {
@@ -71,7 +71,7 @@ export default function AdminIndex() {
           </div>
           <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
             <h3 className="m-0 font-bold text-brand-deep-purple">Login</h3>
-            {/* <LoginForm redirectTo={redirectTo} formError={data.formError} /> */}
+            {/* <FormLoginForm redirectTo={redirectTo} formError={data.formError} /> */}
             <Form method="POST" action="/auth/okta">
               <input type="hidden" name="redirectTo" value={redirectTo} />
               <OktaLoginButton state={navigation.state} className="mt-4" />
