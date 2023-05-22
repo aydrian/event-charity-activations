@@ -67,9 +67,9 @@ export function CharityEditor({
     name: string;
     slug: string;
     description: string;
-    website?: string | null;
-    twitter?: string | null;
-    logoSVG?: string | null;
+    website: string | null;
+    twitter: string | null;
+    logoSVG: string | null;
   };
 }) {
   const slugRef = useRef<HTMLInputElement>(null);
@@ -133,7 +133,7 @@ export function CharityEditor({
           fileTypes=".svg"
           UploadIcon={PhotoIcon}
           className="h-52"
-          defaultValue={charity?.logoSVG?.toString()}
+          defaultValue={charity?.logoSVG ?? ""}
         />
         <span className=" text-xs italic text-gray-700">
           Please use a 1-color svg file.
@@ -143,7 +143,7 @@ export function CharityEditor({
         labelProps={{ htmlFor: fields.website.id, children: "Website" }}
         inputProps={{
           ...fields.website,
-          defaultValue: charity?.website?.toString()
+          defaultValue: charity?.website ?? ""
         }}
         errors={fields.website.errors}
       />
@@ -151,7 +151,7 @@ export function CharityEditor({
         labelProps={{ htmlFor: fields.twitter.id, children: "Twitter" }}
         inputProps={{
           ...fields.twitter,
-          defaultValue: charity?.twitter?.toString()
+          defaultValue: charity?.twitter ?? ""
         }}
         errors={fields.twitter.errors}
       />
