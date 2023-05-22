@@ -1,45 +1,45 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { resetIdCounter, useCombobox, useMultipleSelection } from "downshift";
 import { clsx } from "clsx";
 import type { CharityItem } from "~/models/charity.server";
 
 import { ColorSelector } from "./color-selector";
 
-type CharityItemWithColor = CharityItem & { color?: string };
+export type CharityItemWithColor = CharityItem & { color?: string };
 
 type CharitySelectorProps = {
   name?: string;
-  charities: CharityItemWithColor[];
+  allCharities: CharityItemWithColor[];
   maxItems?: number;
   selectedCharities?: CharityItemWithColor[];
 };
 
 export function CharitySelector({
   name = "charities",
-  charities,
+  allCharities,
   maxItems = 4,
   selectedCharities = []
 }: CharitySelectorProps) {
-  function getFilteredCharities(
-    selectedItems: CharityItemWithColor[],
-    inputValue: string
-  ) {
-    const lowerCasedInputValue = inputValue.toLowerCase();
+  const getFilteredCharities = useCallback(
+    (selectedItems: CharityItemWithColor[], inputValue: string) => {
+      const lowerCasedInputValue = inputValue.toLowerCase();
 
-    return charities.filter(function filterCharity(charity) {
-      return (
-        !selectedItems.find((item) => item.id === charity.id) &&
-        charity.name.toLowerCase().includes(lowerCasedInputValue)
-      );
-    });
-  }
+      return allCharities.filter(function filterCharity(charity) {
+        return (
+          !selectedItems.find((item) => item.id === charity.id) &&
+          charity.name.toLowerCase().includes(lowerCasedInputValue)
+        );
+      });
+    },
+    [allCharities]
+  );
 
   const [inputValue, setInputValue] = React.useState("");
   const [selectedItems, setSelectedItems] =
     React.useState<CharityItemWithColor[]>(selectedCharities);
   const items = React.useMemo(
     () => getFilteredCharities(selectedItems, inputValue),
-    [selectedItems, inputValue]
+    [selectedItems, inputValue, getFilteredCharities]
   );
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
@@ -134,13 +134,13 @@ export function CharitySelector({
                 })}
               >
                 <ColorSelector
-                  name={`${name}[${index}][color]`}
+                  name={`${name}[${index}].color`}
                   selectedColor={selectedItemForRender.color}
                 />
                 <span>{selectedItemForRender.name}</span>
                 <input
                   type="hidden"
-                  name={`${name}[${index}][charityId]`}
+                  name={`${name}[${index}].charityId`}
                   value={selectedItemForRender.id}
                 />
                 <span

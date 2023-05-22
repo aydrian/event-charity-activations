@@ -82,9 +82,7 @@ export function DonationForm({
     ) as any,
     lastSubmission: donationFormFetcher.data?.submission,
     onValidate({ formData }) {
-      const blah = parse(formData, { schema: DonationFormSchema });
-      console.log({ blah });
-      return blah;
+      return parse(formData, { schema: DonationFormSchema });
     },
     shouldRevalidate: "onBlur"
   });
