@@ -11,7 +11,7 @@ import { authenticator } from "~/services/auth.server";
 
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
 import GitHubLogo from "~/components/github-logo";
-import { OktaLoginButton } from "~/components/okta-login-button";
+import { OktaLoginForm } from "./auth.okta";
 // import { FormLoginForm } from "./resources.login";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -72,10 +72,7 @@ export default function AdminIndex() {
           <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
             <h3 className="m-0 font-bold text-brand-deep-purple">Login</h3>
             {/* <FormLoginForm redirectTo={redirectTo} formError={data.formError} /> */}
-            <Form method="POST" action="/auth/okta">
-              <input type="hidden" name="redirectTo" value={redirectTo} />
-              <OktaLoginButton state={navigation.state} className="mt-4" />
-            </Form>
+            <OktaLoginForm />
           </div>
         </section>
       </main>
