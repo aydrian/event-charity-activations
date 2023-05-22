@@ -8,7 +8,7 @@ import slugify from "slugify";
 import { prisma } from "~/services/db.server";
 import { requireUser } from "~/services/auth.server";
 import { ErrorList, Field, SubmitButton } from "~/utils/forms";
-import { FileUploader } from "./resources.upload";
+import { FileUploader } from "./upload";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 
 export const CharityEditorSchema = z.object({

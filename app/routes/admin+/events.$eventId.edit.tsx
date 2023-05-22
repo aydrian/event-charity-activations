@@ -3,7 +3,7 @@ import { json, Response } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/services/auth.server";
 import { prisma } from "~/services/db.server";
-import { EventEditor } from "./resources.event-editor";
+import { EventEditor } from "~/routes/resources+/event-editor";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   await requireUser(request);

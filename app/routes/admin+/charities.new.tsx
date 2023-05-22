@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { requireUser } from "~/services/auth.server";
-import { CharityEditor } from "./resources.charity-editor";
+import { CharityEditor } from "~/routes/resources+/charity-editor";
 
 export const loader = async ({ request }: LoaderArgs) => {
   return await requireUser(request);

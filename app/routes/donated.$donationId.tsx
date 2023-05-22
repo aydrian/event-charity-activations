@@ -1,5 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
-import type { ExternalScriptsFunction } from "remix-utils";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   isRouteErrorResponse,

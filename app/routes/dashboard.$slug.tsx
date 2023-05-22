@@ -99,7 +99,7 @@ export default function EventDashboard() {
     donateLink
   } = useLoaderData<typeof loader>();
   const [charities, setCharities] = useState(initCharities);
-  const { data, error } = useSubscription(GET_DONATIONS, {
+  const { data } = useSubscription(GET_DONATIONS, {
     variables: { event_id: event.id },
     client
   });
@@ -119,7 +119,7 @@ export default function EventDashboard() {
       return charity;
     });
     setCharities(newCharities);
-  }, [data]);
+  }, [data, charities]);
 
   return (
     <main className="min-h-screen max-w-full bg-brand-deep-purple p-4">
@@ -198,6 +198,7 @@ export default function EventDashboard() {
           <div className="flex shrink gap-4 rounded border border-brand-gray-b bg-white p-2">
             <a
               href={donateLink}
+              rel="noreferrer"
               target="_blank"
               className="flex grow justify-center"
             >

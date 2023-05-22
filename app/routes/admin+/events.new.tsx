@@ -1,16 +1,9 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { z } from "zod";
 import { requireUser } from "~/services/auth.server";
 import { prisma } from "~/services/db.server";
-
-const Schema = z.object({
-  charities: z
-    .array(z.object({ charityId: z.string(), color: z.string() }))
-    .max(4, "A max of 4 charities is allowed")
-    .min(1, "At least 1 charity is required")
-});
+import { EventEditor } from "~/routes/resources+/event-editor";
 
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUser(request);
@@ -20,7 +13,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ charities });
 };
 
-export default function Test() {
+export default function AddEvent() {
   const { charities } = useLoaderData<typeof loader>();
 
   return (

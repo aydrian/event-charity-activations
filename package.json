@@ -7,10 +7,17 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "typecheck": "tsc",
     "postinstall": "prisma generate",
     "test": "ts-node --require tsconfig-paths/register prisma/test.ts"
   },
+  "eslintIgnore": [
+    "/node_modules",
+    "/build",
+    "/public/build",
+    "/api"
+  ],
   "dependencies": {
     "@apollo/client": "^3.7.12",
     "@conform-to/react": "^0.6.1",
@@ -61,6 +68,7 @@
     "prettier-plugin-tailwindcss": "^0.3.0",
     "prisma": "^4.13.0",
     "prisma-erd-generator": "^1.5.4",
+    "remix-flat-routes": "^0.5.8",
     "tailwindcss": "^3.3.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",

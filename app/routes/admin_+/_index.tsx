@@ -1,17 +1,15 @@
 import type { LoaderArgs } from "@remix-run/node";
 // import { json } from "@remix-run/node";
-import {
-  Form,
-  // useLoaderData,
-  useNavigation,
-  useSearchParams
-} from "@remix-run/react";
+// import {
+//   useLoaderData,
+//   useSearchParams
+// } from "@remix-run/react";
 // import { commitSession, getSession } from "~/services/session.server";
 import { authenticator } from "~/services/auth.server";
 
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
 import GitHubLogo from "~/components/github-logo";
-import { OktaLoginForm } from "./auth.okta";
+import { OktaLoginForm } from "~/routes/auth+/okta";
 // import { FormLoginForm } from "./resources.login";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -36,9 +34,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function AdminIndex() {
   // const data = useLoaderData<typeof loader>();
-  const navigation = useNavigation();
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  // const [searchParams] = useSearchParams();
+  // const redirectTo = searchParams.get("redirectTo") ?? undefined;
   return (
     <>
       <header className="w-full bg-white p-4 shadow-lg">

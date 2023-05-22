@@ -1,8 +1,8 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { useOutletContext } from "@remix-run/react";
 import { requireUser } from "~/services/auth.server";
-import { getLeads } from "~/models/leads.server";
-import { LeadEditor } from "./resources.lead-editor";
+import type { getLeads } from "~/models/leads.server";
+import { LeadEditor } from "~/routes/resources+/lead-editor";
 
 type ContextType = {
   lead: Awaited<ReturnType<typeof getLeads>>[number];

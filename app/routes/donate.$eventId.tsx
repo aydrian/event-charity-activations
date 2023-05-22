@@ -7,7 +7,7 @@ import {
 } from "@remix-run/react";
 import { prisma } from "~/services/db.server";
 import Footer from "~/components/footer";
-import { DonationForm } from "./resources.donate";
+import { DonationForm } from "~/routes/resources+/donate";
 import { USDollar } from "~/utils";
 
 export const loader = async ({ params }: LoaderArgs) => {

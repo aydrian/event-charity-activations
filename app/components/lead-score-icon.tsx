@@ -1,4 +1,4 @@
-import { LeadScore } from "@prisma/client";
+import type { LeadScore } from "@prisma/client";
 import { titleCase } from "~/utils";
 import {
   CalendarDaysIcon,
