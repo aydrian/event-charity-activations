@@ -6,14 +6,14 @@ import { AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { z } from "zod";
 import { authenticator } from "~/services/auth.server";
+import { redirectToCookie } from "~/utils/cookies.server";
 import { ErrorList, Field, SubmitButton } from "~/utils/forms";
 
 const LoginFormSchema = z.object({
   email: z
     .string({ required_error: "Email is required" })
     .email("Must be a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
-  redirectTo: z.string().default("/admin/dashboard")
+  password: z.string().min(6, "Password must be at least 6 characters long")
 });
 
 export const action = async ({ request }: DataFunctionArgs) => {
@@ -31,7 +31,9 @@ export const action = async ({ request }: DataFunctionArgs) => {
       { status: 400 }
     );
   }
-  const { redirectTo } = submission.value;
+  const redirectTo =
+    (await redirectToCookie.parse(request.headers.get("Cookie"))) ??
+    "/admin/dashboard";
 
   try {
     await authenticator.authenticate(FormStrategy.name, request, {
@@ -60,13 +62,7 @@ export const action = async ({ request }: DataFunctionArgs) => {
   return json({ status: "success", submission } as const);
 };
 
-export function FormLoginForm({
-  redirectTo,
-  formError
-}: {
-  redirectTo?: string;
-  formError?: string | null;
-}) {
+export function FormLoginForm({ formError }: { formError?: string | null }) {
   const loginFetcher = useFetcher<typeof action>();
 
   const [form, fields] = useForm({
@@ -82,15 +78,10 @@ export function FormLoginForm({
   return (
     <loginFetcher.Form
       method="post"
-      action="/resources/login"
+      action="/auth/form"
       {...form.props}
       className="mb-8 flex flex-col sm:mb-4"
     >
-      <input
-        {...conform.input(fields.redirectTo)}
-        type="hidden"
-        value={redirectTo}
-      />
       <Field
         labelProps={{ htmlFor: fields.email.id, children: "Email" }}
         inputProps={{ ...conform.input(fields.email) }}

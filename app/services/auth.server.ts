@@ -81,7 +81,10 @@ export const requireUser = async (
   request: Request,
   redirectTo: string = new URL(request.url).pathname
 ) => {
-  const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+  const searchParams = new URLSearchParams([
+    ["redirectTo", redirectTo],
+    ["loginMessage", "Please login to continue"]
+  ]);
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: `/admin?${searchParams}`
   });

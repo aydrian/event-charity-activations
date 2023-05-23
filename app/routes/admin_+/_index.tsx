@@ -1,21 +1,29 @@
 import type { LoaderArgs } from "@remix-run/node";
-// import { json } from "@remix-run/node";
-// import {
-//   useLoaderData,
-//   useSearchParams
-// } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 // import { commitSession, getSession } from "~/services/session.server";
 import { authenticator } from "~/services/auth.server";
 
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
 import GitHubLogo from "~/components/github-logo";
-import { OktaLoginForm } from "~/routes/auth+/okta";
-// import { FormLoginForm } from "./resources.login";
+import { OktaLoginForm } from "~/routes/auth+/okta+/_index";
+import { redirectToCookie } from "~/utils/cookies.server";
+// import { FormLoginForm } from "~/routes/auth+/form";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  return await authenticator.isAuthenticated(request, {
+  await authenticator.isAuthenticated(request, {
     successRedirect: "/admin/dashboard"
   });
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirectTo");
+  const loginMessage = url.searchParams.get("loginMessage");
+
+  let headers = new Headers();
+  if (redirectTo) {
+    headers.append("Set-Cookie", await redirectToCookie.serialize(redirectTo));
+  }
+
+  return json({ loginMessage }, { headers });
   // const session = await getSession(request.headers.get("cookie"));
   // const error = session.get(authenticator.sessionErrorKey);
   // let errorMessage: string | null = null;
@@ -33,9 +41,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function AdminIndex() {
-  // const data = useLoaderData<typeof loader>();
-  // const [searchParams] = useSearchParams();
-  // const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  const data = useLoaderData<typeof loader>();
   return (
     <>
       <header className="w-full bg-white p-4 shadow-lg">
@@ -68,7 +74,10 @@ export default function AdminIndex() {
           </div>
           <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
             <h3 className="m-0 font-bold text-brand-deep-purple">Login</h3>
-            {/* <FormLoginForm redirectTo={redirectTo} formError={data.formError} /> */}
+            {data.loginMessage ? (
+              <div className="text-sm text-red-500">{data.loginMessage}</div>
+            ) : null}
+            {/* <FormLoginForm formError={data.formError} /> */}
             <OktaLoginForm />
           </div>
         </section>
