@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { useOutletContext } from "@remix-run/react";
-import { requireUser } from "~/services/auth.server";
+import { requireUser } from "~/utils/auth.server";
 import type { getLeads } from "~/models/leads.server";
 import { LeadEditor } from "~/routes/resources+/lead-editor";
 

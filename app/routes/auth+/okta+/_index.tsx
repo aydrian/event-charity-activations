@@ -4,7 +4,7 @@ import { redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import type { ButtonHTMLAttributes } from "react";
-import { authenticator } from "~/services/auth.server";
+import { authenticator } from "~/utils/auth.server";
 
 export const loader: LoaderFunction = () => redirect("/admin");
 

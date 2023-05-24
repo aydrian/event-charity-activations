@@ -5,8 +5,8 @@ import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
 import slugify from "slugify";
-import { prisma } from "~/services/db.server";
-import { requireUser } from "~/services/auth.server";
+import { prisma } from "~/utils/db.server";
+import { requireUser } from "~/utils/auth.server";
 import {
   CheckboxField,
   ErrorList,

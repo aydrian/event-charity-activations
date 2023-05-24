@@ -1,5 +1,5 @@
 import type { LeadScore } from "@prisma/client";
-import { titleCase } from "~/utils";
+import { titleCase } from "~/utils/misc";
 import {
   CalendarDaysIcon,
   ChatBubbleBottomCenterTextIcon,

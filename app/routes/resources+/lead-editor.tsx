@@ -4,9 +4,9 @@ import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
 import { z } from "zod";
-import { prisma } from "~/services/db.server";
+import { prisma } from "~/utils/db.server";
 import type { getLeads } from "~/models/leads.server";
-import { requireUser } from "~/services/auth.server";
+import { requireUser } from "~/utils/auth.server";
 import { LeadScoreSelector } from "~/components/lead-score-selector";
 import { ErrorList, SubmitButton, TextareaField } from "~/utils/forms";
 

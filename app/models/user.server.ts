@@ -2,7 +2,7 @@ import type { User } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
-import { prisma } from "~/services/db.server";
+import { prisma } from "~/utils/db.server";
 
 const userWithoutPassword = Prisma.validator<Prisma.UserArgs>()({
   select: {

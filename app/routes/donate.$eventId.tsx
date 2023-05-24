@@ -5,10 +5,10 @@ import {
   useLoaderData,
   useRouteError
 } from "@remix-run/react";
-import { prisma } from "~/services/db.server";
+import { prisma } from "~/utils/db.server";
 import Footer from "~/components/footer";
 import { DonationForm } from "~/routes/resources+/donate";
-import { USDollar } from "~/utils";
+import { USDollar } from "~/utils/misc";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId } = params;

@@ -3,8 +3,8 @@ import { Authenticator /*, AuthorizationError*/ } from "remix-auth";
 // import { FormStrategy } from "remix-auth-form";
 import { OktaStrategy } from "remix-auth-okta";
 import invariant from "tiny-invariant";
-import { sessionStorage } from "~/services/session.server";
-import { prisma } from "~/services/db.server";
+import { sessionStorage } from "~/utils/session.server";
+import { prisma } from "~/utils/db.server";
 // import { verifyLogin } from "~/models/user.server";
 
 const oktaDomain = process.env.OKTA_DOMAIN;

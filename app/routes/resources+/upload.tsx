@@ -4,7 +4,7 @@ import { useFetcher } from "@remix-run/react";
 import React from "react";
 import SVG from "react-inlinesvg";
 import { DocumentPlusIcon } from "@heroicons/react/24/outline";
-import { requireUser } from "~/services/auth.server";
+import { requireUser } from "~/utils/auth.server";
 
 const uploadHandler: UploadHandler = async ({
   name,

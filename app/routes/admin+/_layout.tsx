@@ -1,7 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
-import { requireUser } from "~/services/auth.server";
+import { requireUser } from "~/utils/auth.server";
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
 import Footer from "~/components/footer";
 

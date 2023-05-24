@@ -20,11 +20,11 @@ import {
 import { Bar } from "react-chartjs-2";
 import { gql, useSubscription } from "@apollo/client";
 import SVG from "react-inlinesvg";
-import { prisma } from "~/services/db.server";
-import { initApollo } from "~/services/apollo";
-import { hexToRgbA } from "~/utils";
+import { prisma } from "~/utils/db.server";
+import { initApollo } from "~/utils/apollo";
+import { hexToRgbA } from "~/utils/misc";
 import { BanknotesIcon, GiftIcon } from "@heroicons/react/24/outline";
-import { USDollar } from "~/utils";
+import { USDollar } from "~/utils/misc";
 
 const client = initApollo();
 

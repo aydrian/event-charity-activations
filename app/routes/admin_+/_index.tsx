@@ -1,8 +1,8 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-// import { commitSession, getSession } from "~/services/session.server";
-import { authenticator } from "~/services/auth.server";
+import { commitSession, getSession } from "~/utils/session.server";
+import { authenticator } from "~/utils/auth.server";
 
 import CockroachLabsLogo from "~/components/cockroach-labs-logo";
 import GitHubLogo from "~/components/github-logo";
@@ -22,22 +22,16 @@ export const loader = async ({ request }: LoaderArgs) => {
   if (redirectTo) {
     headers.append("Set-Cookie", await redirectToCookie.serialize(redirectTo));
   }
+  const session = await getSession(request.headers.get("cookie"));
+  const error = session.get(authenticator.sessionErrorKey);
+  let errorMessage: string | null = null;
+  if (typeof error?.message === "string") {
+    errorMessage = error.message;
+  }
+  // TODO: Is this necessary?
+  headers.append("Set-Cookie", await commitSession(session));
 
-  return json({ loginMessage }, { headers });
-  // const session = await getSession(request.headers.get("cookie"));
-  // const error = session.get(authenticator.sessionErrorKey);
-  // let errorMessage: string | null = null;
-  // if (typeof error?.message === "string") {
-  //   errorMessage = error.message;
-  // }
-  // return json(
-  //   { formError: errorMessage },
-  //   {
-  //     headers: {
-  //       "Set-Cookie": await commitSession(session)
-  //     }
-  //   }
-  // );
+  return json({ loginMessage, formError: errorMessage }, { headers });
 };
 
 export default function AdminIndex() {

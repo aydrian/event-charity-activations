@@ -1,5 +1,5 @@
 import { ErrorList, type ListOfErrors } from "~/utils/forms";
-import { hexToRgbA } from "~/utils";
+import { hexToRgbA } from "~/utils/misc";
 
 type CharityPickerProps = {
   name: string;

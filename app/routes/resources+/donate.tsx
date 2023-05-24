@@ -3,7 +3,7 @@ import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
-import { prisma } from "~/services/db.server";
+import { prisma } from "~/utils/db.server";
 import { ErrorList, Field, SubmitButton } from "~/utils/forms";
 import { CharityPicker } from "~/components/charity-picker";
 

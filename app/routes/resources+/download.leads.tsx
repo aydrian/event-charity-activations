@@ -2,8 +2,8 @@ import type { LoaderArgs } from "@remix-run/node";
 import { Response } from "@remix-run/node";
 import { stringify } from "csv-stringify/sync";
 
-import { requireUser } from "~/services/auth.server";
-import { prisma } from "~/services/db.server";
+import { requireUser } from "~/utils/auth.server";
+import { prisma } from "~/utils/db.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUser(request);

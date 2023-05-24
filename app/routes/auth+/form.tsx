@@ -5,7 +5,7 @@ import { useFetcher } from "@remix-run/react";
 import { AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { z } from "zod";
-import { authenticator } from "~/services/auth.server";
+import { authenticator } from "~/utils/auth.server";
 import { redirectToCookie } from "~/utils/cookies.server";
 import { ErrorList, Field, SubmitButton } from "~/utils/forms";
 
