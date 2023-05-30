@@ -2,8 +2,8 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import SVG from "react-inlinesvg";
-import { requireUser } from "~/services/auth.server";
-import { prisma } from "~/services/db.server";
+import { requireUser } from "~/utils/auth.server";
+import { prisma } from "~/utils/db.server";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import EventCard from "~/components/event-card";
 
@@ -88,7 +88,11 @@ export default function AdminDashboard() {
                         className="h-12 text-brand-deep-purple"
                       />
                     ) : null}
-                    <div className="font-semibold">{charity.name}</div>
+                    <div className="font-semibold">
+                      <Link to={`/admin/charities/${charity.id}/edit`}>
+                        {charity.name}
+                      </Link>
+                    </div>
                   </dt>
                   <dd>
                     <div className="text-sm">

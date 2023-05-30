@@ -1,5 +1,31 @@
-import type { ButtonHTMLAttributes } from "react";
+import { useForm } from "@conform-to/react";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
+import type { ButtonHTMLAttributes } from "react";
+import { authenticator } from "~/utils/auth.server";
+
+export const loader: LoaderFunction = () => redirect("/admin");
+
+export const action: ActionFunction = ({ request }) => {
+  return authenticator.authenticate("okta", request);
+};
+
+export function OktaLoginForm() {
+  const oktaLoginFetcher = useFetcher<typeof action>();
+
+  const [form] = useForm({
+    id: "okta-login-form",
+    lastSubmission: oktaLoginFetcher.data?.submission
+  });
+
+  return (
+    <oktaLoginFetcher.Form method="POST" action="/auth/okta" {...form.props}>
+      <OktaLoginButton state={oktaLoginFetcher.state} className="mt-4" />
+    </oktaLoginFetcher.Form>
+  );
+}
 
 interface OktaLoginButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   title?: string;
@@ -24,7 +50,7 @@ export function OktaLoginButton({
       <OktaAuraLogo
         className={clsx(
           "mr-2 h-8 w-8 text-white",
-          state === "submitting" && "inline-block animate-spin-slow"
+          state !== "idle" && "inline-block animate-spin-slow"
         )}
       />
       <span>{title}</span>

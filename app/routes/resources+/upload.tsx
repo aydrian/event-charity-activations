@@ -4,7 +4,7 @@ import { useFetcher } from "@remix-run/react";
 import React from "react";
 import SVG from "react-inlinesvg";
 import { DocumentPlusIcon } from "@heroicons/react/24/outline";
-import { requireUser } from "~/services/auth.server";
+import { requireUser } from "~/utils/auth.server";
 
 const uploadHandler: UploadHandler = async ({
   name,
@@ -40,18 +40,20 @@ type UploaderProps = {
   fileTypes?: string;
   maxFileSize?: string;
   multiple?: boolean;
+  defaultValue?: string;
 };
 
 export function FileUploader({
   name,
   className = "",
+  defaultValue = "",
   fileTypes,
   multiple = false,
   UploadIcon = DocumentPlusIcon,
   maxFileSize = "1MB"
 }: UploaderProps) {
   const fetcher = useFetcher<typeof action>();
-  const svgString = fetcher.data?.svgString || "";
+  const svgString = fetcher.data?.svgString || defaultValue;
   const [draggingOver, setDraggingOver] = React.useState(false);
 
   const preventDefaults = (e: React.DragEvent<HTMLDivElement>) => {

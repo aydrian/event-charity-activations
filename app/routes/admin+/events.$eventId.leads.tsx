@@ -1,8 +1,8 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json, Response } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
-import { requireUser } from "~/services/auth.server";
-import { prisma } from "~/services/db.server";
+import { requireUser } from "~/utils/auth.server";
+import { prisma } from "~/utils/db.server";
 import { getLeads } from "~/models/leads.server";
 import { LeadScoreIcon } from "~/components/lead-score-icon";
 import { PencilIcon } from "@heroicons/react/24/outline";

@@ -1,5 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
-import type { ExternalScriptsFunction } from "remix-utils";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   isRouteErrorResponse,
@@ -8,8 +7,8 @@ import {
 } from "@remix-run/react";
 import handlebars from "handlebars";
 
-import { prisma } from "~/services/db.server";
-import { USDollar } from "~/utils";
+import { prisma } from "~/utils/db.server";
+import { USDollar } from "~/utils/misc";
 import TweetButton from "~/components/tweet-button";
 import Footer from "~/components/footer";
 

@@ -3,8 +3,8 @@ import { Authenticator /*, AuthorizationError*/ } from "remix-auth";
 // import { FormStrategy } from "remix-auth-form";
 import { OktaStrategy } from "remix-auth-okta";
 import invariant from "tiny-invariant";
-import { sessionStorage } from "~/services/session.server";
-import { prisma } from "~/services/db.server";
+import { sessionStorage } from "~/utils/session.server";
+import { prisma } from "~/utils/db.server";
 // import { verifyLogin } from "~/models/user.server";
 
 const oktaDomain = process.env.OKTA_DOMAIN;
@@ -74,14 +74,17 @@ authenticator.use(oktaStrategy);
 //     }
 //     return user;
 //   }),
-//   "user-pass"
+//   FormStrategy.name
 // );
 
 export const requireUser = async (
   request: Request,
   redirectTo: string = new URL(request.url).pathname
 ) => {
-  const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+  const searchParams = new URLSearchParams([
+    ["redirectTo", redirectTo],
+    ["loginMessage", "Please login to continue"]
+  ]);
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: `/admin?${searchParams}`
   });
