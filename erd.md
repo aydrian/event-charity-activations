@@ -34,6 +34,7 @@ MEETING_REQUESTED meeting_requested
     Decimal donation_amount 
     Boolean collect_leads 
     String legal_blurb "❓"
+    String response_template 
     String tweet_template 
     String created_by 
     DateTime created_at 

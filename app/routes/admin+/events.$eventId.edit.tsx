@@ -19,6 +19,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       location: true,
       donationAmount: true,
       twitter: true,
+      responseTemplate: true,
       tweetTemplate: true,
       collectLeads: true,
       legalBlurb: true,

@@ -30,23 +30,24 @@ model User {
 }
 
 model Event {
-  id             String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name           String
-  slug           String               @unique
-  startDate      DateTime             @map("start_date") @db.Date()
-  endDate        DateTime             @map("end_date") @db.Date()
-  location       String
-  twitter        String?
-  donationAmount Decimal              @default(3.00) @map("donation_amount")
-  collectLeads   Boolean              @default(false) @map("collect_leads")
-  legalBlurb     String?              @map("legal_blurb")
-  tweetTemplate  String               @default("I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}.") @map("tweet_template")
-  createdBy      String               @map("created_by") @db.Uuid
-  createdAt      DateTime             @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt      DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
-  Creator        User                 @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  Charities      CharitiesForEvents[]
-  Donations      Donation[]
+  id               String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String
+  slug             String               @unique
+  startDate        DateTime             @map("start_date") @db.Date()
+  endDate          DateTime             @map("end_date") @db.Date()
+  location         String
+  twitter          String?
+  donationAmount   Decimal              @default(3.00) @map("donation_amount")
+  collectLeads     Boolean              @default(false) @map("collect_leads")
+  legalBlurb       String?              @map("legal_blurb")
+  responseTemplate String               @default("Thank you for helping us donate {{donationAmount}} to {{charity}} at {{event}}.") @map("response_template")
+  tweetTemplate    String               @default("I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}.") @map("tweet_template")
+  createdBy        String               @map("created_by") @db.Uuid
+  createdAt        DateTime             @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt        DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  Creator          User                 @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Charities        CharitiesForEvents[]
+  Donations        Donation[]
 
   @@map("events")
 }

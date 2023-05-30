@@ -6,6 +6,7 @@ import {
   useRouteError
 } from "@remix-run/react";
 import handlebars from "handlebars";
+import { processMarkdownToHtml } from "~/utils/markdown.server";
 
 import { prisma } from "~/utils/db.server";
 import { USDollar } from "~/utils/misc";
@@ -23,10 +24,11 @@ export const loader = async ({ params }: LoaderArgs) => {
           name: true,
           donationAmount: true,
           twitter: true,
+          responseTemplate: true,
           tweetTemplate: true
         }
       },
-      Charity: { select: { name: true, twitter: true } }
+      Charity: { select: { name: true, twitter: true, website: true } }
     }
   });
   if (!donation) {
@@ -34,6 +36,14 @@ export const loader = async ({ params }: LoaderArgs) => {
       status: 404
     });
   }
+
+  const responseTemplate = handlebars.compile(donation.Event.responseTemplate);
+  const responseMd = responseTemplate({
+    donationAmount: USDollar.format(donation.Event.donationAmount.toNumber()),
+    event: { name: donation.Event.name },
+    charity: { name: donation.Charity.name, url: donation.Charity.website }
+  });
+  const responseHtml = processMarkdownToHtml(responseMd.trim());
 
   const tweetTemplate = handlebars.compile(donation.Event.tweetTemplate);
   const tweetText = tweetTemplate({
@@ -46,11 +56,11 @@ export const loader = async ({ params }: LoaderArgs) => {
       : donation.Charity.name
   });
 
-  return json({ donation, tweetText });
+  return json({ donation, responseHtml, tweetText });
 };
 
 export default function DonateConfirm() {
-  const { donation, tweetText } = useLoaderData<typeof loader>();
+  const { donation, responseHtml, tweetText } = useLoaderData<typeof loader>();
   return (
     <>
       <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
@@ -59,12 +69,11 @@ export default function DonateConfirm() {
             {donation.Event.name}
           </h1>
           <div className="rounded border border-brand-gray-b bg-white p-4 sm:px-16">
-            <div>
-              Thank you for helping us donate{" "}
-              {USDollar.format(Number(donation.Event.donationAmount))} to{" "}
-              {donation.Charity.name} at {donation.Event.name}. You may place a
-              peg in the board.
-            </div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: responseHtml.content
+              }}
+            />
             <TweetButton tweetText={tweetText} />
           </div>
         </section>

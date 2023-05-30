@@ -28,6 +28,9 @@ const EventWithLeads = z.object({
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   location: z.string({ required_error: "Location is required" }),
   twitter: z.string(),
+  responseTemplate: z
+    .string()
+    .min(1, { message: "Response Template is required" }),
   tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
   collectLeads: z.literal("on"),
   legalBlurb: z.string(),
@@ -46,6 +49,9 @@ const EventWithoutLeads = z.object({
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   location: z.string({ required_error: "Location is required" }),
   twitter: z.string(),
+  responseTemplate: z
+    .string()
+    .min(1, { message: "Response Template is required" }),
   tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
   collectLeads: z.undefined(),
   charities: z
@@ -140,6 +146,7 @@ export function EventEditor({
     location: string;
     donationAmount: string;
     twitter: string | null;
+    responseTemplate: string;
     tweetTemplate: string;
     collectLeads: boolean;
     legalBlurb: string | null;
@@ -252,6 +259,19 @@ export function EventEditor({
           errors={fields.twitter.errors}
         />
       </div>
+      <TextareaField
+        labelProps={{
+          htmlFor: fields.responseTemplate.id,
+          children: "Response Template"
+        }}
+        textareaProps={{
+          ...conform.textarea(fields.responseTemplate),
+          defaultValue:
+            event?.responseTemplate ||
+            "Thank you for helping us donate {{donationAmount}} to {{charity}} at {{event}}."
+        }}
+        errors={fields.responseTemplate.errors}
+      />
       <TextareaField
         labelProps={{
           htmlFor: fields.tweetTemplate.id,
