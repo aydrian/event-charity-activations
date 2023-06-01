@@ -40,6 +40,7 @@ const TemplateEditor = React.forwardRef<
             key={variable.value}
             className={cn(variable.className, "cursor-pointer")}
             onClick={() => insertAtCursor(variable.value)}
+            role="button"
           >
             <PlusIcon className="h-4 w-auto" />
             <span>{variable.displayName}</span>
