@@ -1,5 +1,9 @@
 import React, { useId } from "react";
 import { clsx } from "clsx";
+import {
+  TemplateEditor,
+  type TemplateEditorProps
+} from "~/components/template-editor";
 
 export type ListOfErrors = Array<string | null | undefined> | null | undefined;
 
@@ -89,6 +93,42 @@ export function TextareaField({
         {...textareaProps}
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
       ></textarea>
+      <div className="px-4 pb-3 pt-1">
+        {errorId ? <ErrorList id={errorId} errors={errors} /> : null}
+      </div>
+    </div>
+  );
+}
+
+export function TemplateEditorField({
+  labelProps,
+  templateEditorProps,
+  errors,
+  className
+}: {
+  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
+  templateEditorProps: TemplateEditorProps;
+  errors?: ListOfErrors;
+  className?: string;
+}) {
+  const fallbackId = useId();
+  const id = templateEditorProps.id ?? templateEditorProps.name ?? fallbackId;
+  const errorId = errors?.length ? `${id}-error` : undefined;
+  return (
+    <div className={clsx("flex flex-col", className)}>
+      <label
+        htmlFor={id}
+        {...labelProps}
+        className="font-bold text-brand-deep-purple"
+      />
+      <TemplateEditor
+        id={id}
+        aria-invalid={errorId ? true : undefined}
+        aria-describedby={errorId}
+        placeholder=" "
+        {...templateEditorProps}
+        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
+      ></TemplateEditor>
       <div className="px-4 pb-3 pt-1">
         {errorId ? <ErrorList id={errorId} errors={errors} /> : null}
       </div>

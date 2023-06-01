@@ -12,7 +12,8 @@ import {
   ErrorList,
   Field,
   SubmitButton,
-  TextareaField
+  TextareaField,
+  TemplateEditorField
 } from "~/utils/forms";
 import {
   type CharityItemWithColor,
@@ -259,12 +260,34 @@ export function EventEditor({
           errors={fields.twitter.errors}
         />
       </div>
-      <TextareaField
+      <TemplateEditorField
         labelProps={{
           htmlFor: fields.responseTemplate.id,
           children: "Response Template"
         }}
-        textareaProps={{
+        templateEditorProps={{
+          variables: [
+            {
+              displayName: "Event Name",
+              value: "{{event.name}}",
+              className: "bg-green-500"
+            },
+            {
+              displayName: "Charity Name",
+              value: "{{charity.name}}",
+              className: "bg-yellow-500"
+            },
+            {
+              displayName: "Charity URL",
+              value: "{{charity.url}}",
+              className: "bg-yellow-500"
+            },
+            {
+              displayName: "Donation Amount",
+              value: "{{donationAmount}}",
+              className: "bg-blue-500"
+            }
+          ],
           ...conform.textarea(fields.responseTemplate),
           defaultValue:
             event?.responseTemplate ||
@@ -272,12 +295,29 @@ export function EventEditor({
         }}
         errors={fields.responseTemplate.errors}
       />
-      <TextareaField
+      <TemplateEditorField
         labelProps={{
           htmlFor: fields.tweetTemplate.id,
           children: "Tweet Template"
         }}
-        textareaProps={{
+        templateEditorProps={{
+          variables: [
+            {
+              displayName: "Event",
+              value: "{{event}}",
+              className: "bg-green-500"
+            },
+            {
+              displayName: "Charity",
+              value: "{{charity}}",
+              className: "bg-yellow-500"
+            },
+            {
+              displayName: "Donation Amount",
+              value: "{{donationAmount}}",
+              className: "bg-blue-500"
+            }
+          ],
           ...conform.textarea(fields.tweetTemplate),
           defaultValue:
             event?.tweetTemplate ||
