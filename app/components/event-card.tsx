@@ -1,10 +1,10 @@
 import { Link } from "@remix-run/react";
 import {
   ChartBarSquareIcon,
-  UserGroupIcon,
-  DocumentArrowDownIcon
+  DocumentArrowDownIcon,
+  PencilIcon,
+  UserGroupIcon
 } from "@heroicons/react/24/outline";
-import { PencilIcon } from "@heroicons/react/24/outline";
 
 type EventCardProps = {
   event: {

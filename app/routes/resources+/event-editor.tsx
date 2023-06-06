@@ -19,6 +19,7 @@ import {
   type CharityItemWithColor,
   CharitySelector
 } from "~/components/charity-selector";
+import appConfig from "~/app.config";
 
 const EventWithLeads = z.object({
   id: z.string().optional(),
@@ -321,7 +322,7 @@ export function EventEditor({
           ...conform.textarea(fields.tweetTemplate),
           defaultValue:
             event?.tweetTemplate ||
-            "I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}."
+            `I just helped @${appConfig.company.twitter} donate {{donationAmount}} to {{charity}} at {{event}}.`
         }}
         errors={fields.tweetTemplate.errors}
       />
@@ -358,6 +359,7 @@ export function EventEditor({
         <CharitySelector
           allCharities={allCharities}
           selectedCharities={event?.charities}
+          maxItems={appConfig.charity.maxPerEvent}
         />
         <div className="px-4 pb-3 pt-1">
           {fields.charities.errors?.length ? (

@@ -4,10 +4,11 @@ import { useLoaderData } from "@remix-run/react";
 import { commitSession, getSession } from "~/utils/session.server";
 import { authenticator } from "~/utils/auth.server";
 
-import CockroachLabsLogo from "~/components/cockroach-labs-logo";
+import CompanyLogo from "~/components/company-logo";
 import GitHubLogo from "~/components/github-logo";
 import { OktaLoginForm } from "~/routes/auth+/okta+/_index";
 import { redirectToCookie } from "~/utils/cookies.server";
+import appConfig from "~/app.config";
 // import { FormLoginForm } from "~/routes/auth+/form";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -40,12 +41,8 @@ export default function AdminIndex() {
     <>
       <header className="w-full bg-white p-4 shadow-lg">
         <nav className="mx-auto flex max-w-7xl items-center justify-between">
-          <a
-            href="https://www.cockroachlabs.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <CockroachLabsLogo />
+          <a href={appConfig.company.website} target="_blank" rel="noreferrer">
+            <CompanyLogo />
           </a>
           <a
             href="https://github.com/aydrian/event-charity-activations/"
@@ -63,7 +60,8 @@ export default function AdminIndex() {
           </h1>
           <div className="mx-auto max-w-3xl">
             <h2 className="my-0 text-center text-white">
-              Manage charity activations for Cockroach Labs sponsored events.
+              Manage charity activations for {appConfig.company.name} sponsored
+              events.
             </h2>
           </div>
           <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
@@ -80,16 +78,16 @@ export default function AdminIndex() {
         <ul className="mx-auto flex max-w-7xl items-center justify-between p-4 text-sm font-bold text-white">
           <li>
             <a
-              href="https://twitter.com/CockroachDB/"
+              href={`https://twitter.com/${appConfig.company.twitter}/`}
               target="_blank"
               rel="noreferrer"
             >
-              @CockroachDB
+              @{appConfig.company.twitter}
             </a>
           </li>
           <li>
             <a
-              href="https://www.cockroachlabs.com/privacy/"
+              href={appConfig.company.privacyPolicyUrl}
               target="_blank"
               rel="noreferrer"
             >

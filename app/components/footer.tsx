@@ -1,4 +1,5 @@
 import GitHubLogo from "./github-logo";
+import appConfig from "~/app.config";
 
 export default function Footer() {
   return (
@@ -6,11 +7,11 @@ export default function Footer() {
       <ul className="mx-auto flex max-w-7xl items-center justify-between p-4 text-sm font-bold text-white">
         <li>
           <a
-            href="https://twitter.com/CockroachDB/"
+            href={`https://twitter.com/${appConfig.company.twitter}/`}
             target="_blank"
             rel="noreferrer"
           >
-            @CockroachDB
+            @{appConfig.company.twitter}
           </a>
         </li>
         <li>

@@ -2,7 +2,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/utils/auth.server";
-import CockroachLabsLogo from "~/components/cockroach-labs-logo";
+import CompanyLogo from "~/components/company-logo";
 import Footer from "~/components/footer";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -17,7 +17,7 @@ export default function AdminLayout() {
       <header className="w-full bg-white p-4 shadow-lg">
         <div className="container mx-auto flex flex-col flex-wrap items-center md:flex-row">
           <div className="md:w-2/6">
-            <CockroachLabsLogo />
+            <CompanyLogo />
           </div>
           <div className="flex items-center md:w-2/6 md:items-center md:justify-center">
             <Link

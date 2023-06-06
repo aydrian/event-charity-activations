@@ -1,5 +1,6 @@
 import { useSelect, resetIdCounter } from "downshift";
 import { clsx } from "clsx";
+import appConfig from "~/app.config";
 
 type Item = {
   name: string;
@@ -11,12 +12,7 @@ type ColorSelectorProps = {
   selectedColor?: string;
 };
 
-const colors = [
-  { name: "pink", hex: "#f433ff" },
-  { name: "orange", hex: "#ff5b00" },
-  { name: "blue", hex: "#0165fc" },
-  { name: "yellow", hex: "#fff917" }
-];
+const colors = appConfig.charity.colors;
 
 function itemToString(item: Item | null) {
   return item ? item.name : "";

@@ -1,13 +1,12 @@
 import type { LoaderArgs } from "@remix-run/node";
 import type { GroupedDonation } from "@prisma/client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { json, Response } from "@remix-run/node";
 import {
   isRouteErrorResponse,
   useRouteError,
   useLoaderData
 } from "@remix-run/react";
-import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import {
   Chart as ChartJS,
@@ -22,9 +21,9 @@ import { gql, useSubscription } from "@apollo/client";
 import SVG from "react-inlinesvg";
 import { prisma } from "~/utils/db.server";
 import { initApollo } from "~/utils/apollo";
-import { hexToRgbA } from "~/utils/misc";
+import { hexToRgbA, USDollar } from "~/utils/misc";
 import { BanknotesIcon, GiftIcon } from "@heroicons/react/24/outline";
-import { USDollar } from "~/utils/misc";
+import appConfig from "~/app.config";
 
 const client = initApollo();
 
@@ -125,7 +124,7 @@ export default function EventDashboard() {
     <main className="min-h-screen max-w-full bg-brand-deep-purple p-4">
       <section className="prose mx-auto grid max-w-7xl">
         <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
-          CockroachDB at {event.name}
+          {appConfig.company.name} at {event.name}
         </h1>
         <div className="flex flex-col justify-stretch gap-4">
           <div className="flex grow gap-4">
@@ -191,7 +190,9 @@ export default function EventDashboard() {
                     <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                   </svg>
                 </div>
-                <div className="font-extrabold">@CockroachDB</div>
+                <div className="font-extrabold">
+                  @{appConfig.company.twitter}
+                </div>
               </div>
             </div>
           </div>
