@@ -1,14 +1,14 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json, Response } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
 import { getLeads } from "~/models/leads.server";
 import { LeadScoreIcon } from "~/components/lead-score-icon";
 import { PencilIcon } from "@heroicons/react/24/outline";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  await requireUser(request);
+  await requireUserId(request);
   const { eventId, leadId } = params;
   const event = await prisma.event.findUnique({
     where: { id: eventId },

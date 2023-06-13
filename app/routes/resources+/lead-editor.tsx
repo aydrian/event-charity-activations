@@ -6,7 +6,7 @@ import { Link, useFetcher } from "@remix-run/react";
 import { z } from "zod";
 import { prisma } from "~/utils/db.server";
 import type { getLeads } from "~/models/leads.server";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import { LeadScoreSelector } from "~/components/lead-score-selector";
 import { ErrorList, SubmitButton, TextareaField } from "~/utils/forms";
 
@@ -19,7 +19,7 @@ const LeadEditorSchema = z.object({
 });
 
 export const action = async ({ request }: DataFunctionArgs) => {
-  await requireUser(request);
+  await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
     schema: LeadEditorSchema,

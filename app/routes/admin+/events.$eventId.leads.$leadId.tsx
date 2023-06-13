@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { useOutletContext } from "@remix-run/react";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import type { getLeads } from "~/models/leads.server";
 import { LeadEditor } from "~/routes/resources+/lead-editor";
 
@@ -10,7 +10,7 @@ type ContextType = {
 
 // TODO: Is this needed?
 export const loader = async ({ request }: LoaderArgs) => {
-  return await requireUser(request);
+  return await requireUserId(request);
 };
 
 export default function EditLead() {

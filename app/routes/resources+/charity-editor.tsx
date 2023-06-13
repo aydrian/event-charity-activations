@@ -6,7 +6,7 @@ import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
 import slugify from "slugify";
 import { prisma } from "~/utils/db.server";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import { ErrorList, Field, SubmitButton } from "~/utils/forms";
 import { FileUploader } from "./upload";
 import { PhotoIcon } from "@heroicons/react/24/outline";
@@ -22,7 +22,7 @@ export const CharityEditorSchema = z.object({
 });
 
 export const action = async ({ request }: DataFunctionArgs) => {
-  const user = await requireUser(request);
+  const userId = await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
     schema: CharityEditorSchema,
@@ -52,7 +52,7 @@ export const action = async ({ request }: DataFunctionArgs) => {
     await prisma.charity.create({
       data: {
         ...data,
-        createdBy: user.id
+        createdBy: userId
       }
     });
   }

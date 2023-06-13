@@ -1,11 +1,11 @@
 import { json, type LoaderArgs, Response } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
 import { CharityEditor } from "../resources+/charity-editor";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  await requireUser(request);
+  await requireUserId(request);
   const { charityId } = params;
   const charity = await prisma.charity.findUnique({
     where: { id: charityId },

@@ -1,13 +1,23 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import CompanyLogo from "~/components/company-logo";
 import Footer from "~/components/footer";
+import { prisma } from "~/utils/db.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireUser(request);
-  return json({ user });
+  const userId = await requireUserId(request);
+  try {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { id: true, firstName: true }
+    });
+
+    return json({ user });
+  } catch (err) {
+    throw new Response("User not found", { status: 404 });
+  }
 };
 
 export default function AdminLayout() {

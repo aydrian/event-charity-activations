@@ -2,13 +2,13 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import SVG from "react-inlinesvg";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import EventCard from "~/components/event-card";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  await requireUser(request);
+  await requireUserId(request);
   const [charities, events] = await Promise.all([
     prisma.charity.findMany({
       select: {

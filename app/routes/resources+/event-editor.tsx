@@ -6,7 +6,7 @@ import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
 import slugify from "slugify";
 import { prisma } from "~/utils/db.server";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 import {
   CheckboxField,
   ErrorList,
@@ -70,7 +70,7 @@ export const EventEditorSchema = z
   }));
 
 export const action = async ({ request }: DataFunctionArgs) => {
-  const user = await requireUser(request);
+  const userId = await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
     schema: EventEditorSchema,
@@ -126,7 +126,7 @@ export const action = async ({ request }: DataFunctionArgs) => {
     await prisma.event.create({
       data: {
         ...data,
-        createdBy: user.id,
+        createdBy: userId,
         Charities: { create: charities }
       }
     });

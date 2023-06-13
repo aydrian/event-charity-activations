@@ -1,10 +1,11 @@
-import type { UserWithoutPassword } from "~/models/user.server";
 import { Authenticator /*, AuthorizationError*/ } from "remix-auth";
 // import { FormStrategy } from "remix-auth-form";
 import { OktaStrategy } from "remix-auth-okta";
 import invariant from "tiny-invariant";
 import { sessionStorage } from "~/utils/session.server";
 import { prisma } from "~/utils/db.server";
+// import { type User } from "@prisma/client";
+// import bcrypt from "bcryptjs";
 // import { verifyLogin } from "~/models/user.server";
 
 const oktaDomain = process.env.OKTA_DOMAIN;
@@ -21,9 +22,7 @@ invariant(typeof oktaCallbackUrl === "string", `OKTA_CALLBACK_URL is required`);
 
 // Create an instance of the authenticator, pass a generic with what
 // strategies will return and will store in the session
-export const authenticator = new Authenticator<UserWithoutPassword>(
-  sessionStorage
-);
+export const authenticator = new Authenticator<string>(sessionStorage);
 
 const oktaStrategy = new OktaStrategy(
   {
@@ -33,7 +32,7 @@ const oktaStrategy = new OktaStrategy(
     callbackURL: oktaCallbackUrl
   },
   async ({ accessToken, refreshToken, extraParams, profile }) => {
-    return prisma.user.upsert({
+    const user = await prisma.user.upsert({
       where: { email: profile.email },
       update: {},
       create: {
@@ -43,13 +42,10 @@ const oktaStrategy = new OktaStrategy(
         fullName: profile.displayName
       },
       select: {
-        id: true,
-        email: true,
-        fullName: true,
-        firstName: true,
-        lastName: true
+        id: true
       }
     });
+    return user.id;
   }
 );
 
@@ -72,12 +68,12 @@ authenticator.use(oktaStrategy);
 //         "Username/Password combination is incorrect"
 //       );
 //     }
-//     return user;
+//     return user.id;
 //   }),
 //   FormStrategy.name
 // );
 
-export const requireUser = async (
+export const requireUserId = async (
   request: Request,
   redirectTo: string = new URL(request.url).pathname
 ) => {
@@ -85,8 +81,27 @@ export const requireUser = async (
     ["redirectTo", redirectTo],
     ["loginMessage", "Please login to continue"]
   ]);
-  const user = await authenticator.isAuthenticated(request, {
+  const userId = await authenticator.isAuthenticated(request, {
     failureRedirect: `/admin?${searchParams}`
   });
-  return user;
+  return userId;
 };
+
+// export async function verifyLogin(email: User["email"], password: string) {
+//   const userWithPassword = await prisma.user.findUnique({
+//     select: { id: true, passwordHash: true },
+//     where: { email }
+//   });
+
+//   if (!userWithPassword || !userWithPassword.passwordHash) {
+//     return null;
+//   }
+
+//   const isValid = await bcrypt.compare(password, userWithPassword.passwordHash);
+
+//   if (!isValid) {
+//     return null;
+//   }
+
+//   return { id: userWithPassword.id };
+// }

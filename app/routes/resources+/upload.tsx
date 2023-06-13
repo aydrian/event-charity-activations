@@ -4,7 +4,7 @@ import { useFetcher } from "@remix-run/react";
 import React from "react";
 import SVG from "react-inlinesvg";
 import { DocumentPlusIcon } from "@heroicons/react/24/outline";
-import { requireUser } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server";
 
 const uploadHandler: UploadHandler = async ({
   name,
@@ -21,7 +21,7 @@ const uploadHandler: UploadHandler = async ({
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  await requireUser(request);
+  await requireUserId(request);
 
   const formData = await unstable_parseMultipartFormData(
     request,
