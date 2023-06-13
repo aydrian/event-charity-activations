@@ -1,22 +1,22 @@
 type TweetButtonProps = {
+  className?: string;
   text?: string;
   tweetText: string;
-  className?: string;
 };
 
 export default function TweetButton({
+  className,
   text = "Share to Twitter",
-  tweetText,
-  className
+  tweetText
 }: TweetButtonProps) {
   const searchParams = new URLSearchParams();
   searchParams.append("text", tweetText);
   return (
     <a
-      href={`https://twitter.com/intent/tweet?${searchParams}`}
       className={`inline-flex items-center rounded-full bg-[#1d9bf0] px-4 py-2 font-semibold text-white no-underline hover:bg-[#0c7abf] ${className}`}
-      target="_blank"
+      href={`https://twitter.com/intent/tweet?${searchParams}`}
       rel="noreferrer noopener"
+      target="_blank"
     >
       <TwitterLogo className="mr-2 h-5 w-5 text-white" />
       <span>{text}</span>
@@ -35,12 +35,12 @@ export function TwitterLogo({
 }: TwitterLogoProps) {
   return (
     <svg
+      className={className}
+      fill="currentColor"
       version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 248 204"
       xmlSpace="preserve"
-      fill="currentColor"
-      className={className}
+      xmlns="http://www.w3.org/2000/svg"
     >
       <title>{title}</title>
       <g>

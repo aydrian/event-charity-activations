@@ -1,10 +1,11 @@
-import { useSelect, resetIdCounter } from "downshift";
 import { clsx } from "clsx";
+import { resetIdCounter, useSelect } from "downshift";
+
 import appConfig from "~/app.config";
 
 type Item = {
-  name: string;
   hex: string;
+  name: string;
 };
 
 type ColorSelectorProps = {
@@ -28,17 +29,17 @@ export function ColorSelector({
   selectedColor
 }: ColorSelectorProps) {
   const {
-    isOpen,
-    selectedItem,
-    getToggleButtonProps,
+    getItemProps,
     getLabelProps,
     getMenuProps,
+    getToggleButtonProps,
     highlightedIndex,
-    getItemProps
+    isOpen,
+    selectedItem
   } = useSelect({
-    items: colors,
+    defaultSelectedItem: getColorByHex(selectedColor),
     itemToString,
-    defaultSelectedItem: getColorByHex(selectedColor)
+    items: colors
   });
   resetIdCounter();
 
@@ -62,7 +63,7 @@ export function ColorSelector({
                 style={{ backgroundColor: selectedItem.hex }}
                 title={selectedItem.name}
               />
-              <input type="hidden" name={name} value={selectedItem.hex} />
+              <input name={name} type="hidden" value={selectedItem.hex} />
             </>
           )}
           <span className="sr-only">
@@ -85,7 +86,7 @@ export function ColorSelector({
                 "flex flex-row items-center gap-1 px-3 py-2 shadow-sm"
               )}
               key={`${item.name}${index}`}
-              {...getItemProps({ item, index })}
+              {...getItemProps({ index, item })}
             >
               <div
                 className={clsx(

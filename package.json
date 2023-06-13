@@ -8,6 +8,7 @@
     "build": "remix build",
     "dev": "remix dev",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint:fix": "eslint --fix --cache --cache-location ./node_modules/.cache/eslint .",
     "typecheck": "tsc",
     "postinstall": "prisma generate",
     "test": "ts-node --require tsconfig-paths/register prisma/test.ts"
@@ -68,6 +69,7 @@
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-no-template-curly-in-string-fix": "^1.0.4",
+    "eslint-plugin-perfectionist": "^1.2.0",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
     "prisma": "^4.13.0",

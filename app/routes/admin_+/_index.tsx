@@ -1,14 +1,15 @@
 import type { LoaderArgs } from "@remix-run/node";
+
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { commitSession, getSession } from "~/utils/session.server";
-import { authenticator } from "~/utils/auth.server";
 
+import appConfig from "~/app.config";
 import CompanyLogo from "~/components/company-logo";
 import GitHubLogo from "~/components/github-logo";
 import { OktaLoginForm } from "~/routes/auth+/okta+/_index";
+import { authenticator } from "~/utils/auth.server";
 import { redirectToCookie } from "~/utils/cookies.server";
-import appConfig from "~/app.config";
+import { commitSession, getSession } from "~/utils/session.server";
 // import { FormLoginForm } from "~/routes/auth+/form";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -25,14 +26,14 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
   const session = await getSession(request.headers.get("cookie"));
   const error = session.get(authenticator.sessionErrorKey);
-  let errorMessage: string | null = null;
+  let errorMessage: null | string = null;
   if (typeof error?.message === "string") {
     errorMessage = error.message;
   }
   // TODO: Is this necessary?
   headers.append("Set-Cookie", await commitSession(session));
 
-  return json({ loginMessage, formError: errorMessage }, { headers });
+  return json({ formError: errorMessage, loginMessage }, { headers });
 };
 
 export default function AdminIndex() {
@@ -41,13 +42,13 @@ export default function AdminIndex() {
     <>
       <header className="w-full bg-white p-4 shadow-lg">
         <nav className="mx-auto flex max-w-7xl items-center justify-between">
-          <a href={appConfig.company.website} target="_blank" rel="noreferrer">
+          <a href={appConfig.company.website} rel="noreferrer" target="_blank">
             <CompanyLogo />
           </a>
           <a
             href="https://github.com/aydrian/event-charity-activations/"
-            target="_blank"
             rel="noreferrer"
+            target="_blank"
           >
             <GitHubLogo />
           </a>
@@ -79,8 +80,8 @@ export default function AdminIndex() {
           <li>
             <a
               href={`https://twitter.com/${appConfig.company.twitter}/`}
-              target="_blank"
               rel="noreferrer"
+              target="_blank"
             >
               @{appConfig.company.twitter}
             </a>
@@ -88,8 +89,8 @@ export default function AdminIndex() {
           <li>
             <a
               href={appConfig.company.privacyPolicyUrl}
-              target="_blank"
               rel="noreferrer"
+              target="_blank"
             >
               Privacy Policy
             </a>

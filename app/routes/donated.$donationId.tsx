@@ -1,4 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
+
 import { json } from "@remix-run/node";
 import {
   isRouteErrorResponse,
@@ -6,30 +7,30 @@ import {
   useRouteError
 } from "@remix-run/react";
 import handlebars from "handlebars";
-import { processMarkdownToHtml } from "~/utils/markdown.server";
 
-import { prisma } from "~/utils/db.server";
-import { USDollar } from "~/utils/misc";
-import TweetButton from "~/components/tweet-button";
 import Footer from "~/components/footer";
+import TweetButton from "~/components/tweet-button";
+import { prisma } from "~/utils/db.server";
+import { processMarkdownToHtml } from "~/utils/markdown.server";
+import { USDollar } from "~/utils/misc";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { donationId } = params;
   const donation = await prisma.donation.findUnique({
-    where: { id: donationId },
     select: {
-      id: true,
+      Charity: { select: { name: true, twitter: true, website: true } },
       Event: {
         select: {
-          name: true,
           donationAmount: true,
-          twitter: true,
+          name: true,
           responseTemplate: true,
-          tweetTemplate: true
+          tweetTemplate: true,
+          twitter: true
         }
       },
-      Charity: { select: { name: true, twitter: true, website: true } }
-    }
+      id: true
+    },
+    where: { id: donationId }
   });
   if (!donation) {
     throw new Response("Not Found", {
@@ -39,21 +40,21 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   const responseTemplate = handlebars.compile(donation.Event.responseTemplate);
   const responseMd = responseTemplate({
+    charity: { name: donation.Charity.name, url: donation.Charity.website },
     donationAmount: USDollar.format(donation.Event.donationAmount.toNumber()),
-    event: { name: donation.Event.name },
-    charity: { name: donation.Charity.name, url: donation.Charity.website }
+    event: { name: donation.Event.name }
   });
   const responseHtml = processMarkdownToHtml(responseMd.trim());
 
   const tweetTemplate = handlebars.compile(donation.Event.tweetTemplate);
   const tweetText = tweetTemplate({
+    charity: donation.Charity.twitter
+      ? `@${donation.Charity.twitter}`
+      : donation.Charity.name,
     donationAmount: USDollar.format(donation.Event.donationAmount.toNumber()),
     event: donation.Event.twitter
       ? `@${donation.Event.twitter}`
-      : donation.Event.name,
-    charity: donation.Charity.twitter
-      ? `@${donation.Charity.twitter}`
-      : donation.Charity.name
+      : donation.Event.name
   });
 
   return json({ donation, responseHtml, tweetText });

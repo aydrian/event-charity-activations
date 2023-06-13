@@ -1,18 +1,20 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json, Response } from "@remix-run/node";
+
+import { PencilIcon } from "@heroicons/react/24/outline";
+import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
+
+import { LeadScoreIcon } from "~/components/lead-score-icon";
+import { getLeads } from "~/models/leads.server";
 import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
-import { getLeads } from "~/models/leads.server";
-import { LeadScoreIcon } from "~/components/lead-score-icon";
-import { PencilIcon } from "@heroicons/react/24/outline";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   await requireUserId(request);
   const { eventId, leadId } = params;
   const event = await prisma.event.findUnique({
-    where: { id: eventId },
-    select: { id: true, name: true, collectLeads: true }
+    select: { collectLeads: true, id: true, name: true },
+    where: { id: eventId }
   });
   if (!event || !event.collectLeads) {
     throw new Response("Not Found", {
@@ -61,9 +63,9 @@ export default function EventLeads() {
                 <>
                   {leads.map((lead) => (
                     <LeadRow
+                      isSelected={lead.id === selectedLeadId}
                       key={lead.id}
                       lead={lead}
-                      isSelected={lead.id === selectedLeadId}
                     />
                   ))}
                 </>
@@ -88,17 +90,17 @@ export default function EventLeads() {
 }
 
 type LeadRowProps = {
-  lead: Awaited<ReturnType<typeof getLeads>>[number];
   isSelected?: boolean;
+  lead: Awaited<ReturnType<typeof getLeads>>[number];
 };
 
-function LeadRow({ lead, isSelected = false }: LeadRowProps) {
+function LeadRow({ isSelected = false, lead }: LeadRowProps) {
   return (
     <>
       <tr>
         <td className="border-t border-dashed border-gray-200">
           <div className="flex items-center justify-between md:px-3 md:py-2">
-            <LeadScoreIcon score={lead.score} className="h-5 rounded p-0.5" />
+            <LeadScoreIcon className="h-5 rounded p-0.5" score={lead.score} />
           </div>
         </td>
         <td className="border-t border-dashed border-gray-200">
@@ -130,13 +132,13 @@ function LeadRow({ lead, isSelected = false }: LeadRowProps) {
           {!isSelected ? (
             <div className="flex items-center justify-between md:px-3 md:py-2">
               <Link
-                to={`./${lead.id}`}
                 preventScrollReset={true}
                 reloadDocument={true}
+                to={`./${lead.id}`}
               >
                 <PencilIcon
-                  title="Edit Lead"
                   className="aspect-square h-4 text-brand-deep-purple"
+                  title="Edit Lead"
                 />
                 <span className="sr-only">Edit Lead</span>
               </Link>

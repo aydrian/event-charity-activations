@@ -1,35 +1,37 @@
 import type { LoaderArgs } from "@remix-run/node";
+
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import SVG from "react-inlinesvg";
+
+import EventCard from "~/components/event-card";
 import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import EventCard from "~/components/event-card";
 
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUserId(request);
   const [charities, events] = await Promise.all([
     prisma.charity.findMany({
       select: {
+        Creator: { select: { fullName: true } },
         id: true,
-        name: true,
         logoSVG: true,
-        website: true,
-        Creator: { select: { fullName: true } }
+        name: true,
+        website: true
       }
     }),
     prisma.event.findMany({
+      orderBy: { endDate: "desc" },
       select: {
+        collectLeads: true,
+        endDate: true,
         id: true,
+        location: true,
         name: true,
         slug: true,
-        startDate: true,
-        endDate: true,
-        location: true,
-        collectLeads: true
-      },
-      orderBy: { endDate: "desc" }
+        startDate: true
+      }
     })
   ]);
   return json({ charities, events });
@@ -48,8 +50,8 @@ export default function AdminDashboard() {
             </h2>
             <Link to="/admin/events/new">
               <PlusCircleIcon
-                title="Add Charity"
                 className="aspect-square h-6"
+                title="Add Charity"
               />
               <span className="sr-only">Add Event</span>
             </Link>
@@ -57,7 +59,7 @@ export default function AdminDashboard() {
           {events.length > 0 ? (
             <div className="flex flex-col gap-4">
               {events.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard event={event} key={event.id} />
               ))}
             </div>
           ) : (
@@ -71,8 +73,8 @@ export default function AdminDashboard() {
             </h2>
             <Link to="/admin/charities/new">
               <PlusCircleIcon
-                title="Add Charity"
                 className="aspect-square h-6"
+                title="Add Charity"
               />
               <span className="sr-only">Add Charity</span>
             </Link>
@@ -80,12 +82,12 @@ export default function AdminDashboard() {
           {charities.length > 0 ? (
             <dl className=" divide-y divide-gray-200">
               {charities.map((charity) => (
-                <div key={charity.id} className="flex flex-col pb-3">
+                <div className="flex flex-col pb-3" key={charity.id}>
                   <dt>
                     {charity.logoSVG ? (
                       <SVG
-                        src={charity.logoSVG}
                         className="h-12 text-brand-deep-purple"
+                        src={charity.logoSVG}
                       />
                     ) : null}
                     <div className="font-semibold">
@@ -103,8 +105,8 @@ export default function AdminDashboard() {
                             ["q", charity.name]
                           ])}`
                         }
-                        target="_blank"
                         rel="noreferrer noopener"
+                        target="_blank"
                       >
                         {charity.website}
                       </a>

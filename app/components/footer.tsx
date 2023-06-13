@@ -1,5 +1,6 @@
-import GitHubLogo from "./github-logo";
 import appConfig from "~/app.config";
+
+import GitHubLogo from "./github-logo";
 
 export default function Footer() {
   return (
@@ -8,8 +9,8 @@ export default function Footer() {
         <li>
           <a
             href={`https://twitter.com/${appConfig.company.twitter}/`}
-            target="_blank"
             rel="noreferrer"
+            target="_blank"
           >
             @{appConfig.company.twitter}
           </a>
@@ -17,8 +18,8 @@ export default function Footer() {
         <li>
           <a
             href="https://github.com/aydrian/event-charity-activations/"
-            target="_blank"
             rel="noreferrer"
+            target="_blank"
           >
             <GitHubLogo className="aspect-square h-7 text-white" />
           </a>

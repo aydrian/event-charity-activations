@@ -9,12 +9,12 @@ async function test() {
   const [{ charity_id: charityId }] = await prisma.$queryRaw<
     { charity_id: string }[]
   >`SELECT charity_id FROM charities_events WHERE event_id = ${eventId} ORDER BY RANDOM() LIMIT 1;`;
-  console.log({ eventId, charityId });
+  console.log({ charityId, eventId });
 
   await prisma.donation.create({
     data: {
-      eventId,
-      charityId
+      charityId,
+      eventId
     }
   });
 }

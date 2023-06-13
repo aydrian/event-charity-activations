@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -27,7 +27,7 @@ export function hexToRgbA(hex: string, alpha: number = 1) {
 }
 
 export const USDollar = new Intl.NumberFormat("en-US", {
-  style: "currency",
   currency: "USD",
-  minimumFractionDigits: 0
+  minimumFractionDigits: 0,
+  style: "currency"
 });

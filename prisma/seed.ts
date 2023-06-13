@@ -13,38 +13,38 @@ async function seed() {
   const user = await prisma.user.create({
     data: {
       email,
-      passwordHash,
       firstName,
+      fullName,
       lastName,
-      fullName
+      passwordHash
     }
   });
 
   await prisma.charity.createMany({
     data: [
       {
-        name: "Black Girls Code",
-        slug: "black-girls-code",
+        createdBy: user.id,
         description: "Black Girls Code",
-        createdBy: user.id
+        name: "Black Girls Code",
+        slug: "black-girls-code"
       },
       {
-        name: "Women Who Code",
-        slug: "women-who-code",
+        createdBy: user.id,
         description: "Women Who Code",
-        createdBy: user.id
+        name: "Women Who Code",
+        slug: "women-who-code"
       },
       {
-        name: "UNICEF",
-        slug: "unicef",
+        createdBy: user.id,
         description: "UNICEF",
-        createdBy: user.id
+        name: "UNICEF",
+        slug: "unicef"
       },
       {
-        name: "Cancer Research Institute",
-        slug: "cancer-research-institute",
+        createdBy: user.id,
         description: "Cancer Research Institute",
-        createdBy: user.id
+        name: "Cancer Research Institute",
+        slug: "cancer-research-institute"
       }
     ]
   });

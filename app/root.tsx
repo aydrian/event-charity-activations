@@ -1,4 +1,5 @@
 import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
+
 import {
   Links,
   LiveReload,
@@ -10,7 +11,7 @@ import {
 
 import styles from "./tailwind.css";
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
+export const links: LinksFunction = () => [{ href: styles, rel: "stylesheet" }];
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Charity Activations" }];
@@ -21,7 +22,7 @@ export default function App() {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta content="width=device-width,initial-scale=1" name="viewport" />
         <Meta />
         <Links />
       </head>

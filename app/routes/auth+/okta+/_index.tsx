@@ -1,9 +1,11 @@
-import { useForm } from "@conform-to/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import type { ButtonHTMLAttributes } from "react";
+
+import { useForm } from "@conform-to/react";
 import { redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
-import type { ButtonHTMLAttributes } from "react";
+
 import { authenticator } from "~/utils/auth.server";
 
 export const loader: LoaderFunction = () => redirect("/admin");
@@ -21,21 +23,21 @@ export function OktaLoginForm() {
   });
 
   return (
-    <oktaLoginFetcher.Form method="POST" action="/auth/okta" {...form.props}>
-      <OktaLoginButton state={oktaLoginFetcher.state} className="mt-4" />
+    <oktaLoginFetcher.Form action="/auth/okta" method="POST" {...form.props}>
+      <OktaLoginButton className="mt-4" state={oktaLoginFetcher.state} />
     </oktaLoginFetcher.Form>
   );
 }
 
 interface OktaLoginButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  state?: "idle" | "loading" | "submitting";
   title?: string;
-  state?: "idle" | "submitting" | "loading";
 }
 
 export function OktaLoginButton({
+  disabled,
   state = "idle",
   title = "Sign in with Okta",
-  disabled,
   ...props
 }: OktaLoginButtonProps) {
   return (
@@ -59,20 +61,20 @@ export function OktaLoginButton({
 }
 
 type OktaAuraLogoType = {
-  title?: string;
   className?: string;
+  title?: string;
 };
 
 function OktaAuraLogo({
-  title = "Okta Aura Logo",
-  className = ""
+  className = "",
+  title = "Okta Aura Logo"
 }: OktaAuraLogoType) {
   return (
     <svg
+      className={className}
+      fill="none"
       viewBox="0 0 1479 1480"
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      className={className}
     >
       <title>{title}</title>
       <g>

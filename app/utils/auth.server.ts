@@ -2,8 +2,9 @@ import { Authenticator /*, AuthorizationError*/ } from "remix-auth";
 // import { FormStrategy } from "remix-auth-form";
 import { OktaStrategy } from "remix-auth-okta";
 import invariant from "tiny-invariant";
-import { sessionStorage } from "~/utils/session.server";
+
 import { prisma } from "~/utils/db.server";
+import { sessionStorage } from "~/utils/session.server";
 // import { type User } from "@prisma/client";
 // import bcrypt from "bcryptjs";
 // import { verifyLogin } from "~/models/user.server";
@@ -26,24 +27,24 @@ export const authenticator = new Authenticator<string>(sessionStorage);
 
 const oktaStrategy = new OktaStrategy(
   {
-    issuer: `${oktaDomain}/oauth2/default`,
+    callbackURL: oktaCallbackUrl,
     clientID: oktaClientId,
     clientSecret: oktaClientSecret,
-    callbackURL: oktaCallbackUrl
+    issuer: `${oktaDomain}/oauth2/default`
   },
-  async ({ accessToken, refreshToken, extraParams, profile }) => {
+  async ({ accessToken, extraParams, profile, refreshToken }) => {
     const user = await prisma.user.upsert({
-      where: { email: profile.email },
-      update: {},
       create: {
         email: profile.email,
         firstName: profile.name.givenName,
-        lastName: profile.name.familyName,
-        fullName: profile.displayName
+        fullName: profile.displayName,
+        lastName: profile.name.familyName
       },
       select: {
         id: true
-      }
+      },
+      update: {},
+      where: { email: profile.email }
     });
     return user.id;
   }

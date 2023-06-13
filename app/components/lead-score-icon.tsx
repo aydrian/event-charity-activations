@@ -1,5 +1,5 @@
 import type { LeadScore } from "@prisma/client";
-import { titleCase } from "~/utils/misc";
+
 import {
   CalendarDaysIcon,
   ChatBubbleBottomCenterTextIcon,
@@ -7,19 +7,21 @@ import {
   XCircleIcon
 } from "@heroicons/react/24/outline";
 
+import { titleCase } from "~/utils/misc";
+
 type LeadScoreIconProps = {
-  score: LeadScore;
   className?: string;
+  score: LeadScore;
 };
 
-export function LeadScoreIcon({ score, className = "" }: LeadScoreIconProps) {
+export function LeadScoreIcon({ className = "", score }: LeadScoreIconProps) {
   const title = titleCase(score);
   if (score === "BADGE_SCAN") {
     return (
       <LeadScoreIconWrapper
-        title={title}
         bgColor="bg-red-500"
         className={className}
+        title={title}
       >
         <IdentificationIcon className="aspect-square w-full text-gray-50" />
       </LeadScoreIconWrapper>
@@ -28,9 +30,9 @@ export function LeadScoreIcon({ score, className = "" }: LeadScoreIconProps) {
   if (score === "CONVERSATION") {
     return (
       <LeadScoreIconWrapper
-        title={title}
         bgColor="bg-yellow-500"
         className={className}
+        title={title}
       >
         <ChatBubbleBottomCenterTextIcon className="aspect-square w-full text-gray-50" />
       </LeadScoreIconWrapper>
@@ -39,38 +41,38 @@ export function LeadScoreIcon({ score, className = "" }: LeadScoreIconProps) {
   if (score === "MEETING_REQUESTED") {
     return (
       <LeadScoreIconWrapper
-        title={title}
         bgColor="bg-green-500"
         className={className}
+        title={title}
       >
         <CalendarDaysIcon className="aspect-square w-full text-gray-50" />
       </LeadScoreIconWrapper>
     );
   }
   return (
-    <LeadScoreIconWrapper title={title} className={className}>
+    <LeadScoreIconWrapper className={className} title={title}>
       <XCircleIcon className="aspect-square w-full text-gray-50" />
     </LeadScoreIconWrapper>
   );
 }
 
 type LeadScoreIconWrapperProps = {
+  bgColor?: string;
   children: React.ReactNode;
   className?: string;
   title: string;
-  bgColor?: string;
 };
 
 function LeadScoreIconWrapper({
+  bgColor = "bg-gray-500",
   children,
   className = "",
-  title,
-  bgColor = "bg-gray-500"
+  title
 }: LeadScoreIconWrapperProps) {
   return (
     <div
-      title={title}
       className={`flex aspect-square items-center ${bgColor} ${className}`}
+      title={title}
     >
       <>
         <span className="sr-only">{title}</span>

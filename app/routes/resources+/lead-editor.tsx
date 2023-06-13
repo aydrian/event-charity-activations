@@ -1,29 +1,31 @@
-import { LeadScore } from "@prisma/client";
 import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
-import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
+import { LeadScore } from "@prisma/client";
+import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
 import { z } from "zod";
-import { prisma } from "~/utils/db.server";
+
 import type { getLeads } from "~/models/leads.server";
-import { requireUserId } from "~/utils/auth.server";
+
 import { LeadScoreSelector } from "~/components/lead-score-selector";
+import { requireUserId } from "~/utils/auth.server";
+import { prisma } from "~/utils/db.server";
 import { ErrorList, SubmitButton, TextareaField } from "~/utils/forms";
 
 type LeadType = Awaited<ReturnType<typeof getLeads>>[number];
 
 const LeadEditorSchema = z.object({
   id: z.string(),
-  score: z.nativeEnum(LeadScore),
-  notes: z.string().optional()
+  notes: z.string().optional(),
+  score: z.nativeEnum(LeadScore)
 });
 
 export const action = async ({ request }: DataFunctionArgs) => {
   await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
-    schema: LeadEditorSchema,
-    acceptMultipleErrors: () => true
+    acceptMultipleErrors: () => true,
+    schema: LeadEditorSchema
   });
   if (!submission.value) {
     return json(
@@ -40,9 +42,9 @@ export const action = async ({ request }: DataFunctionArgs) => {
 
   const { id, notes, score } = submission.value;
   const lead = await prisma.lead.update({
-    data: { score, notes },
-    where: { id },
-    select: { Donation: { select: { eventId: true } } }
+    data: { notes, score },
+    select: { Donation: { select: { eventId: true } } },
+    where: { id }
   });
   return redirect(`/admin/events/${lead.Donation.eventId}/leads`);
 };
@@ -51,8 +53,8 @@ export function LeadEditor({ lead }: { lead: LeadType }) {
   const leadEditorFetcher = useFetcher<typeof action>();
 
   const [form, fields] = useForm({
-    id: "lead-editor",
     constraint: getFieldsetConstraint(LeadEditorSchema),
+    id: "lead-editor",
     lastSubmission: leadEditorFetcher.data?.submission,
     onValidate({ formData }) {
       return parse(formData, { schema: LeadEditorSchema });
@@ -62,26 +64,26 @@ export function LeadEditor({ lead }: { lead: LeadType }) {
 
   return (
     <leadEditorFetcher.Form
-      method="post"
       action="/resources/lead-editor"
+      method="post"
       {...form.props}
       className="flex flex-col gap-3"
     >
       <div className="flex flex-col gap-1 md:flex-row md:gap-3">
         <input name="id" type="hidden" value={lead.id} />
         <LeadScoreSelector
-          name={fields.score.name}
-          label="Score Lead"
           defaultSelected={lead.score}
+          label="Score Lead"
+          name={fields.score.name}
         />
         <TextareaField
-          labelProps={{ htmlFor: fields.notes.id, children: "Notes:" }}
           textareaProps={{
             ...conform.textarea(fields.notes),
             defaultValue: lead.notes ?? undefined
           }}
-          errors={fields.notes.errors}
           className="flex grow flex-col"
+          errors={fields.notes.errors}
+          labelProps={{ children: "Notes:", htmlFor: fields.notes.id }}
         />
         <ErrorList errors={form.errors} id={form.errorId} />
       </div>
@@ -90,10 +92,10 @@ export function LeadEditor({ lead }: { lead: LeadType }) {
           Save
         </SubmitButton>
         <Link
-          to="../"
-          relative="path"
-          preventScrollReset={true}
           className="rounded border border-gray-200 bg-white px-6 py-2 text-xl font-medium text-gray-900 no-underline hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+          preventScrollReset={true}
+          relative="path"
+          to="../"
         >
           Cancel
         </Link>

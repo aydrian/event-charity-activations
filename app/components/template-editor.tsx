@@ -1,13 +1,15 @@
-import * as React from "react";
-import { Textarea, type TextareaProps } from "~/components/ui/textarea";
-import { Badge } from "./ui/badge";
-import { cn } from "~/utils/misc";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import * as React from "react";
+
+import { Textarea, type TextareaProps } from "~/components/ui/textarea";
+import { cn } from "~/utils/misc";
+
+import { Badge } from "./ui/badge";
 
 type TemplateVariable = {
+  className: string;
   displayName: string;
   value: string;
-  className: string;
 };
 
 export interface TemplateEditorProps extends TextareaProps {
@@ -37,8 +39,8 @@ const TemplateEditor = React.forwardRef<
       <div className="flex gap-2">
         {variables.map((variable) => (
           <Badge
-            key={variable.value}
             className={cn(variable.className, "cursor-pointer")}
+            key={variable.value}
             onClick={() => insertAtCursor(variable.value)}
             role="button"
           >

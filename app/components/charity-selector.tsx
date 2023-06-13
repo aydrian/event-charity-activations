@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
-import { resetIdCounter, useCombobox, useMultipleSelection } from "downshift";
 import { clsx } from "clsx";
+import { resetIdCounter, useCombobox, useMultipleSelection } from "downshift";
+import React, { useCallback } from "react";
+
 import type { CharityItem } from "~/models/charity.server";
 
 import { ColorSelector } from "./color-selector";
@@ -8,16 +9,16 @@ import { ColorSelector } from "./color-selector";
 export type CharityItemWithColor = CharityItem & { color?: string };
 
 type CharitySelectorProps = {
-  name?: string;
   allCharities: CharityItemWithColor[];
   maxItems?: number;
+  name?: string;
   selectedCharities?: CharityItemWithColor[];
 };
 
 export function CharitySelector({
-  name = "charities",
   allCharities,
   maxItems = 4,
+  name = "charities",
   selectedCharities = []
 }: CharitySelectorProps) {
   const getFilteredCharities = useCallback(
@@ -41,9 +42,8 @@ export function CharitySelector({
     () => getFilteredCharities(selectedItems, inputValue),
     [selectedItems, inputValue, getFilteredCharities]
   );
-  const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
+  const { getDropdownProps, getSelectedItemProps, removeSelectedItem } =
     useMultipleSelection({
-      selectedItems,
       onStateChange({ selectedItems: newSelectedItems, type }) {
         switch (type) {
           case useMultipleSelection.stateChangeTypes
@@ -56,42 +56,28 @@ export function CharitySelector({
           default:
             break;
         }
-      }
+      },
+      selectedItems
     });
   const {
-    isOpen,
-    getToggleButtonProps,
+    getInputProps,
+    getItemProps,
     getLabelProps,
     getMenuProps,
-    getInputProps,
+    getToggleButtonProps,
     highlightedIndex,
-    getItemProps,
+    isOpen,
     selectedItem
   } = useCombobox({
-    items,
+    defaultHighlightedIndex: 0,
     itemToString(item) {
       return item ? item.name : "";
     },
-    defaultHighlightedIndex: 0,
-    selectedItem: null,
-    stateReducer(_state, actionAndChanges) {
-      const { changes, type } = actionAndChanges;
-      switch (type) {
-        case useCombobox.stateChangeTypes.InputKeyDownEnter:
-        case useCombobox.stateChangeTypes.ItemClick:
-          return {
-            ...changes,
-            isOpen: true, // keep the menu open after selection.
-            highlightedIndex: 0 // with the first option highlighted.
-          };
-        default:
-          return changes;
-      }
-    },
+    items,
     onStateChange({
       inputValue: newInputValue,
-      type,
-      selectedItem: newSelectedItem
+      selectedItem: newSelectedItem,
+      type
     }) {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
@@ -108,6 +94,21 @@ export function CharitySelector({
           break;
         default:
           break;
+      }
+    },
+    selectedItem: null,
+    stateReducer(_state, actionAndChanges) {
+      const { changes, type } = actionAndChanges;
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick:
+          return {
+            ...changes,
+            highlightedIndex: 0, // with the first option highlighted.
+            isOpen: true // keep the menu open after selection.
+          };
+        default:
+          return changes;
       }
     }
   });
@@ -129,8 +130,8 @@ export function CharitySelector({
                 className="flex items-center gap-1 rounded-md bg-gray-100 px-1"
                 key={`selected-item-${index}`}
                 {...getSelectedItemProps({
-                  selectedItem: selectedItemForRender,
-                  index
+                  index,
+                  selectedItem: selectedItemForRender
                 })}
               >
                 <ColorSelector
@@ -139,16 +140,16 @@ export function CharitySelector({
                 />
                 <span>{selectedItemForRender.name}</span>
                 <input
-                  type="hidden"
                   name={`${name}[${index}].charityId`}
+                  type="hidden"
                   value={selectedItemForRender.id}
                 />
                 <span
-                  className="cursor-pointer px-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     removeSelectedItem(selectedItemForRender);
                   }}
+                  className="cursor-pointer px-1"
                 >
                   &#10005;
                 </span>
@@ -190,7 +191,7 @@ export function CharitySelector({
                 "flex flex-col px-3 py-2 shadow-sm"
               )}
               key={item.id}
-              {...getItemProps({ item, index })}
+              {...getItemProps({ index, item })}
             >
               <span>{item.name}</span>
               {/* <span className="text-sm text-gray-700">{item.author}</span> */}

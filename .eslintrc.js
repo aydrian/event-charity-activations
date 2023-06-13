@@ -4,15 +4,16 @@ module.exports = {
     "@remix-run/eslint-config",
     "@remix-run/eslint-config/node",
     "prettier",
-    "plugin:no-template-curly-in-string-fix/recommended"
+    "plugin:no-template-curly-in-string-fix/recommended",
+    "plugin:perfectionist/recommended-natural"
   ],
   rules: {
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
-        prefer: "type-imports",
         disallowTypeAnnotations: true,
-        fixStyle: "inline-type-imports"
+        fixStyle: "inline-type-imports",
+        prefer: "type-imports"
       }
     ],
     "@typescript-eslint/no-duplicate-imports": "warn"

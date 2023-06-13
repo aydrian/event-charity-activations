@@ -1,4 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
+
 import { Response } from "@remix-run/node";
 import { stringify } from "csv-stringify/sync";
 
@@ -15,8 +16,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   const event = await prisma.event.findUnique({
-    where: { id: eventId },
-    select: { id: true, name: true, slug: true }
+    select: { id: true, name: true, slug: true },
+    where: { id: eventId }
   });
   if (!event) {
     throw new Response("Not Found", {
@@ -25,22 +26,22 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   const leads = await prisma.lead.findMany({
+    orderBy: {
+      lastName: "asc"
+    },
+    select: {
+      company: true,
+      email: true,
+      firstName: true,
+      jobRole: true,
+      lastName: true,
+      notes: true,
+      score: true
+    },
     where: {
       Donation: {
         eventId: event.id
       }
-    },
-    select: {
-      firstName: true,
-      lastName: true,
-      email: true,
-      company: true,
-      jobRole: true,
-      score: true,
-      notes: true
-    },
-    orderBy: {
-      lastName: "asc"
     }
   });
 
@@ -53,12 +54,12 @@ export const loader = async ({ request }: LoaderArgs) => {
     { key: "score" },
     { key: "notes" }
   ];
-  const csv = stringify(leads, { header: true, columns });
+  const csv = stringify(leads, { columns, header: true });
 
   return new Response(csv, {
     headers: {
-      "Content-Type": "text/csv",
-      "Content-Disposition": `attachment; filename="${event.slug}-leads.csv"`
+      "Content-Disposition": `attachment; filename="${event.slug}-leads.csv"`,
+      "Content-Type": "text/csv"
     }
   });
 };

@@ -1,20 +1,20 @@
-import { Link } from "@remix-run/react";
 import {
   ChartBarSquareIcon,
   DocumentArrowDownIcon,
   PencilIcon,
   UserGroupIcon
 } from "@heroicons/react/24/outline";
+import { Link } from "@remix-run/react";
 
 type EventCardProps = {
   event: {
+    collectLeads: boolean;
+    endDate: string;
     id: string;
+    location: string;
     name: string;
     slug: string;
     startDate: string;
-    endDate: string;
-    location: string;
-    collectLeads: boolean;
   };
 };
 
@@ -25,14 +25,14 @@ function formatDates(startDate: string, endDate: string) {
   // const sameMonth = start.getMonth() === end.getMonth();
   return `${start.toLocaleDateString("en-us", {
     ...(!sameYear && { year: "numeric" }),
-    month: "short",
     day: "numeric",
+    month: "short",
     timeZone: "UTC"
   })} - ${end.toLocaleDateString("en-us", {
-    year: "numeric",
-    month: "short",
     day: "numeric",
-    timeZone: "UTC"
+    month: "short",
+    timeZone: "UTC",
+    year: "numeric"
   })}`;
 }
 
@@ -44,8 +44,8 @@ export default function EventCard({ event }: EventCardProps) {
           <div className="text-xl font-semibold">{event.name}</div>
           <Link to={`/admin/events/${event.id}/edit`}>
             <PencilIcon
-              title="Edit Event"
               className="aspect-square h-5 text-gray-800"
+              title="Edit Event"
             />
             <span className="sr-only">Edit Event</span>
           </Link>
@@ -56,13 +56,13 @@ export default function EventCard({ event }: EventCardProps) {
         <div>{event.location}</div>
       </div>
       <div className="flex gap-2 px-6 pb-2 pt-4">
-        <Link to={`/dashboard/${event.slug}`} title="Event Dashboard">
+        <Link title="Event Dashboard" to={`/dashboard/${event.slug}`}>
           <ChartBarSquareIcon className="h-8 w-8 text-brand-deep-purple" />
           <span className="sr-only">Event Dashboard</span>
         </Link>
         {event.collectLeads ? (
           <>
-            <Link to={`/admin/events/${event.id}/leads`} title="Leads">
+            <Link title="Leads" to={`/admin/events/${event.id}/leads`}>
               <UserGroupIcon className="h-8 w-8 text-brand-deep-purple" />
               <span className="sr-only">Leads</span>
             </Link>

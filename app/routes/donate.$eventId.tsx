@@ -1,32 +1,34 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json, Response } from "@remix-run/node";
+
+import { Response, json } from "@remix-run/node";
 import {
   isRouteErrorResponse,
   useLoaderData,
   useRouteError
 } from "@remix-run/react";
-import { prisma } from "~/utils/db.server";
+
 import Footer from "~/components/footer";
 import { DonationForm } from "~/routes/resources+/donate";
+import { prisma } from "~/utils/db.server";
 import { USDollar } from "~/utils/misc";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId } = params;
   const event = await prisma.event.findUnique({
-    where: { id: eventId },
     select: {
-      id: true,
-      name: true,
-      donationAmount: true,
-      collectLeads: true,
-      legalBlurb: true,
       Charities: {
         select: {
-          color: true,
-          Charity: { select: { id: true, name: true } }
+          Charity: { select: { id: true, name: true } },
+          color: true
         }
-      }
-    }
+      },
+      collectLeads: true,
+      donationAmount: true,
+      id: true,
+      legalBlurb: true,
+      name: true
+    },
+    where: { id: eventId }
   });
   if (!event) {
     throw new Response("Not Found", {

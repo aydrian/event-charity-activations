@@ -1,30 +1,30 @@
 type AppConfig = {
+  charity: {
+    colors: { hex: string; name: string }[];
+    maxPerEvent?: number;
+  };
   company: {
     name: string;
     privacyPolicyUrl: string;
     twitter: string;
     website: string;
   };
-  charity: {
-    colors: { name: string; hex: string }[];
-    maxPerEvent?: number;
-  };
 };
 
 export default {
+  charity: {
+    colors: [
+      { hex: "#f433ff", name: "pink" },
+      { hex: "#ff5b00", name: "orange" },
+      { hex: "#0165fc", name: "blue" },
+      { hex: "#fff917", name: "yellow" }
+    ],
+    maxPerEvent: 4
+  },
   company: {
     name: "CockroachDB",
     privacyPolicyUrl: "https://www.cockroachlabs.com/privacy/",
     twitter: "cockroachdb",
     website: "https://www.cockroachlabs.com/"
-  },
-  charity: {
-    colors: [
-      { name: "pink", hex: "#f433ff" },
-      { name: "orange", hex: "#ff5b00" },
-      { name: "blue", hex: "#0165fc" },
-      { name: "yellow", hex: "#fff917" }
-    ],
-    maxPerEvent: 4
   }
 } satisfies AppConfig;

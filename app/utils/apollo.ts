@@ -1,6 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache, split } from "@apollo/client";
-import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 
 const isBrowser = typeof window !== "undefined";
@@ -23,13 +23,13 @@ export function initApollo() {
         },
         new GraphQLWsLink(
           createClient({
-            url: `wss://${domain}`,
             connectionParams: {
               headers: {
                 "x-hasura-admin-secret":
                   "oyki7cQSE3UaF53UYgWrer1pH7liBDrYaRTu6v5iEFEc7jz3uabE25MvSQ7OkD7c"
               }
-            }
+            },
+            url: `wss://${domain}`
           })
         ),
         httpLink
@@ -37,7 +37,7 @@ export function initApollo() {
     : httpLink;
 
   return new ApolloClient({
-    link: splitLink,
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
+    link: splitLink
   });
 }

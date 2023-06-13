@@ -1,15 +1,16 @@
-import React, { useId } from "react";
 import { clsx } from "clsx";
+import React, { useId } from "react";
+
 import {
   TemplateEditor,
   type TemplateEditorProps
 } from "~/components/template-editor";
 
-export type ListOfErrors = Array<string | null | undefined> | null | undefined;
+export type ListOfErrors = Array<null | string | undefined> | null | undefined;
 
 export function ErrorList({
-  id,
-  errors
+  errors,
+  id
 }: {
   errors?: ListOfErrors;
   id?: string;
@@ -17,9 +18,9 @@ export function ErrorList({
   const errorsToRender = errors?.filter(Boolean);
   if (!errorsToRender?.length) return null;
   return (
-    <ul id={id} className="space-y-1">
+    <ul className="space-y-1" id={id}>
       {errorsToRender.map((e) => (
-        <li key={e} className="text-xs text-brand-danger">
+        <li className="text-xs text-brand-danger" key={e}>
           {e}
         </li>
       ))}
@@ -28,15 +29,15 @@ export function ErrorList({
 }
 
 export function Field({
-  labelProps,
-  inputProps,
+  className,
   errors,
-  className
+  inputProps,
+  labelProps
 }: {
-  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
-  inputProps: Omit<JSX.IntrinsicElements["input"], "className">;
-  errors?: ListOfErrors;
   className?: string;
+  errors?: ListOfErrors;
+  inputProps: Omit<JSX.IntrinsicElements["input"], "className">;
+  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
 }) {
   const fallbackId = useId();
   const id = inputProps.id ?? fallbackId;
@@ -50,30 +51,30 @@ export function Field({
         className="font-bold text-brand-deep-purple"
       />
       <input
-        id={id}
-        aria-invalid={errorId ? true : undefined}
         aria-describedby={errorId}
+        aria-invalid={errorId ? true : undefined}
+        id={id}
         placeholder=" "
         {...inputProps}
         className="rounded-none border-b border-b-brand-deep-purple p-2 font-normal !text-brand-gray"
       />
       <div className="px-4 pb-3 pt-1">
-        {errorId ? <ErrorList id={errorId} errors={errors} /> : null}
+        {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
       </div>
     </div>
   );
 }
 
 export function TextareaField({
-  labelProps,
-  textareaProps,
+  className,
   errors,
-  className
+  labelProps,
+  textareaProps
 }: {
+  className?: string;
+  errors?: ListOfErrors;
   labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
   textareaProps: Omit<JSX.IntrinsicElements["textarea"], "className">;
-  errors?: ListOfErrors;
-  className?: string;
 }) {
   const fallbackId = useId();
   const id = textareaProps.id ?? textareaProps.name ?? fallbackId;
@@ -86,30 +87,30 @@ export function TextareaField({
         className="font-bold text-brand-deep-purple"
       />
       <textarea
-        id={id}
-        aria-invalid={errorId ? true : undefined}
         aria-describedby={errorId}
+        aria-invalid={errorId ? true : undefined}
+        id={id}
         placeholder=" "
         {...textareaProps}
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
       ></textarea>
       <div className="px-4 pb-3 pt-1">
-        {errorId ? <ErrorList id={errorId} errors={errors} /> : null}
+        {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
       </div>
     </div>
   );
 }
 
 export function TemplateEditorField({
-  labelProps,
-  templateEditorProps,
+  className,
   errors,
-  className
+  labelProps,
+  templateEditorProps
 }: {
+  className?: string;
+  errors?: ListOfErrors;
   labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
   templateEditorProps: TemplateEditorProps;
-  errors?: ListOfErrors;
-  className?: string;
 }) {
   const fallbackId = useId();
   const id = templateEditorProps.id ?? templateEditorProps.name ?? fallbackId;
@@ -122,32 +123,32 @@ export function TemplateEditorField({
         className="font-bold text-brand-deep-purple"
       />
       <TemplateEditor
-        id={id}
-        aria-invalid={errorId ? true : undefined}
         aria-describedby={errorId}
+        aria-invalid={errorId ? true : undefined}
+        id={id}
         placeholder=" "
         {...templateEditorProps}
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
       ></TemplateEditor>
       <div className="px-4 pb-3 pt-1">
-        {errorId ? <ErrorList id={errorId} errors={errors} /> : null}
+        {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
       </div>
     </div>
   );
 }
 
 export function CheckboxField({
-  labelProps,
   checkboxProps,
+  className,
   errors,
-  className
+  labelProps
 }: {
-  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
-  checkboxProps: Omit<JSX.IntrinsicElements["input"], "type" | "className"> & {
+  checkboxProps: Omit<JSX.IntrinsicElements["input"], "className" | "type"> & {
     type?: string;
   };
-  errors?: ListOfErrors;
   className?: string;
+  errors?: ListOfErrors;
+  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
 }) {
   const fallbackId = useId();
   const id = checkboxProps.id ?? checkboxProps.name ?? fallbackId;
@@ -161,16 +162,16 @@ export function CheckboxField({
           className="font-bold text-brand-deep-purple"
         />
         <input
-          id={id}
-          aria-invalid={errorId ? true : undefined}
           aria-describedby={errorId}
+          aria-invalid={errorId ? true : undefined}
+          id={id}
           {...checkboxProps}
           type="checkbox"
           value="on"
         />
       </div>
       <div className="px-4 pb-3 pt-1">
-        {errorId ? <ErrorList id={errorId} errors={errors} /> : null}
+        {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
       </div>
     </div>
   );
@@ -181,7 +182,7 @@ export function SubmitButton({
   submittingText = "Submitting...",
   ...props
 }: React.ComponentPropsWithRef<"button"> & {
-  state?: "idle" | "submitting" | "loading";
+  state?: "idle" | "loading" | "submitting";
   submittingText?: string;
 }) {
   return (

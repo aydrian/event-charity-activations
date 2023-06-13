@@ -1,32 +1,34 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json, Response } from "@remix-run/node";
+
+import { Response, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+
+import { EventEditor } from "~/routes/resources+/event-editor";
 import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
-import { EventEditor } from "~/routes/resources+/event-editor";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   await requireUserId(request);
   const { eventId } = params;
   const findEvent = await prisma.event.findUnique({
-    where: { id: eventId },
     select: {
+      Charities: {
+        select: { Charity: { select: { id: true, name: true } }, color: true }
+      },
+      collectLeads: true,
+      donationAmount: true,
+      endDate: true,
       id: true,
+      legalBlurb: true,
+      location: true,
       name: true,
+      responseTemplate: true,
       slug: true,
       startDate: true,
-      endDate: true,
-      location: true,
-      donationAmount: true,
-      twitter: true,
-      responseTemplate: true,
       tweetTemplate: true,
-      collectLeads: true,
-      legalBlurb: true,
-      Charities: {
-        select: { color: true, Charity: { select: { id: true, name: true } } }
-      }
-    }
+      twitter: true
+    },
+    where: { id: eventId }
   });
   if (!findEvent) {
     throw new Response("Not Found", {
@@ -55,7 +57,7 @@ export default function EditEvent() {
     <section className="prose mx-auto grid max-w-4xl gap-12">
       <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
         <h2 className="m-0 font-bold text-brand-deep-purple">Edit Event</h2>
-        <EventEditor event={event} allCharities={allCharities} />
+        <EventEditor allCharities={allCharities} event={event} />
       </div>
     </section>
   );

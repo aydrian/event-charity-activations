@@ -1,23 +1,25 @@
-import { json, type LoaderArgs, Response } from "@remix-run/node";
+import { type LoaderArgs, Response, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+
 import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
+
 import { CharityEditor } from "../resources+/charity-editor";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   await requireUserId(request);
   const { charityId } = params;
   const charity = await prisma.charity.findUnique({
-    where: { id: charityId },
     select: {
+      description: true,
       id: true,
+      logoSVG: true,
       name: true,
       slug: true,
-      description: true,
-      logoSVG: true,
-      website: true,
-      twitter: true
-    }
+      twitter: true,
+      website: true
+    },
+    where: { id: charityId }
   });
   if (!charity) {
     throw new Response("Not Found", { status: 404 });

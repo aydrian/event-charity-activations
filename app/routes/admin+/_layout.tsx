@@ -1,17 +1,19 @@
 import type { LoaderArgs } from "@remix-run/node";
+
 import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
-import { requireUserId } from "~/utils/auth.server";
+
 import CompanyLogo from "~/components/company-logo";
 import Footer from "~/components/footer";
+import { requireUserId } from "~/utils/auth.server";
 import { prisma } from "~/utils/db.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
   try {
     const user = await prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-      select: { id: true, firstName: true }
+      select: { firstName: true, id: true },
+      where: { id: userId }
     });
 
     return json({ user });
@@ -31,8 +33,8 @@ export default function AdminLayout() {
           </div>
           <div className="flex items-center md:w-2/6 md:items-center md:justify-center">
             <Link
-              to="/admin/dashboard"
               className="w-auto fill-current text-3xl font-bold text-brand-deep-purple"
+              to="/admin/dashboard"
             >
               Charity Activations
             </Link>
@@ -42,7 +44,7 @@ export default function AdminLayout() {
               <span className="hidden text-sm md:inline-block">
                 Welcome, {user.firstName}
               </span>
-              <form method="get" action="/admin/logout">
+              <form action="/admin/logout" method="get">
                 <button className="rounded bg-brand-electric-purple px-2 py-1 text-sm font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start">
                   Log out
                 </button>

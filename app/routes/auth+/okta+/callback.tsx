@@ -9,7 +9,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     "/admin/dashboard";
 
   return authenticator.authenticate("okta", request, {
-    successRedirect: redirectTo,
-    failureRedirect: "/admin"
+    failureRedirect: "/admin",
+    successRedirect: redirectTo
   });
 };

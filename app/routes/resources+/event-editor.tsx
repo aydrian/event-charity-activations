@@ -1,65 +1,66 @@
-import { type ChangeEvent, useRef, useState } from "react";
 import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
-import { json, redirect, type DataFunctionArgs } from "@remix-run/node";
+import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
-import { z } from "zod";
+import { type ChangeEvent, useRef, useState } from "react";
 import slugify from "slugify";
-import { prisma } from "~/utils/db.server";
+import { z } from "zod";
+
+import appConfig from "~/app.config";
+import {
+  type CharityItemWithColor,
+  CharitySelector
+} from "~/components/charity-selector";
 import { requireUserId } from "~/utils/auth.server";
+import { prisma } from "~/utils/db.server";
 import {
   CheckboxField,
   ErrorList,
   Field,
   SubmitButton,
-  TextareaField,
-  TemplateEditorField
+  TemplateEditorField,
+  TextareaField
 } from "~/utils/forms";
-import {
-  type CharityItemWithColor,
-  CharitySelector
-} from "~/components/charity-selector";
-import appConfig from "~/app.config";
 
 const EventWithLeads = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, { message: "Name is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
-  donationAmount: z.coerce.number().default(3.0),
-  startDate: z.coerce.date({ required_error: "Start Date is required" }),
-  endDate: z.coerce.date({ required_error: "End Date is required" }),
-  location: z.string({ required_error: "Location is required" }),
-  twitter: z.string(),
-  responseTemplate: z
-    .string()
-    .min(1, { message: "Response Template is required" }),
-  tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
-  collectLeads: z.literal("on"),
-  legalBlurb: z.string(),
   charities: z
     .array(z.object({ charityId: z.string(), color: z.string() }))
     .max(4, "A max of 4 charities is allowed")
-    .min(1, "At least 1 charity is required")
+    .min(1, "At least 1 charity is required"),
+  collectLeads: z.literal("on"),
+  donationAmount: z.coerce.number().default(3.0),
+  endDate: z.coerce.date({ required_error: "End Date is required" }),
+  id: z.string().optional(),
+  legalBlurb: z.string(),
+  location: z.string({ required_error: "Location is required" }),
+  name: z.string().min(1, { message: "Name is required" }),
+  responseTemplate: z
+    .string()
+    .min(1, { message: "Response Template is required" }),
+  slug: z.string().min(1, { message: "Slug is required" }),
+  startDate: z.coerce.date({ required_error: "Start Date is required" }),
+  tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
+  twitter: z.string()
 });
 
 const EventWithoutLeads = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, { message: "Name is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
-  donationAmount: z.coerce.number().default(3.0),
-  startDate: z.coerce.date({ required_error: "Start Date is required" }),
-  endDate: z.coerce.date({ required_error: "End Date is required" }),
-  location: z.string({ required_error: "Location is required" }),
-  twitter: z.string(),
-  responseTemplate: z
-    .string()
-    .min(1, { message: "Response Template is required" }),
-  tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
-  collectLeads: z.undefined(),
   charities: z
     .array(z.object({ charityId: z.string(), color: z.string() }))
     .max(4, "A max of 4 charities is allowed")
-    .min(1, "At least 1 charity is required")
+    .min(1, "At least 1 charity is required"),
+  collectLeads: z.undefined(),
+  donationAmount: z.coerce.number().default(3.0),
+  endDate: z.coerce.date({ required_error: "End Date is required" }),
+  id: z.string().optional(),
+  location: z.string({ required_error: "Location is required" }),
+  name: z.string().min(1, { message: "Name is required" }),
+  responseTemplate: z
+    .string()
+    .min(1, { message: "Response Template is required" }),
+  slug: z.string().min(1, { message: "Slug is required" }),
+  startDate: z.coerce.date({ required_error: "Start Date is required" }),
+  tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
+  twitter: z.string()
 });
 
 export const EventEditorSchema = z
@@ -73,8 +74,8 @@ export const action = async ({ request }: DataFunctionArgs) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
-    schema: EventEditorSchema,
-    acceptMultipleErrors: () => true
+    acceptMultipleErrors: () => true,
+    schema: EventEditorSchema
   });
   if (!submission.value) {
     return json(
@@ -89,12 +90,12 @@ export const action = async ({ request }: DataFunctionArgs) => {
     return json({ status: "success", submission } as const);
   }
 
-  const { id, charities, ...data } = submission.value;
+  const { charities, id, ...data } = submission.value;
 
   if (id) {
     const eventUpdate = prisma.event.update({
-      where: { id },
-      data
+      data,
+      where: { id }
     });
 
     const charitiesDelete = prisma.charitiesForEvents.deleteMany({
@@ -103,16 +104,16 @@ export const action = async ({ request }: DataFunctionArgs) => {
 
     const charityUpserts = charities.map((charity) => {
       return prisma.charitiesForEvents.upsert({
+        create: {
+          charityId: charity.charityId,
+          color: charity.color,
+          eventId: id
+        },
         update: {
           color: charity.color
         },
-        create: {
-          eventId: id,
-          charityId: charity.charityId,
-          color: charity.color
-        },
         where: {
-          eventId_charityId: { eventId: id, charityId: charity.charityId }
+          eventId_charityId: { charityId: charity.charityId, eventId: id }
         }
       });
     });
@@ -126,8 +127,8 @@ export const action = async ({ request }: DataFunctionArgs) => {
     await prisma.event.create({
       data: {
         ...data,
-        createdBy: userId,
-        Charities: { create: charities }
+        Charities: { create: charities },
+        createdBy: userId
       }
     });
   }
@@ -140,19 +141,19 @@ export function EventEditor({
 }: {
   allCharities: CharityItemWithColor[];
   event?: {
+    charities: CharityItemWithColor[];
+    collectLeads: boolean;
+    donationAmount: string;
+    endDate: string;
     id: string;
+    legalBlurb: null | string;
+    location: string;
     name: string;
+    responseTemplate: string;
     slug: string;
     startDate: string;
-    endDate: string;
-    location: string;
-    donationAmount: string;
-    twitter: string | null;
-    responseTemplate: string;
     tweetTemplate: string;
-    collectLeads: boolean;
-    legalBlurb: string | null;
-    charities: CharityItemWithColor[];
+    twitter: null | string;
   };
 }) {
   const slugRef = useRef<HTMLInputElement>(null);
@@ -160,10 +161,10 @@ export function EventEditor({
   const eventEditorFetcher = useFetcher<typeof action>();
 
   const [form, fields] = useForm({
-    id: "event-editor",
     constraint: getFieldsetConstraint(
       collectLeads ? EventWithLeads : EventWithoutLeads
     ) as any,
+    id: "event-editor",
     lastSubmission: eventEditorFetcher.data?.submission,
     onValidate({ formData }) {
       return parse(formData, { schema: EventEditorSchema });
@@ -180,113 +181,113 @@ export function EventEditor({
 
   return (
     <eventEditorFetcher.Form
-      method="post"
       action="/resources/event-editor"
+      method="post"
       {...form.props}
       className="not-prose mb-8 flex flex-col sm:mb-4"
     >
       <input name="id" type="hidden" value={event?.id} />
       <Field
-        labelProps={{ htmlFor: fields.name.id, children: "Name" }}
         inputProps={{
           ...conform.input(fields.name),
           defaultValue: event?.name,
           onBlur: handleOnChange
         }}
         errors={fields.name.errors}
+        labelProps={{ children: "Name", htmlFor: fields.name.id }}
       />
       <Field
-        labelProps={{ htmlFor: fields.slug.id, children: "Slug" }}
         inputProps={{
           ...conform.input(fields.slug),
           defaultValue: event?.slug,
           ref: slugRef
         }}
         errors={fields.slug.errors}
+        labelProps={{ children: "Slug", htmlFor: fields.slug.id }}
       />
       <div className="flex w-full flex-row justify-between gap-1">
         <Field
-          className="grow"
-          labelProps={{ htmlFor: fields.startDate.id, children: "Start Date" }}
           inputProps={{
             ...conform.input(fields.startDate),
-            type: "date",
-            defaultValue: event?.startDate?.split("T")[0]
+            defaultValue: event?.startDate?.split("T")[0],
+            type: "date"
           }}
+          className="grow"
           errors={fields.startDate.errors}
+          labelProps={{ children: "Start Date", htmlFor: fields.startDate.id }}
         />
         <Field
-          className="grow"
-          labelProps={{ htmlFor: fields.endDate.id, children: "End Date" }}
           inputProps={{
             ...conform.input(fields.endDate),
-            type: "date",
-            defaultValue: event?.endDate?.split("T")[0]
+            defaultValue: event?.endDate?.split("T")[0],
+            type: "date"
           }}
+          className="grow"
           errors={fields.endDate.errors}
+          labelProps={{ children: "End Date", htmlFor: fields.endDate.id }}
         />
       </div>
       <Field
-        labelProps={{ htmlFor: fields.location.id, children: "Location" }}
         inputProps={{
           ...conform.input(fields.location),
           defaultValue: event?.location
         }}
         errors={fields.location.errors}
+        labelProps={{ children: "Location", htmlFor: fields.location.id }}
       />
       <div className="flex w-full flex-row justify-between gap-1">
         <Field
-          className="grow"
-          labelProps={{
-            htmlFor: fields.donationAmount.id,
-            children: "Donation Amount"
-          }}
           inputProps={{
             ...conform.input(fields.donationAmount),
-            inputMode: "numeric",
-            defaultValue: event?.donationAmount || "3"
+            defaultValue: event?.donationAmount || "3",
+            inputMode: "numeric"
           }}
+          labelProps={{
+            children: "Donation Amount",
+            htmlFor: fields.donationAmount.id
+          }}
+          className="grow"
           errors={fields.donationAmount.errors}
         />
         <Field
-          className="grow"
-          labelProps={{
-            htmlFor: fields.twitter.id,
-            children: "Twitter"
-          }}
           inputProps={{
             ...conform.input(fields.twitter),
             defaultValue: event?.twitter ?? undefined
           }}
+          labelProps={{
+            children: "Twitter",
+            htmlFor: fields.twitter.id
+          }}
+          className="grow"
           errors={fields.twitter.errors}
         />
       </div>
       <TemplateEditorField
         labelProps={{
-          htmlFor: fields.responseTemplate.id,
-          children: "Response Template"
+          children: "Response Template",
+          htmlFor: fields.responseTemplate.id
         }}
         templateEditorProps={{
           variables: [
             {
+              className: "bg-green-500",
               displayName: "Event Name",
-              value: "{{event.name}}",
-              className: "bg-green-500"
+              value: "{{event.name}}"
             },
             {
+              className: "bg-yellow-500",
               displayName: "Charity Name",
-              value: "{{charity.name}}",
-              className: "bg-yellow-500"
+              value: "{{charity.name}}"
             },
             {
+              className: "bg-yellow-500",
               displayName: "Charity URL",
-              value: "{{charity.url}}",
-              className: "bg-yellow-500"
+              value: "{{charity.url}}"
             },
             {
+              className: "bg-blue-500",
               displayName: "Donation Amount",
-              value: "{{donationAmount}}",
-              className: "bg-blue-500"
+              value: "{{donationAmount}}"
             }
           ],
           ...conform.textarea(fields.responseTemplate),
@@ -298,25 +299,25 @@ export function EventEditor({
       />
       <TemplateEditorField
         labelProps={{
-          htmlFor: fields.tweetTemplate.id,
-          children: "Tweet Template"
+          children: "Tweet Template",
+          htmlFor: fields.tweetTemplate.id
         }}
         templateEditorProps={{
           variables: [
             {
+              className: "bg-green-500",
               displayName: "Event",
-              value: "{{event}}",
-              className: "bg-green-500"
+              value: "{{event}}"
             },
             {
+              className: "bg-yellow-500",
               displayName: "Charity",
-              value: "{{charity}}",
-              className: "bg-yellow-500"
+              value: "{{charity}}"
             },
             {
+              className: "bg-blue-500",
               displayName: "Donation Amount",
-              value: "{{donationAmount}}",
-              className: "bg-blue-500"
+              value: "{{donationAmount}}"
             }
           ],
           ...conform.textarea(fields.tweetTemplate),
@@ -327,23 +328,23 @@ export function EventEditor({
         errors={fields.tweetTemplate.errors}
       />
       <CheckboxField
-        labelProps={{
-          htmlFor: fields.collectLeads.id,
-          children: "Collect lead data?"
-        }}
         checkboxProps={{
           ...conform.input(fields.collectLeads),
           defaultChecked: collectLeads,
-          required: false,
-          onChange: () => setCollectLeads(!collectLeads)
+          onChange: () => setCollectLeads(!collectLeads),
+          required: false
+        }}
+        labelProps={{
+          children: "Collect lead data?",
+          htmlFor: fields.collectLeads.id
         }}
         errors={fields.collectLeads.errors}
       />
       {collectLeads ? (
         <TextareaField
           labelProps={{
-            htmlFor: fields.legalBlurb.id,
-            children: "Legal Blurb"
+            children: "Legal Blurb",
+            htmlFor: fields.legalBlurb.id
           }}
           textareaProps={{
             ...conform.textarea(fields.legalBlurb),
@@ -358,23 +359,23 @@ export function EventEditor({
         </h3>
         <CharitySelector
           allCharities={allCharities}
-          selectedCharities={event?.charities}
           maxItems={appConfig.charity.maxPerEvent}
+          selectedCharities={event?.charities}
         />
         <div className="px-4 pb-3 pt-1">
           {fields.charities.errors?.length ? (
             <ErrorList
-              id={`${fields.charities.id}-error`}
               errors={fields.charities.errors}
+              id={`${fields.charities.id}-error`}
             />
           ) : null}
         </div>
       </div>
       <ErrorList errors={form.errors} id={form.errorId} />
       <SubmitButton
-        type="submit"
         className="mt-4 px-6 py-2 md:min-w-[150px] md:self-start"
         state={eventEditorFetcher.state}
+        type="submit"
       >
         Submit
       </SubmitButton>
