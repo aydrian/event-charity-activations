@@ -24,6 +24,21 @@ This application uses Prisma to manage the database.
 
 You can view the [ER Diagram](./erd.md) generated from the Prisma Schema.
 
+## 🔐 Environment Variables
+
+The following are other environment variables you need to set for the application to opperate. You can find them all in the `.env.sample` file.
+
+**Remix Auth**
+
+-`SESSION_SECRET` - any string will work or you can generate one with `openssl rand -hex 32`.
+
+If you are using the Okta Strategy, you'll need the following from your [Okta web app](https://developer.okta.com/docs/guides/sign-into-web-app/nodeexpress/main/#understand-the-callback-route):
+
+- `OKTA_DOMAIN` - Your Okta domain
+- `OKTA_CLIENT_ID` - Your Okta client id
+- `OKTA_CLIENT_SECRET` - Your Okta client secret
+- `OKTA_CALLBACK_URL` - Your Okta callback url
+
 ## 🧑‍💻 Development
 
 To run your Remix app locally, make sure your project's local dependencies are installed:
