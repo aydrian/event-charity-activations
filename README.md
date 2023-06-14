@@ -1,21 +1,30 @@
-# Welcome to Remix!
+# Charity Activations
 
-- [Remix Docs](https://remix.run/docs)
+This application tracks charity activations per event. Attendees will see a donations dashboard and be able to select a charity to be donated to by scanning a QR code and completing a form. Optional lead data can be requested. The dashboard will update in real time as donation choices are made.
 
-## Deployment
+## 🥞 Tech Stack
 
-After having run the `create-remix` command and selected "Vercel" as a deployment target, you only need to [import your Git repository](https://vercel.com/new) into Vercel, and it will be deployed.
+- Web Framework - 💿 [Remix](https://remix.run/)
+- Database - 🪳 [CockroachDB](https://www.cockroachlabs.com/)
+- Database ORM - △ [Prisma](https://www.prisma.io/)
+- Styling - 🍃 [Tailwind CSS](https://tailwindcss.com/)
+- UI Components - 🧱 [shadcn/ui](https://ui.shadcn.com/) and [Radix](https://www.radix-ui.com/)
+- Hosting
 
-If you'd like to avoid using a Git repository, you can also deploy the directory by running [Vercel CLI](https://vercel.com/cli):
+## 🎨 Customization
 
-```sh
-npm i -g vercel
-vercel
-```
+Parts of this application are ready to customize for you use. You can update information in the application config file (`/app/app.config.ts`). Styles can be updated using the Tailwind CSS config file (`tailwind.config.ts`). You can even specify a logo by updating the Company Logo component (`/app/components/company-logo.tsx`).
 
-It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
+## 💾 Database Setup
 
-## Development
+This application uses Prisma to manage the database.
+
+1. Update the `DATABASE_URL` environment variable with your CockroachDB connection string.
+2. Run `npx prisma migrate` to create the database schema.
+
+You can view the [ER Diagram](./erd.md) generated from the Prisma Schema.
+
+## 🧑‍💻 Development
 
 To run your Remix app locally, make sure your project's local dependencies are installed:
 
@@ -31,7 +40,7 @@ npm run dev
 
 Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
 
-If you're used to using the `vercel dev` command provided by [Vercel CLI](https://vercel.com/cli) instead, you can also use that, but it's not needed.
+## 🚧 Deployment
 
 ## 📝 License
 
