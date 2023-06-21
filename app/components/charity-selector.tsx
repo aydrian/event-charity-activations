@@ -2,9 +2,9 @@ import { clsx } from "clsx";
 import { resetIdCounter, useCombobox, useMultipleSelection } from "downshift";
 import React, { useCallback } from "react";
 
-import type { CharityItem } from "~/models/charity.server";
+import type { CharityItem } from "~/models/charity.server.ts";
 
-import { ColorSelector } from "./color-selector";
+import { ColorSelector } from "./color-selector.tsx";
 
 export type CharityItemWithColor = CharityItem & { color?: string };
 

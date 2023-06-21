@@ -8,11 +8,11 @@ import {
 } from "@remix-run/react";
 import handlebars from "handlebars";
 
-import Footer from "~/components/footer";
-import TweetButton from "~/components/tweet-button";
-import { prisma } from "~/utils/db.server";
-import { processMarkdownToHtml } from "~/utils/markdown.server";
-import { USDollar } from "~/utils/misc";
+import Footer from "~/components/footer.tsx";
+import TweetButton from "~/components/tweet-button.tsx";
+import { prisma } from "~/utils/db.server.ts";
+import { processMarkdownToHtml } from "~/utils/markdown.server.ts";
+import { USDollar } from "~/utils/misc.ts";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { donationId } = params;

@@ -4,14 +4,14 @@ import { PhotoIcon } from "@heroicons/react/24/outline";
 import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { type ChangeEvent, useRef } from "react";
-import slugify from "slugify";
 import { z } from "zod";
 
-import { requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/db.server";
-import { ErrorList, Field, SubmitButton } from "~/utils/forms";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
+import { ErrorList, Field, SubmitButton } from "~/utils/forms.tsx";
+import slugify from "~/utils/slugify.ts";
 
-import { FileUploader } from "./upload";
+import { FileUploader } from "./upload.tsx";
 
 export const CharityEditorSchema = z.object({
   description: z.string().min(1, { message: "Description is required" }),

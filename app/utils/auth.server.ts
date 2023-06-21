@@ -3,11 +3,11 @@ import { Authenticator /*, AuthorizationError*/ } from "remix-auth";
 import { OktaStrategy } from "remix-auth-okta";
 import invariant from "tiny-invariant";
 
-import { prisma } from "~/utils/db.server";
-import { sessionStorage } from "~/utils/session.server";
+import { prisma } from "~/utils/db.server.ts";
+import { sessionStorage } from "~/utils/session.server.ts";
 // import { type User } from "@prisma/client";
 // import bcrypt from "bcryptjs";
-// import { verifyLogin } from "~/models/user.server";
+// import { verifyLogin } from "~/models/user.server.ts";
 
 const oktaDomain = process.env.OKTA_DOMAIN;
 invariant(typeof oktaDomain === "string", `OKTA_DOMAIN is required`);

@@ -18,11 +18,10 @@ import {
 import QRCode from "qrcode";
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import SVG from "react-inlinesvg";
 
-import appConfig from "~/app.config";
-import { prisma } from "~/utils/db.server";
-import { USDollar, hexToRgbA } from "~/utils/misc";
+import appConfig from "~/app.config.ts";
+import { prisma } from "~/utils/db.server.ts";
+import { USDollar, hexToRgbA } from "~/utils/misc.ts";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -180,9 +179,12 @@ export default function EventDashboard() {
                 {charities.map((charity) => (
                   <React.Fragment key={charity.charity_id}>
                     {charity.logoSVG ? (
-                      <SVG
+                      <img
+                        src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                          charity.logoSVG
+                        )}`}
+                        alt={charity.name}
                         className="h-12 text-brand-deep-purple"
-                        src={charity.logoSVG}
                       />
                     ) : null}
                   </React.Fragment>

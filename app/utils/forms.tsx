@@ -4,7 +4,7 @@ import React, { useId } from "react";
 import {
   TemplateEditor,
   type TemplateEditorProps
-} from "~/components/template-editor";
+} from "~/components/template-editor.tsx";
 
 export type ListOfErrors = Array<null | string | undefined> | null | undefined;
 

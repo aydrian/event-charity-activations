@@ -1,6 +1,6 @@
 import { LeadScore } from "@prisma/client";
 
-import { LeadScoreIcon } from "./lead-score-icon";
+import { LeadScoreIcon } from "./lead-score-icon.tsx";
 
 type LeadScoreSelectorProps = {
   defaultSelected?: LeadScore;

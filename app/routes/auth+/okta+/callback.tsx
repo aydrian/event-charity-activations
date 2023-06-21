@@ -1,7 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node";
 
-import { authenticator } from "~/utils/auth.server";
-import { redirectToCookie } from "~/utils/cookies.server";
+import { authenticator } from "~/utils/auth.server.ts";
+import { redirectToCookie } from "~/utils/cookies.server.ts";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const redirectTo =

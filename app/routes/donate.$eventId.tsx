@@ -7,10 +7,10 @@ import {
   useRouteError
 } from "@remix-run/react";
 
-import Footer from "~/components/footer";
-import { DonationForm } from "~/routes/resources+/donate";
-import { prisma } from "~/utils/db.server";
-import { USDollar } from "~/utils/misc";
+import Footer from "~/components/footer.tsx";
+import { DonationForm } from "~/routes/resources+/donate.tsx";
+import { prisma } from "~/utils/db.server.ts";
+import { USDollar } from "~/utils/misc.ts";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId } = params;

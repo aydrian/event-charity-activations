@@ -1,6 +1,6 @@
-import appConfig from "~/app.config";
+import appConfig from "~/app.config.ts";
 
-import GitHubLogo from "./github-logo";
+import GitHubLogo from "./github-logo.tsx";
 
 export default function Footer() {
   return (

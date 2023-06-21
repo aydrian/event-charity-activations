@@ -1,10 +1,10 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import * as React from "react";
 
-import { Textarea, type TextareaProps } from "~/components/ui/textarea";
-import { cn } from "~/utils/misc";
+import { Textarea, type TextareaProps } from "~/components/ui/textarea.tsx";
+import { cn } from "~/utils/misc.ts";
 
-import { Badge } from "./ui/badge";
+import { Badge } from "./ui/badge.tsx";
 
 type TemplateVariable = {
   className: string;

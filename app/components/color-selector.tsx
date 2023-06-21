@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import { resetIdCounter, useSelect } from "downshift";
 
-import appConfig from "~/app.config";
+import appConfig from "~/app.config.ts";
 
 type Item = {
   hex: string;

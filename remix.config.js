@@ -15,6 +15,6 @@ export default {
   routes: async (defineRoutes) => {
     return flatRoutes("routes", defineRoutes);
   },
-  serverModuleFormat: "cjs",
+  serverModuleFormat: "esm",
   tailwind: true
 };

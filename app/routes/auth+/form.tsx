@@ -6,9 +6,9 @@ import { AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { z } from "zod";
 
-import { authenticator } from "~/utils/auth.server";
-import { redirectToCookie } from "~/utils/cookies.server";
-import { ErrorList, Field, SubmitButton } from "~/utils/forms";
+import { authenticator } from "~/utils/auth.server.ts";
+import { redirectToCookie } from "~/utils/cookies.server.ts";
+import { ErrorList, Field, SubmitButton } from "~/utils/forms.tsx";
 
 const LoginFormSchema = z.object({
   email: z

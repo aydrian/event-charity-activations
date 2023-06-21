@@ -4,9 +4,8 @@ import { DocumentPlusIcon } from "@heroicons/react/24/outline";
 import { json, unstable_parseMultipartFormData } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import React from "react";
-import SVG from "react-inlinesvg";
 
-import { requireUserId } from "~/utils/auth.server";
+import { requireUserId } from "~/utils/auth.server.ts";
 
 const uploadHandler: UploadHandler = async ({
   contentType,
@@ -101,9 +100,10 @@ export function FileUploader({
       onDrop={handleDrop}
     >
       {svgString ? (
-        <SVG
+        <img
+          alt="charity logo"
           className="aspect-auto h-full text-brand-deep-purple"
-          src={svgString}
+          src={`data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`}
         />
       ) : (
         <div className="pointer-events-none flex select-none flex-col items-center">

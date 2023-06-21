@@ -3,9 +3,9 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { EventEditor } from "~/routes/resources+/event-editor";
-import { requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/db.server";
+import { EventEditor } from "~/routes/resources+/event-editor.tsx";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
 
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUserId(request);

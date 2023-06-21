@@ -3,16 +3,15 @@ import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { type ChangeEvent, useRef, useState } from "react";
-import slugify from "slugify";
 import { z } from "zod";
 
-import appConfig from "~/app.config";
+import appConfig from "~/app.config.ts";
 import {
   type CharityItemWithColor,
   CharitySelector
-} from "~/components/charity-selector";
-import { requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/db.server";
+} from "~/components/charity-selector.tsx";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
 import {
   CheckboxField,
   ErrorList,
@@ -20,7 +19,8 @@ import {
   SubmitButton,
   TemplateEditorField,
   TextareaField
-} from "~/utils/forms";
+} from "~/utils/forms.tsx";
+import slugify from "~/utils/slugify.ts";
 
 const EventWithLeads = z.object({
   charities: z

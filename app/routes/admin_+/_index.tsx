@@ -3,14 +3,14 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import appConfig from "~/app.config";
-import CompanyLogo from "~/components/company-logo";
-import GitHubLogo from "~/components/github-logo";
-import { OktaLoginForm } from "~/routes/auth+/okta+/_index";
-import { authenticator } from "~/utils/auth.server";
-import { redirectToCookie } from "~/utils/cookies.server";
-import { commitSession, getSession } from "~/utils/session.server";
-// import { FormLoginForm } from "~/routes/auth+/form";
+import appConfig from "~/app.config.ts";
+import CompanyLogo from "~/components/company-logo.tsx";
+import GitHubLogo from "~/components/github-logo.tsx";
+// import { FormLoginForm } from "~/routes/auth+/form.tsx";
+import { OktaLoginForm } from "~/routes/auth+/okta+/_index.tsx";
+import { authenticator } from "~/utils/auth.server.ts";
+import { redirectToCookie } from "~/utils/cookies.server.ts";
+import { commitSession, getSession } from "~/utils/session.server.ts";
 
 export const loader = async ({ request }: LoaderArgs) => {
   await authenticator.isAuthenticated(request, {
