@@ -21,6 +21,7 @@ import { Bar } from "react-chartjs-2";
 
 import appConfig from "~/app.config.ts";
 import { prisma } from "~/utils/db.server.ts";
+import env from "~/utils/env.server.ts";
 import { USDollar, hexToRgbA } from "~/utils/misc.ts";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
@@ -70,8 +71,10 @@ export const loader = async ({ params }: LoaderArgs) => {
     };
   });
   const donateLink = `${
-    process.env.NODE_ENV === "development" ? "http" : "https"
-  }://${process.env.VERCEL_URL}/donate/${event.id}`;
+    env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : `https://${env.FLY_APP_NAME}.fly.dev`
+  }/donate/${event.id}`;
   const qrcode = await QRCode.toDataURL(donateLink);
   return json({ charities, donateLink, event, qrcode });
 };
