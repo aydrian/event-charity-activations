@@ -1,4 +1,4 @@
-import { prisma } from "~/utils/db.server";
+import { prisma } from "~/utils/db.server.ts";
 
 export async function getLeads(eventId: string) {
   return prisma.lead.findMany({

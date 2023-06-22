@@ -1,7 +1,5 @@
-import type { GroupedDonation } from "@prisma/client";
 import type { LoaderArgs } from "@remix-run/node";
 
-import { gql, useSubscription } from "@apollo/client";
 import { BanknotesIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { Response, json } from "@remix-run/node";
 import {
@@ -18,28 +16,15 @@ import {
   Tooltip
 } from "chart.js";
 import QRCode from "qrcode";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Bar } from "react-chartjs-2";
-import SVG from "react-inlinesvg";
 
-import appConfig from "~/app.config";
-import { initApollo } from "~/utils/apollo";
-import { prisma } from "~/utils/db.server";
-import { USDollar, hexToRgbA } from "~/utils/misc";
-
-const client = initApollo();
+import appConfig from "~/app.config.ts";
+import { prisma } from "~/utils/db.server.ts";
+import env from "~/utils/env.server.ts";
+import { USDollar, hexToRgbA } from "~/utils/misc.ts";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
-
-const GET_DONATIONS = gql`
-  subscription DonationAdded($event_id: uuid) {
-    grouped_donations(where: { event_id: { _eq: $event_id } }) {
-      charity_id
-      event_id
-      count
-    }
-  }
-`;
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { slug } = params;
@@ -86,41 +71,17 @@ export const loader = async ({ params }: LoaderArgs) => {
     };
   });
   const donateLink = `${
-    process.env.NODE_ENV === "development" ? "http" : "https"
-  }://${process.env.VERCEL_URL}/donate/${event.id}`;
+    env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : `https://${env.FLY_APP_NAME}.fly.dev`
+  }/donate/${event.id}`;
   const qrcode = await QRCode.toDataURL(donateLink);
   return json({ charities, donateLink, event, qrcode });
 };
 
 export default function EventDashboard() {
-  const {
-    charities: initCharities,
-    donateLink,
-    event,
-    qrcode
-  } = useLoaderData<typeof loader>();
-  const [charities, setCharities] = useState(initCharities);
-  const { data } = useSubscription(GET_DONATIONS, {
-    client,
-    variables: { event_id: event.id }
-  });
-
-  useEffect(() => {
-    if (!data?.grouped_donations) return;
-    const grouptedDonations: GroupedDonation[] = data.grouped_donations;
-    const counts: { [key: string]: number } = grouptedDonations.reduce(
-      (obj, item) => {
-        return { ...obj, [item.charity_id]: item.count };
-      },
-      {}
-    );
-
-    const newCharities = charities.map((charity) => {
-      charity.count = counts[charity.charity_id] || charity.count;
-      return charity;
-    });
-    setCharities(newCharities);
-  }, [data, charities]);
+  const { charities, donateLink, event, qrcode } =
+    useLoaderData<typeof loader>();
 
   return (
     <main className="min-h-screen max-w-full bg-brand-deep-purple p-4">
@@ -221,9 +182,12 @@ export default function EventDashboard() {
                 {charities.map((charity) => (
                   <React.Fragment key={charity.charity_id}>
                     {charity.logoSVG ? (
-                      <SVG
+                      <img
+                        src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                          charity.logoSVG
+                        )}`}
+                        alt={charity.name}
                         className="h-12 text-brand-deep-purple"
-                        src={charity.logoSVG}
                       />
                     ) : null}
                   </React.Fragment>

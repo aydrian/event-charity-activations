@@ -3,11 +3,10 @@ import type { LoaderArgs } from "@remix-run/node";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import SVG from "react-inlinesvg";
 
-import EventCard from "~/components/event-card";
-import { requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/db.server";
+import EventCard from "~/components/event-card.tsx";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
 
 export const loader = async ({ request }: LoaderArgs) => {
   await requireUserId(request);
@@ -39,6 +38,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function AdminDashboard() {
   const { charities, events } = useLoaderData<typeof loader>();
+  // const SVG = new InlineSVG();
   return (
     <section className="prose mx-auto grid max-w-4xl">
       <h1 className="text-white">Admin Dashboard</h1>
@@ -85,9 +85,12 @@ export default function AdminDashboard() {
                 <div className="flex flex-col pb-3" key={charity.id}>
                   <dt>
                     {charity.logoSVG ? (
-                      <SVG
+                      <img
+                        src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                          charity.logoSVG
+                        )}`}
+                        alt={charity.name}
                         className="h-12 text-brand-deep-purple"
-                        src={charity.logoSVG}
                       />
                     ) : null}
                     <div className="font-semibold">

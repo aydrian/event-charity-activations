@@ -3,10 +3,10 @@ import type { LoaderArgs } from "@remix-run/node";
 import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 
-import CompanyLogo from "~/components/company-logo";
-import Footer from "~/components/footer";
-import { requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/db.server";
+import CompanyLogo from "~/components/company-logo.tsx";
+import Footer from "~/components/footer.tsx";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);

@@ -1,4 +1,4 @@
-import { cn } from "~/utils/misc";
+import { cn } from "~/utils/misc.ts";
 
 export default function CompanyLogo({ className }: { className?: string }) {
   return (

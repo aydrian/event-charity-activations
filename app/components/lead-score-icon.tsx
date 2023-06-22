@@ -7,7 +7,7 @@ import {
   XCircleIcon
 } from "@heroicons/react/24/outline";
 
-import { titleCase } from "~/utils/misc";
+import { titleCase } from "~/utils/misc.ts";
 
 type LeadScoreIconProps = {
   className?: string;

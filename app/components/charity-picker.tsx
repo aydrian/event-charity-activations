@@ -1,5 +1,5 @@
-import { ErrorList, type ListOfErrors } from "~/utils/forms";
-import { hexToRgbA } from "~/utils/misc";
+import { ErrorList, type ListOfErrors } from "~/utils/forms.tsx";
+import { hexToRgbA } from "~/utils/misc.ts";
 
 type CharityPickerProps = {
   charities: { color: string; id: string; name: string }[];

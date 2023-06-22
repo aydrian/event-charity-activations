@@ -4,10 +4,10 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 
-import { LeadScoreIcon } from "~/components/lead-score-icon";
-import { getLeads } from "~/models/leads.server";
-import { requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/db.server";
+import { LeadScoreIcon } from "~/components/lead-score-icon.tsx";
+import { getLeads } from "~/models/leads.server.ts";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   await requireUserId(request);

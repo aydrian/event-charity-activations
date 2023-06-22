@@ -1,25 +1,13 @@
 import { Authenticator /*, AuthorizationError*/ } from "remix-auth";
 // import { FormStrategy } from "remix-auth-form";
 import { OktaStrategy } from "remix-auth-okta";
-import invariant from "tiny-invariant";
 
-import { prisma } from "~/utils/db.server";
-import { sessionStorage } from "~/utils/session.server";
+import { prisma } from "~/utils/db.server.ts";
+import { sessionStorage } from "~/utils/session.server.ts";
 // import { type User } from "@prisma/client";
 // import bcrypt from "bcryptjs";
-// import { verifyLogin } from "~/models/user.server";
-
-const oktaDomain = process.env.OKTA_DOMAIN;
-invariant(typeof oktaDomain === "string", `OKTA_DOMAIN is required`);
-const oktaClientId = process.env.OKTA_CLIENT_ID;
-invariant(typeof oktaClientId === "string", `OKTA_CLIENT_ID is required`);
-const oktaClientSecret = process.env.OKTA_CLIENT_SECRET;
-invariant(
-  typeof oktaClientSecret === "string",
-  `OKTA_CLIENT_SECRET is required`
-);
-const oktaCallbackUrl = process.env.OKTA_CALLBACK_URL;
-invariant(typeof oktaCallbackUrl === "string", `OKTA_CALLBACK_URL is required`);
+// import { verifyLogin } from "~/models/user.server.ts";
+import env from "./env.server.ts";
 
 // Create an instance of the authenticator, pass a generic with what
 // strategies will return and will store in the session
@@ -27,10 +15,10 @@ export const authenticator = new Authenticator<string>(sessionStorage);
 
 const oktaStrategy = new OktaStrategy(
   {
-    callbackURL: oktaCallbackUrl,
-    clientID: oktaClientId,
-    clientSecret: oktaClientSecret,
-    issuer: `${oktaDomain}/oauth2/default`
+    callbackURL: env.OKTA_CALLBACK_URL,
+    clientID: env.OKTA_CLIENT_ID,
+    clientSecret: env.OKTA_CLIENT_SECRET,
+    issuer: `${env.OKTA_DOMAIN}/oauth2/default`
   },
   async ({ accessToken, extraParams, profile, refreshToken }) => {
     const user = await prisma.user.upsert({

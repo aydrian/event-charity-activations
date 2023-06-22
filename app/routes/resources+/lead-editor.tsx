@@ -5,12 +5,12 @@ import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
 import { z } from "zod";
 
-import type { getLeads } from "~/models/leads.server";
+import type { getLeads } from "~/models/leads.server.ts";
 
-import { LeadScoreSelector } from "~/components/lead-score-selector";
-import { requireUserId } from "~/utils/auth.server";
-import { prisma } from "~/utils/db.server";
-import { ErrorList, SubmitButton, TextareaField } from "~/utils/forms";
+import { LeadScoreSelector } from "~/components/lead-score-selector.tsx";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
+import { ErrorList, SubmitButton, TextareaField } from "~/utils/forms.tsx";
 
 type LeadType = Awaited<ReturnType<typeof getLeads>>[number];
 

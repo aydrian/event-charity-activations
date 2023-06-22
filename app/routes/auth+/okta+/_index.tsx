@@ -4,9 +4,9 @@ import type { ButtonHTMLAttributes } from "react";
 import { useForm } from "@conform-to/react";
 import { redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
-import clsx from "clsx";
+import { clsx } from "clsx";
 
-import { authenticator } from "~/utils/auth.server";
+import { authenticator } from "~/utils/auth.server.ts";
 
 export const loader: LoaderFunction = () => redirect("/admin");
 

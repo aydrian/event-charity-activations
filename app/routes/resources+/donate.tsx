@@ -4,9 +4,9 @@ import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
 
-import { CharityPicker } from "~/components/charity-picker";
-import { prisma } from "~/utils/db.server";
-import { ErrorList, Field, SubmitButton } from "~/utils/forms";
+import { CharityPicker } from "~/components/charity-picker.tsx";
+import { prisma } from "~/utils/db.server.ts";
+import { ErrorList, Field, SubmitButton } from "~/utils/forms.tsx";
 
 const DonationWithLeads = z.object({
   charityId: z.string(),
