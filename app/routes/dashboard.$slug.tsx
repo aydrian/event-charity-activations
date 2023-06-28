@@ -72,7 +72,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   });
   const donateLink = `${
     env.NODE_ENV === "development"
-      ? "http://localhost:3000"
+      ? "https://localhost:3000"
       : `https://${env.FLY_APP_NAME}.fly.dev`
   }/donate/${event.id}`;
   const qrcode = await QRCode.toDataURL(donateLink);
