@@ -4,6 +4,7 @@ import compression from "compression";
 import express from "express";
 import morgan from "morgan";
 import * as fs from "node:fs";
+import https from "node:https";
 
 import * as build from "./build/index.js";
 
@@ -40,8 +41,16 @@ app.all(
       })
 );
 
+const server = https.createServer(
+  {
+    cert: fs.readFileSync("cert.pem"),
+    key: fs.readFileSync("key.pem")
+  },
+  app
+);
+
 const port = process.env.PORT || 3000;
-app.listen(port, async () => {
+server.listen(port, async () => {
   console.log(`Express server listening on port ${port}`);
 
   if (process.env.NODE_ENV === "development") {
