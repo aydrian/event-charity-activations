@@ -7,8 +7,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["views"]
+  provider = "prisma-client-js"
 }
 
 generator erd {
@@ -122,13 +121,4 @@ model Lead {
   donationId String    @unique @map("donation_id") @db.Uuid
 
   @@map("leads")
-}
-
-view GroupedDonation {
-  charity_id String @db.Uuid
-  event_id   String @db.Uuid
-  count      Int    @db.Int4
-
-  @@unique([charity_id, event_id])
-  @@map("grouped_donations")
 }

@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^10.1.0",
-    "@remix-run/dev": "^1.15.0",
+    "@remix-run/dev": "^1.18.0",
     "@remix-run/eslint-config": "^1.15.0",
     "@remix-run/serve": "^1.15.0",
     "@tailwindcss/typography": "^0.5.9",

@@ -85,13 +85,6 @@ MEETING_REQUESTED meeting_requested
     String donation_id 
     }
   
-
-  "grouped_donations" {
-    String charity_id 
-    String event_id 
-    Int count 
-    }
-  
     "users" o{--}o "events" : "Events"
     "users" o{--}o "charities" : "Charities"
     "events" o|--|| "users" : "Creator"

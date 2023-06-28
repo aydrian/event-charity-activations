@@ -18,6 +18,7 @@ import {
 import QRCode from "qrcode";
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import { useEventSource } from "remix-utils";
 
 import appConfig from "~/app.config.ts";
 import { prisma } from "~/utils/db.server.ts";
@@ -51,13 +52,17 @@ export const loader = async ({ params }: LoaderArgs) => {
     });
   }
   const { Charities, ...event } = result;
-  const groupedResults = await prisma.groupedDonation.findMany({
-    select: { charity_id: true, count: true },
-    where: { event_id: event.id }
+  const groupedResults = await prisma.donation.groupBy({
+    _count: {
+      _all: true
+    },
+    by: ["charityId", "eventId"],
+    where: { eventId: event.id }
   });
+
   const counts: { [key: string]: number } = groupedResults.reduce(
     (obj, item) => {
-      return { ...obj, [item.charity_id]: item.count };
+      return { ...obj, [item.charityId]: item._count._all };
     },
     {}
   );
@@ -80,8 +85,31 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export default function EventDashboard() {
-  const { charities, donateLink, event, qrcode } =
-    useLoaderData<typeof loader>();
+  const {
+    charities: initCharities,
+    donateLink,
+    event,
+    qrcode
+  } = useLoaderData<typeof loader>();
+  const [charities, setCharities] = React.useState(initCharities);
+  const newDonationEvent = useEventSource("/resources/crl-cdc-webhook", {
+    event: `new-donation-${event.id}`
+  });
+
+  React.useEffect(() => {
+    setCharities((prevCharities) => {
+      const updatedCharities = prevCharities.map((charity) => {
+        if (charity.charity_id === newDonationEvent) {
+          return {
+            ...charity,
+            count: charity.count + 1
+          };
+        }
+        return charity;
+      });
+      return updatedCharities;
+    });
+  }, [newDonationEvent]);
 
   return (
     <main className="min-h-screen max-w-full bg-brand-deep-purple p-4">
