@@ -1,5 +1,6 @@
 import { createRequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
+import chalk from "chalk";
 import compression from "compression";
 import express from "express";
 import morgan from "morgan";
@@ -58,6 +59,14 @@ server.listen(port, async () => {
   console.log(`Express server listening on port ${port}`);
 
   if (process.env.NODE_ENV === "development") {
+    const localUrl = `https://localhost:${port}`;
+    console.log(
+      `
+  ${chalk.bold("Local:")}   ${chalk.cyan(localUrl)}
+${chalk.bold("Press Ctrl+C to stop")}
+    `.trim()
+    );
+
     broadcastDevReady(build);
   }
 });

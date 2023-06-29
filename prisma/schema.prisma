@@ -39,8 +39,8 @@ model Event {
   donationAmount   Decimal              @default(3.00) @map("donation_amount")
   collectLeads     Boolean              @default(false) @map("collect_leads")
   legalBlurb       String?              @map("legal_blurb")
-  responseTemplate String               @default("Thank you for helping us donate {{donationAmount}} to {{charity}} at {{event}}.") @map("response_template")
-  tweetTemplate    String               @default("I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}.") @map("tweet_template")
+  responseTemplate String               @default("Thank you for helping us donate {{donationAmount}} to {{charity.name}} at {{event.name}}.") @map("response_template")
+  tweetTemplate    String               @default("I just helped @CockroachDB donate {{donationAmount}} to {{charity.name}} at {{event.name}}.") @map("tweet_template")
   createdBy        String               @map("created_by") @db.Uuid
   createdAt        DateTime             @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt        DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
