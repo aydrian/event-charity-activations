@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import fs from "fs";
 
 const prisma = new PrismaClient();
 
@@ -20,30 +21,57 @@ async function seed() {
       {
         createdBy: user.id,
         description: "Black Girls Code",
-        id: "ed618393-b6c5-4b22-bec3-15b0a3ae3835",
+        id: "57671ca8-1772-4b05-af47-564577a8e8b5",
+        logoSVG: await fs.promises.readFile(
+          "./prisma/assets/black-girls-code.svg",
+          {
+            encoding: "utf-8"
+          }
+        ),
         name: "Black Girls Code",
-        slug: "black-girls-code"
+        slug: "black-girls-code",
+        twitter: "blackgirlscode",
+        website: "https://wearebgc.org/"
       },
       {
         createdBy: user.id,
         description: "Women Who Code",
-        id: "b1d05327-fe06-4318-a3e7-8a83fc7c19c2",
+        id: "fa57f748-d67f-426a-ab22-a1aba01ea80d",
+        logoSVG: await fs.promises.readFile(
+          "./prisma/assets/women-who-code.svg",
+          {
+            encoding: "utf-8"
+          }
+        ),
         name: "Women Who Code",
-        slug: "women-who-code"
+        slug: "women-who-code",
+        twitter: "womenwhocode",
+        website: "https://www.cancerresearch.org/"
       },
       {
         createdBy: user.id,
         description: "UNICEF",
-        id: "a91ef3a7-632b-4926-a8dd-817c6aea2f29",
+        id: "d88bf1e9-5039-4489-9e78-cde32ae238c9",
+        logoSVG: await fs.promises.readFile("./prisma/assets/unicef.svg", {
+          encoding: "utf-8"
+        }),
         name: "UNICEF",
-        slug: "unicef"
+        slug: "unicef",
+        twitter: "unicef",
+        website: "https://www.unicef.org/"
       },
       {
         createdBy: user.id,
         description: "Cancer Research Institute",
-        id: "c5e1ea03-7c92-4939-b9cf-f874a6b64ff8",
+        id: "73c41cc0-a6d3-43ae-8cda-2015e12345c8",
+        logoSVG: await fs.promises.readFile(
+          "./prisma/assets/cancer-research-institute.svg",
+          { encoding: "utf-8" }
+        ),
         name: "Cancer Research Institute",
-        slug: "cancer-research-institute"
+        slug: "cancer-research-institute",
+        twitter: "CancerResearch",
+        website: "https://www.cancerresearch.org/"
       }
     ]
   });
@@ -68,22 +96,22 @@ async function seed() {
   await prisma.charitiesForEvents.createMany({
     data: [
       {
-        charityId: "ed618393-b6c5-4b22-bec3-15b0a3ae3835",
+        charityId: "57671ca8-1772-4b05-af47-564577a8e8b5",
         color: "#f433ff",
         eventId: event.id
       },
       {
-        charityId: "b1d05327-fe06-4318-a3e7-8a83fc7c19c2",
+        charityId: "73c41cc0-a6d3-43ae-8cda-2015e12345c8",
         color: "#ff5b00",
         eventId: event.id
       },
       {
-        charityId: "a91ef3a7-632b-4926-a8dd-817c6aea2f29",
+        charityId: "d88bf1e9-5039-4489-9e78-cde32ae238c9",
         color: "#0165fc",
         eventId: event.id
       },
       {
-        charityId: "c5e1ea03-7c92-4939-b9cf-f874a6b64ff8",
+        charityId: "fa57f748-d67f-426a-ab22-a1aba01ea80d",
         color: "#fff917",
         eventId: event.id
       }
