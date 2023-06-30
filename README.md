@@ -19,10 +19,26 @@ Parts of this application are ready to customize for you use. You can update inf
 
 This application uses Prisma to manage our database.
 
+### 🧳 Migrate Schema Changes
+
 1. Update the `DATABASE_URL` environment variable with your CockroachDB connection string.
 2. Run `npx prisma migrate` to create the database schema.
 
 You can view the [ER Diagram](./erd.md) generated from the Prisma Schema.
+
+### 🚰 Create the Changefeed
+
+<sup>This only needs to be done once.</sup>
+
+In a terminal, run
+
+```shell
+npx prisma db execute --file ./prisma/sql/set_cluster_settings.sql
+npx prisma db execute --file ./prisma/sql/create_changefeed_prod.sql
+```
+
+> **Note**
+> You may also execute the contents of [set_cluster_settings.sql](./prisma/sql/set_cluster_settings.sql) and [create_changefeed_prod.sql](./prisma/sql/create_changefeed_prod.sql) in a sql shell.
 
 ## 🔐 Environment Variables
 

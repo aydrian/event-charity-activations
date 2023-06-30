@@ -11,8 +11,8 @@ echo "🌱 Seeding the database using Prisma"
 npx prisma db seed
 
 echo "🚰 Creating the change feed"
-npx prisma db execute --file ./prisma/set_cluster_settings.sql
-npx prisma db execute --file ./prisma/create_changefeed.sql
+npx prisma db execute --file ./prisma/sql/set_cluster_settings.sql
+npx prisma db execute --file ./prisma/sql/create_changefeed_dev.sql
 
 echo "🎉 Your local CockroachDB server is ready!"
 echo "Use connection string: postgresql://root@localhost:26257/charity_activations"
