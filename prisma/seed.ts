@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 import fs from "fs";
 
 const prisma = new PrismaClient();
@@ -11,8 +10,7 @@ async function seed() {
       firstName: "Aydrian",
       fullName: "Aydrian Howard",
       id: "8e346dd2-4e44-40f1-a19e-45ffe0be1e09",
-      lastName: "Howard",
-      passwordHash: await bcrypt.hash("password1234", 10)
+      lastName: "Howard"
     }
   });
 
