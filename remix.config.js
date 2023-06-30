@@ -3,7 +3,11 @@ import { flatRoutes } from "remix-flat-routes";
 /** @type {import('@remix-run/dev').AppConfig} */
 export default {
   future: {
-    v2_dev: true,
+    v2_dev: {
+      scheme: "https",
+      tlsCert: "cert.pem",
+      tlsKey: "key.pem"
+    },
     v2_errorBoundary: true,
     v2_headers: true,
     v2_meta: true,

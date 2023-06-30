@@ -7,8 +7,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["views"]
+  provider = "prisma-client-js"
 }
 
 generator erd {
@@ -40,7 +39,7 @@ model Event {
   donationAmount   Decimal              @default(3.00) @map("donation_amount")
   collectLeads     Boolean              @default(false) @map("collect_leads")
   legalBlurb       String?              @map("legal_blurb")
-  responseTemplate String               @default("Thank you for helping us donate {{donationAmount}} to {{charity}} at {{event}}.") @map("response_template")
+  responseTemplate String               @default("Thank you for helping us donate {{donationAmount}} to {{charity.name}} at {{event.name}}.") @map("response_template")
   tweetTemplate    String               @default("I just helped @CockroachDB donate {{donationAmount}} to {{charity}} at {{event}}.") @map("tweet_template")
   createdBy        String               @map("created_by") @db.Uuid
   createdAt        DateTime             @default(now()) @map("created_at") @db.Timestamptz()
@@ -122,13 +121,4 @@ model Lead {
   donationId String    @unique @map("donation_id") @db.Uuid
 
   @@map("leads")
-}
-
-view GroupedDonation {
-  charity_id String @db.Uuid
-  event_id   String @db.Uuid
-  count      Int    @db.Int4
-
-  @@unique([charity_id, event_id])
-  @@map("grouped_donations")
 }

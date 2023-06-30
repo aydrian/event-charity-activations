@@ -18,25 +18,22 @@ import {
 import QRCode from "qrcode";
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import { useEventSource } from "remix-utils";
 
 import appConfig from "~/app.config.ts";
+import { getDashboardCharities } from "~/models/charity.server.ts";
 import { prisma } from "~/utils/db.server.ts";
 import env from "~/utils/env.server.ts";
 import { USDollar, hexToRgbA } from "~/utils/misc.ts";
+
+import type { NewDonationEvent } from "./resources+/crl-cdc-webhook.tsx";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { slug } = params;
-  const result = await prisma.event.findUnique({
+  const event = await prisma.event.findUnique({
     select: {
-      Charities: {
-        select: {
-          Charity: { select: { logoSVG: true, name: true } },
-          charityId: true,
-          color: true
-        }
-      },
       donationAmount: true,
       endDate: true,
       id: true,
@@ -45,34 +42,16 @@ export const loader = async ({ params }: LoaderArgs) => {
     },
     where: { slug }
   });
-  if (!result) {
+  if (!event) {
     throw new Response("Not Found", {
       status: 404
     });
   }
-  const { Charities, ...event } = result;
-  const groupedResults = await prisma.groupedDonation.findMany({
-    select: { charity_id: true, count: true },
-    where: { event_id: event.id }
-  });
-  const counts: { [key: string]: number } = groupedResults.reduce(
-    (obj, item) => {
-      return { ...obj, [item.charity_id]: item.count };
-    },
-    {}
-  );
-  const charities = Charities.map((charity) => {
-    return {
-      charity_id: charity.charityId,
-      color: charity.color,
-      count: counts[charity.charityId] || 0,
-      logoSVG: charity.Charity.logoSVG,
-      name: charity.Charity.name
-    };
-  });
+
+  const charities = await getDashboardCharities(event.id);
   const donateLink = `${
     env.NODE_ENV === "development"
-      ? "http://localhost:3000"
+      ? "https://localhost:3000"
       : `https://${env.FLY_APP_NAME}.fly.dev`
   }/donate/${event.id}`;
   const qrcode = await QRCode.toDataURL(donateLink);
@@ -80,8 +59,19 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export default function EventDashboard() {
-  const { charities, donateLink, event, qrcode } =
-    useLoaderData<typeof loader>();
+  const {
+    charities: initCharities,
+    donateLink,
+    event,
+    qrcode
+  } = useLoaderData<typeof loader>();
+  const newDonationEventString = useEventSource("/resources/crl-cdc-webhook", {
+    event: `new-donation-${event.id}`
+  });
+  const newDonationEvent: NewDonationEvent | null = newDonationEventString
+    ? JSON.parse(newDonationEventString)
+    : null;
+  const charities = newDonationEvent?.charities ?? initCharities;
 
   return (
     <main className="min-h-screen max-w-full bg-brand-deep-purple p-4">
