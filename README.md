@@ -66,16 +66,17 @@ To create a local environment that most closely resembles our production Cockroa
 1. [Install CockroachDB](https://www.cockroachlabs.com/docs/v23.1/install-cockroachdb) on our local machine.
 1. Make sure your [Prisma Seed file](./prisma/seed.ts) is set up to create any initial data needed.
 1. In a terminal window, run `./dbserver_start.sh` to start a local CockroachDB node running in demo mode.
-1. In a new terminal window or tab, run `./dbserver_init.sh`. This script will handle a few tasks:
-   - Create the charity_events database in your local node.
-   - Create the schema using Prisma
-   - Seed the database using the [Prisma Seed file](./prisma/seed.ts)
-   - Create the Changefeed that handles new donations on the Event Dashboard
 1. Update the `DATABASE_URL` in the your .env file to point to your local database.
 
    ```shell
     DATABASE_URL="postgresql://root@localhost:26257/charity_activations"
    ```
+
+1. In a new terminal window or tab, run `./dbserver_init.sh`. This script will handle a few tasks:
+   - Create the charity_events database in your local node.
+   - Create the schema using Prisma
+   - Seed the database using the [Prisma Seed file](./prisma/seed.ts)
+   - Create the Changefeed that handles new donations on the Event Dashboard
 
 > **Note**
 > If you shut down your local CockroachDB server, you will lose any data added and will need to run the `./dbserver_start.sh` and `./dbserver_init.sh` scripts again.
