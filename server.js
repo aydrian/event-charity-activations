@@ -47,8 +47,8 @@ const server =
   process.env.NODE_ENV === "development"
     ? https.createServer(
         {
-          cert: fs.readFileSync("cert.pem"),
-          key: fs.readFileSync("key.pem")
+          cert: fs.readFileSync("certs/cert.pem"),
+          key: fs.readFileSync("certs/key.pem")
         },
         app
       )

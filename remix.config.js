@@ -7,8 +7,8 @@ export default {
       command: "node server.js",
       manual: true,
       scheme: "https",
-      tlsCert: "cert.pem",
-      tlsKey: "key.pem"
+      tlsCert: "certs/cert.pem",
+      tlsKey: "certs/key.pem"
     },
     v2_errorBoundary: true,
     v2_headers: true,

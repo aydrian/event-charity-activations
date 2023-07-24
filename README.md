@@ -85,7 +85,7 @@ To create a local environment that most closely resembles our production Cockroa
 
 In order to use Changefeeds during local development, we need to configure our Remix developer envronment to use HTTPS.
 
-1. Follow the [How to set up local HTTPS](https://remix.run/docs/en/main/other-api/dev-v2#how-to-set-up-local-https) instructions from [Remix](https://remix.run/) to create a certificate for localhst. Be sure to save the key.pem and cert.pem in the root of this project.
+1. Follow the [How to set up local HTTPS](https://remix.run/docs/en/main/other-api/dev-v2#how-to-set-up-local-https) instructions from [Remix](https://remix.run/) to create a certificate for localhost. Be sure to create a certs folder in the root of this project and save the key.pem and cert.pem in there.
 1. Make sure the project's local dependencies are installed:
    ```sh
    npm install
