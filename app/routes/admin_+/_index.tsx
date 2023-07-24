@@ -56,7 +56,7 @@ export default function AdminIndex() {
       </header>
       <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-16 pt-16 ">
         <section className="mx-auto grid max-w-4xl gap-12">
-          <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
+          <h1 className="mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center font-poppins text-5xl font-bold !leading-tight text-transparent sm:text-7xl">
             Charity Activations
           </h1>
           <div className="mx-auto max-w-3xl">
@@ -65,7 +65,7 @@ export default function AdminIndex() {
               events.
             </h2>
           </div>
-          <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+          <div className="border-brand-gray-b rounded border bg-white p-8 sm:px-16">
             <h3 className="m-0 font-bold text-brand-deep-purple">Login</h3>
             {data.loginMessage ? (
               <div className="text-sm text-red-500">{data.loginMessage}</div>

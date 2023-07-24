@@ -1,55 +1,100 @@
 import type { Config } from "tailwindcss";
 
+import defaultTheme from "tailwindcss/defaultTheme.js";
+
 export default {
-  content: ["./app/**/*.{ts,tsx,jsx,js}"],
-  plugins: [require("@tailwindcss/typography")],
+  content: ["./app/**/*.{js,jsx,ts,tsx}"],
+  darkMode: ["class"],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px"
+      }
+    },
     extend: {
       animation: {
-        "spin-slow": "spin 3s linear infinite"
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out"
+      },
+      borderRadius: {
+        lg: `var(--radius)`,
+        md: `calc(var(--radius) - 2px)`,
+        sm: "calc(var(--radius) - 4px)"
       },
       colors: {
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))"
+        },
+        background: "hsl(var(--background))",
+        border: "hsl(var(--border))",
         brand: {
-          black: "#000",
-          blue: "#0788ff",
+          "action-blue": "#0055ff",
+          "action-purple": "#b921f1",
           "bright-turquoise": "#1bf8ec",
-          "cerebral-grey": "#ccc",
-          "chaos-black": "#101010",
-          "cloud-blue": "#0788ff",
-          cyan: "#0dcaf0",
-          danger: "#dc3545",
-          dark: "#212529",
           "dark-blue": "#0037a5",
           "deep-purple": "#190f33",
           "electric-purple": "#6933ff",
-          "evening-hush": "#7e89a9",
           focus: "#c7b3ff",
-          gray: "#6e6e6e",
-          "gray-b": "#bebbce",
-          "gray-dark": "#343a40",
-          "gray-f4": "#f4f4f4",
-          green: "#37a806",
-          "hidden-sapphire": "#475872",
-          indigo: "#6610f2",
-          info: "#0dcaf0",
           "iridescent-blue": "#00fced",
-          light: "#f8f9fa",
-          "narwhal-grey": "#060c12",
-          "neutral-400": "#c0c6d9",
-          "not-tonight": "#0b0717",
-          orange: "#fd7e14",
-          pink: "#d63384",
-          primary: "#6933ff",
-          purple: "#6f42c1",
-          red: "#dc3545",
-          secondary: "#6e6e6e",
-          "starfleet-blue": "#0496ff",
-          success: "#37a806",
-          teal: "#20c997",
-          warning: "#ffc107",
-          white: "#fff",
-          "white-smoke": "#f5f5f5",
-          yellow: "#ffc107"
+          "light-blue": "#c2d5ff",
+          "light-purple": "#f7d6ff",
+          neutral: {
+            "100": "#f5f7fa",
+            "200": "#e7ecf3",
+            "300": "#d6dbe7",
+            "400": "#c0c6d9",
+            "500": "#7e89a9",
+            "600": "#475872",
+            "700": "#394455",
+            "800": "#242a35",
+            "900": "#060c12"
+          }
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))"
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))"
+        },
+        foreground: "hsl(var(--foreground))",
+        input: "hsl(var(--input))",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))"
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))"
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))"
+        },
+        ring: "hsl(var(--ring))",
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))"
+        }
+      },
+      fontFamily: {
+        poppins: ["'Poppins'", "sans-serif"],
+        roboto: ["'Roboto'", "sans-serif"],
+        sans: ["'Roboto'", ...defaultTheme.fontFamily.sans]
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" }
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" }
         }
       }
     }

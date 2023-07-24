@@ -76,12 +76,12 @@ export default function EventDashboard() {
   return (
     <main className="min-h-screen max-w-full bg-brand-deep-purple p-4">
       <section className="prose mx-auto grid max-w-7xl">
-        <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
+        <h1 className="mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center font-poppins text-5xl font-bold !leading-tight text-transparent sm:text-7xl">
           {appConfig.company.name} at {event.name}
         </h1>
         <div className="flex flex-col justify-stretch gap-4">
           <div className="flex grow gap-4">
-            <div className="grow rounded border border-brand-gray-b bg-white p-2">
+            <div className="border-brand-gray-b grow rounded border bg-white p-2">
               <Bar
                 data={{
                   datasets: [
@@ -104,7 +104,7 @@ export default function EventDashboard() {
               />
             </div>
             <div className="flex shrink flex-col justify-stretch gap-4 text-center">
-              <div className="flex grow flex-col items-center justify-center rounded border border-brand-gray-b bg-white p-2">
+              <div className="border-brand-gray-b flex grow flex-col items-center justify-center rounded border bg-white p-2">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-electric-purple p-2">
                   <GiftIcon className="aspect-square h-full text-gray-100" />
                 </div>
@@ -115,7 +115,7 @@ export default function EventDashboard() {
                   Total Donations
                 </div>
               </div>
-              <div className="flex grow flex-col items-center justify-center gap-1 rounded border border-brand-gray-b bg-white p-2">
+              <div className="border-brand-gray-b flex grow flex-col items-center justify-center gap-1 rounded border bg-white p-2">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-iridescent-blue p-2">
                   <BanknotesIcon className="aspect-square h-full text-gray-600" />
                 </div>
@@ -132,7 +132,7 @@ export default function EventDashboard() {
                   Total Donated
                 </div>
               </div>
-              <div className="flex grow flex-col items-center justify-center gap-1 rounded border border-brand-gray-b bg-white p-2">
+              <div className="border-brand-gray-b flex grow flex-col items-center justify-center gap-1 rounded border bg-white p-2">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1da1f2] p-2">
                   <svg
                     className="aspect-square h-full text-white"
@@ -149,7 +149,7 @@ export default function EventDashboard() {
               </div>
             </div>
           </div>
-          <div className="flex shrink gap-4 rounded border border-brand-gray-b bg-white p-2">
+          <div className="border-brand-gray-b flex shrink gap-4 rounded border bg-white p-2">
             <a
               className="flex grow justify-center"
               href={donateLink}

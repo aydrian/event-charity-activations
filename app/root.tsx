@@ -11,7 +11,15 @@ import {
 
 import styles from "./tailwind.css";
 
-export const links: LinksFunction = () => [{ href: styles, rel: "stylesheet" }];
+export const links: LinksFunction = () => [
+  // Preload CSS as a resource to avoid render blocking
+  { as: "style", href: "/fonts/poppins/font.css", rel: "preload" },
+  { as: "style", href: "/fonts/roboto/font.css", rel: "preload" },
+  { as: "style", href: styles, rel: "preload" },
+  { href: "/fonts/poppins/font.css", rel: "stylesheet" },
+  { href: "/fonts/roboto/font.css", rel: "stylesheet" },
+  { href: styles, rel: "stylesheet" }
+];
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Charity Activations" }];

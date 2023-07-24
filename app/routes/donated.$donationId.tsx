@@ -66,10 +66,10 @@ export default function DonateConfirm() {
     <>
       <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
         <section className="mx-auto max-w-4xl">
-          <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
+          <h1 className="mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center font-poppins text-5xl font-bold !leading-tight text-transparent sm:text-7xl">
             {donation.Event.name}
           </h1>
-          <div className="rounded border border-brand-gray-b bg-white p-4 sm:px-16">
+          <div className="border-brand-gray-b rounded border bg-white p-4 sm:px-16">
             <div
               dangerouslySetInnerHTML={{
                 __html: responseHtml.content

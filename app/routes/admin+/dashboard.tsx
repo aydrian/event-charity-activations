@@ -41,9 +41,9 @@ export default function AdminDashboard() {
   // const SVG = new InlineSVG();
   return (
     <section className="prose mx-auto grid max-w-4xl">
-      <h1 className="text-white">Admin Dashboard</h1>
+      <h1 className="font-poppins text-white">Admin Dashboard</h1>
       <div className="flex flex-col justify-between gap-6 md:flex-row md:gap-12">
-        <div className="grow rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+        <div className="border-brand-gray-b grow rounded border bg-white p-8 sm:px-16">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="mb-0 mt-0 font-bold text-brand-deep-purple">
               Events
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
             <div>There are no events</div>
           )}
         </div>
-        <div className="shrink rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+        <div className="border-brand-gray-b shrink rounded border bg-white p-8 sm:px-16">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="mb-0 mt-0 font-bold text-brand-deep-purple">
               Charities

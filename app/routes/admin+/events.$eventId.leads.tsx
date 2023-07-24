@@ -30,10 +30,10 @@ export default function EventLeads() {
   const { event, leads, selectedLeadId } = useLoaderData<typeof loader>();
   return (
     <section className="prose mx-auto grid max-w-4xl">
-      <h1 className="font-extra-bold mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center text-5xl !leading-tight text-transparent sm:text-7xl">
+      <h1 className="mb-0 bg-gradient-to-r from-brand-iridescent-blue to-brand-electric-purple bg-clip-text text-center font-poppins text-5xl font-bold !leading-tight text-transparent sm:text-7xl">
         {event.name}
       </h1>
-      <div className="rounded border border-brand-gray-b bg-white p-4 sm:px-16">
+      <div className="border-brand-gray-b rounded border bg-white p-4 sm:px-16">
         <h2 className="mt-0 text-brand-deep-purple">Leads</h2>
         <div className="not-prose relative overflow-x-auto overflow-y-auto rounded-lg bg-white shadow">
           <table className="whitespace-no-wrap table-striped relative w-full table-auto border-collapse bg-white">
