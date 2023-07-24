@@ -4,6 +4,8 @@ import { flatRoutes } from "remix-flat-routes";
 export default {
   future: {
     v2_dev: {
+      command: "node server.js",
+      manual: true,
       scheme: "https",
       tlsCert: "cert.pem",
       tlsKey: "key.pem"
