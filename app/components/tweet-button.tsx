@@ -1,38 +1,42 @@
-type TweetButtonProps = {
-  className?: string;
-  text?: string;
-  tweetText: string;
-};
+import { Button } from "~/components/ui/button.tsx";
+import { cn } from "~/utils/misc.ts";
 
 export default function TweetButton({
   className,
   text = "Share to Twitter",
   tweetText
-}: TweetButtonProps) {
+}: {
+  className?: string;
+  text?: string;
+  tweetText: string;
+}) {
   const searchParams = new URLSearchParams();
   searchParams.append("text", tweetText);
   return (
-    <a
-      className={`inline-flex items-center rounded-full bg-[#1d9bf0] px-4 py-2 font-semibold text-white no-underline hover:bg-[#0c7abf] ${className}`}
-      href={`https://twitter.com/intent/tweet?${searchParams}`}
-      rel="noreferrer noopener"
-      target="_blank"
+    <Button
+      asChild
+      className={cn("bg-[#1d9bf0] hover:bg-[#0c7abf]", className)}
     >
-      <TwitterLogo className="mr-2 h-5 w-5 text-white" />
-      <span>{text}</span>
-    </a>
+      <a
+        className="no-underline"
+        href={`https://twitter.com/intent/tweet?${searchParams}`}
+        rel="noreferrer noopener"
+        target="_blank"
+      >
+        <TwitterLogo className="mr-2 h-5 w-5" />
+        <span>{text}</span>
+      </a>
+    </Button>
   );
 }
-
-type TwitterLogoProps = {
-  className?: string;
-  title?: string;
-};
 
 export function TwitterLogo({
   className,
   title = "Twitter Logo"
-}: TwitterLogoProps) {
+}: {
+  className?: string;
+  title?: string;
+}) {
   return (
     <svg
       className={className}
