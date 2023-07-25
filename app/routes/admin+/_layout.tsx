@@ -1,10 +1,22 @@
 import type { LoaderArgs } from "@remix-run/node";
 
+import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { LogOut } from "lucide-react";
 
 import CompanyLogo from "~/components/company-logo.tsx";
 import Footer from "~/components/footer.tsx";
+import { Button } from "~/components/ui/button.tsx";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger
+} from "~/components/ui/dropdown-menu.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
 
@@ -12,7 +24,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
   try {
     const user = await prisma.user.findUniqueOrThrow({
-      select: { firstName: true, id: true },
+      select: {
+        email: true,
+        firstName: true,
+        fullName: true,
+        id: true,
+        lastName: true
+      },
       where: { id: userId }
     });
 
@@ -41,14 +59,35 @@ export default function AdminLayout() {
           </div>
           <nav className="ml-5 inline-flex h-full items-center md:ml-0 md:w-2/6 md:justify-end">
             <div className="flex items-center gap-1">
-              <span className="hidden text-sm md:inline-block">
-                Welcome, {user.firstName}
-              </span>
-              <form action="/admin/logout" method="get">
-                <button className="rounded bg-brand-electric-purple px-2 py-1 text-sm font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50 sm:self-start">
-                  Log out
-                </button>
-              </form>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="relative h-8 w-8 rounded-full bg-brand-deep-purple">
+                    <Avatar>
+                      <AvatarFallback>{`${user.firstName.charAt(
+                        0
+                      )}${user.lastName.charAt(0)}`}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.firstName} {user.lastName}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <Link to="/admin/logout">Log out</Link>
+                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </nav>
         </div>
