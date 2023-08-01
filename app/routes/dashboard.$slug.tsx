@@ -24,7 +24,7 @@ import appConfig from "~/app.config.ts";
 import { getDashboardCharities } from "~/models/charity.server.ts";
 import { prisma } from "~/utils/db.server.ts";
 import env from "~/utils/env.server.ts";
-import { USDollar, hexToRgbA } from "~/utils/misc.ts";
+import { hexToRgbA } from "~/utils/misc.ts";
 
 import type { NewDonationEvent } from "./resources+/crl-cdc-webhook.tsx";
 
@@ -35,6 +35,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const event = await prisma.event.findUnique({
     select: {
       donationAmount: true,
+      donationCurrency: true,
       endDate: true,
       id: true,
       name: true,
@@ -72,6 +73,11 @@ export default function EventDashboard() {
     ? JSON.parse(newDonationEventString)
     : null;
   const charities = newDonationEvent?.charities ?? initCharities;
+  const Currency = Intl.NumberFormat(undefined, {
+    currency: event.donationCurrency,
+    minimumFractionDigits: 0,
+    style: "currency"
+  });
 
   return (
     <main className="min-h-screen max-w-full bg-brand-deep-purple p-4">
@@ -120,7 +126,7 @@ export default function EventDashboard() {
                   <BanknotesIcon className="aspect-square h-full text-gray-600" />
                 </div>
                 <div className="text-3xl font-extrabold">
-                  {USDollar.format(
+                  {Currency.format(
                     charities.reduce(
                       (acc, cur) =>
                         acc + cur.count * Number(event.donationAmount),
@@ -165,8 +171,8 @@ export default function EventDashboard() {
             <div className="flex shrink flex-col justify-center gap-4">
               <h2 className="my-0 text-brand-deep-purple">
                 Scan the QR Code and we'll donate{" "}
-                {USDollar.format(Number(event.donationAmount))} USD to your
-                choice of the following charities:
+                {Currency.format(Number(event.donationAmount))} to your choice
+                of the following charities:
               </h2>
               <div className="flex items-center justify-around">
                 {charities.map((charity) => (

@@ -37,6 +37,7 @@ model Event {
   location         String
   twitter          String?
   donationAmount   Decimal              @default(3.00) @map("donation_amount")
+  donationCurrency String               @default("usd") @map("donation_currency")
   collectLeads     Boolean              @default(false) @map("collect_leads")
   legalBlurb       String?              @map("legal_blurb")
   responseTemplate String               @default("Thank you for helping us donate {{donationAmount}} to {{charity.name}} at {{event.name}}.") @map("response_template")
@@ -121,4 +122,14 @@ model Lead {
   donationId String    @unique @map("donation_id") @db.Uuid
 
   @@map("leads")
+}
+
+model i18n {
+  namespace   String
+  language    String
+  key         String
+  translation String
+
+  @@id([key, language])
+  @@index([language, translation])
 }

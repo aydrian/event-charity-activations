@@ -32,6 +32,7 @@ MEETING_REQUESTED meeting_requested
     String location 
     String twitter "❓"
     Decimal donation_amount 
+    String donation_currency 
     Boolean collect_leads 
     String legal_blurb "❓"
     String response_template 
@@ -83,6 +84,14 @@ MEETING_REQUESTED meeting_requested
     LeadScore score 
     String notes "❓"
     String donation_id 
+    }
+  
+
+  "i18n" {
+    String namespace 
+    String language "🗝️"
+    String key "🗝️"
+    String translation 
     }
   
     "users" o{--}o "events" : "Events"
