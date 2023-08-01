@@ -2,6 +2,7 @@ import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
 import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { CharityPicker } from "~/components/charity-picker.tsx";
@@ -74,6 +75,7 @@ export function DonationForm({
     name: string;
   };
 }) {
+  const { t } = useTranslation();
   const donationFormFetcher = useFetcher<typeof action>();
 
   const [form, fields] = useForm({
@@ -109,7 +111,7 @@ export function DonationForm({
               autoComplete: "given-name"
             }}
             labelProps={{
-              children: "First Name",
+              children: t("given-name"),
               htmlFor: fields.firstName.id
             }}
             errors={fields.firstName.errors}
@@ -120,7 +122,7 @@ export function DonationForm({
               autoComplete: "family-name"
             }}
             labelProps={{
-              children: "Last Name",
+              children: t("family-name"),
               htmlFor: fields.lastName.id
             }}
             errors={fields.lastName.errors}
@@ -131,7 +133,7 @@ export function DonationForm({
               autoComplete: "email"
             }}
             labelProps={{
-              children: "Company Email",
+              children: t("email"),
               htmlFor: fields.email.id
             }}
             errors={fields.email.errors}
@@ -142,7 +144,7 @@ export function DonationForm({
               autoComplete: "organization"
             }}
             labelProps={{
-              children: "Company",
+              children: t("organization"),
               htmlFor: fields.company.id
             }}
             errors={fields.company.errors}
@@ -153,7 +155,7 @@ export function DonationForm({
               autoComplete: "organization-title"
             }}
             labelProps={{
-              children: "Job Title",
+              children: t("organization-title"),
               htmlFor: fields.jobRole.id
             }}
             errors={fields.jobRole.errors}
@@ -163,7 +165,7 @@ export function DonationForm({
       <CharityPicker
         charities={event.charities}
         errors={fields.charityId.errors}
-        label="Select a charity"
+        label={t("select-charity")}
         name={fields.charityId.name}
       />
       <ErrorList errors={form.errors} id={form.errorId} />
@@ -172,7 +174,7 @@ export function DonationForm({
         state={donationFormFetcher.state}
         type="submit"
       >
-        Submit
+        {t("submit")}
       </SubmitButton>
       {event.collectLeads ? (
         <div className=" text-xs text-gray-700">{event.legalBlurb}</div>
