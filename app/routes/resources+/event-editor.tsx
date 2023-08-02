@@ -16,6 +16,7 @@ import {
   CheckboxField,
   ErrorList,
   Field,
+  SelectField,
   SubmitButton,
   TemplateEditorField,
   TextareaField
@@ -29,6 +30,7 @@ const EventWithLeads = z.object({
     .min(1, "At least 1 charity is required"),
   collectLeads: z.literal("on"),
   donationAmount: z.coerce.number().default(3.0),
+  donationCurrency: z.string().default("usd"),
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   id: z.string().optional(),
   legalBlurb: z.string(),
@@ -50,6 +52,7 @@ const EventWithoutLeads = z.object({
     .min(1, "At least 1 charity is required"),
   collectLeads: z.undefined(),
   donationAmount: z.coerce.number().default(3.0),
+  donationCurrency: z.string().default("usd"),
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   id: z.string().optional(),
   location: z.string({ required_error: "Location is required" }),
@@ -144,6 +147,7 @@ export function EventEditor({
     charities: CharityItemWithColor[];
     collectLeads: boolean;
     donationAmount: string;
+    donationCurrency: string;
     endDate: string;
     id: string;
     legalBlurb: null | string;
@@ -248,6 +252,21 @@ export function EventEditor({
           }}
           className="grow"
           errors={fields.donationAmount.errors}
+        />
+        <SelectField
+          inputProps={{
+            ...conform.input(fields.donationCurrency, { ariaAttributes: true }),
+            defaultValue: event?.donationCurrency ?? "usd"
+          }}
+          labelProps={{
+            children: "Donation Currency",
+            htmlFor: fields.donationCurrency.id
+          }}
+          options={[
+            { label: "usd", value: "usd" },
+            { label: "eur", value: "eur" }
+          ]}
+          errors={fields.donationCurrency.errors}
         />
         <Field
           inputProps={{

@@ -17,6 +17,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       },
       collectLeads: true,
       donationAmount: true,
+      donationCurrency: true,
       endDate: true,
       id: true,
       legalBlurb: true,
@@ -55,7 +56,7 @@ export default function EditEvent() {
 
   return (
     <section className="prose mx-auto grid max-w-4xl gap-12">
-      <div className="rounded border border-brand-gray-b bg-white p-8 sm:px-16">
+      <div className="border-brand-gray-b rounded border bg-white p-8 sm:px-16">
         <h2 className="m-0 font-bold text-brand-deep-purple">Edit Event</h2>
         <EventEditor allCharities={allCharities} event={event} />
       </div>

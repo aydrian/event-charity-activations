@@ -6,11 +6,11 @@ import {
   useLoaderData,
   useRouteError
 } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 
 import Footer from "~/components/footer.tsx";
 import { DonationForm } from "~/routes/resources+/donate.tsx";
 import { prisma } from "~/utils/db.server.ts";
-import { USDollar } from "~/utils/misc.ts";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { eventId } = params;
@@ -24,6 +24,7 @@ export const loader = async ({ params }: LoaderArgs) => {
       },
       collectLeads: true,
       donationAmount: true,
+      donationCurrency: true,
       id: true,
       legalBlurb: true,
       name: true
@@ -44,7 +45,13 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export default function EventDonate() {
+  const { t } = useTranslation();
   const { event } = useLoaderData<typeof loader>();
+  const amount = Intl.NumberFormat(undefined, {
+    currency: event.donationCurrency,
+    minimumFractionDigits: 0,
+    style: "currency"
+  }).format(Number(event.donationAmount));
   return (
     <>
       <main className="prose min-h-screen max-w-full bg-brand-deep-purple px-4 pb-8 pt-8">
@@ -53,9 +60,7 @@ export default function EventDonate() {
             {event.name}
           </h1>
           <p className="text-center text-white">
-            Complete the form and we'll donate{" "}
-            {USDollar.format(Number(event.donationAmount))} to your selected
-            charity.
+            {t("donate-instructions", { amount })}
           </p>
           <div className="border-brand-gray-b rounded border bg-white p-4 sm:px-16">
             <DonationForm event={event} />

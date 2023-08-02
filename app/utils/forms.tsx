@@ -1,10 +1,18 @@
+import { useInputEvent } from "@conform-to/react";
 import { clsx } from "clsx";
-import React, { useId } from "react";
+import { useId, useRef } from "react";
 
 import {
   TemplateEditor,
   type TemplateEditorProps
 } from "~/components/template-editor.tsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "~/components/ui/select.tsx";
 
 export type ListOfErrors = Array<null | string | undefined> | null | undefined;
 
@@ -20,7 +28,7 @@ export function ErrorList({
   return (
     <ul className="space-y-1" id={id}>
       {errorsToRender.map((e) => (
-        <li className="text-xs text-brand-danger" key={e}>
+        <li className="text-brand-danger text-xs" key={e}>
           {e}
         </li>
       ))}
@@ -56,7 +64,7 @@ export function Field({
         id={id}
         placeholder=" "
         {...inputProps}
-        className="rounded-none border-b border-b-brand-deep-purple p-2 font-normal !text-brand-gray"
+        className="!text-brand-gray rounded-none border-b border-b-brand-deep-purple p-2 font-normal"
       />
       <div className="px-4 pb-3 pt-1">
         {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
@@ -130,6 +138,57 @@ export function TemplateEditorField({
         {...templateEditorProps}
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
       ></TemplateEditor>
+      <div className="px-4 pb-3 pt-1">
+        {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
+      </div>
+    </div>
+  );
+}
+
+export function SelectField({
+  className,
+  errors,
+  inputProps,
+  labelProps,
+  options
+}: {
+  className?: string;
+  errors?: ListOfErrors;
+  inputProps: Omit<JSX.IntrinsicElements["input"], "className">;
+  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
+  options: { label: string; value: string }[];
+}) {
+  const shadowInputRef = useRef<HTMLInputElement>(null);
+  const control = useInputEvent({ ref: shadowInputRef });
+  const fallbackId = useId();
+  const id = inputProps.id ?? inputProps.name ?? fallbackId;
+  const errorId = errors?.length ? `${id}-error` : undefined;
+
+  return (
+    <div className={clsx("flex flex-col", className)}>
+      <input ref={shadowInputRef} type="hidden" {...inputProps} />
+      <label
+        htmlFor={id}
+        {...labelProps}
+        className="font-bold text-brand-deep-purple"
+      />
+      <Select
+        defaultValue={
+          inputProps.defaultValue ? String(inputProps.defaultValue) : undefined
+        }
+        onValueChange={control.change}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder={labelProps.children} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map(({ label, value }) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <div className="px-4 pb-3 pt-1">
         {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
       </div>

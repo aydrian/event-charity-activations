@@ -21,6 +21,7 @@ export default {
   routes: async (defineRoutes) => {
     return flatRoutes("routes", defineRoutes);
   },
+  serverDependenciesToBundle: ["remix-i18next", "i18next-prisma-backend"],
   serverModuleFormat: "esm",
   tailwind: true
 };

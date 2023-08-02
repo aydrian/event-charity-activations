@@ -12,7 +12,6 @@ import Footer from "~/components/footer.tsx";
 import TweetButton from "~/components/tweet-button.tsx";
 import { prisma } from "~/utils/db.server.ts";
 import { processMarkdownToHtml } from "~/utils/markdown.server.ts";
-import { USDollar } from "~/utils/misc.ts";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { donationId } = params;
@@ -22,6 +21,7 @@ export const loader = async ({ params }: LoaderArgs) => {
       Event: {
         select: {
           donationAmount: true,
+          donationCurrency: true,
           name: true,
           responseTemplate: true,
           tweetTemplate: true,
@@ -38,10 +38,16 @@ export const loader = async ({ params }: LoaderArgs) => {
     });
   }
 
+  const Currency = Intl.NumberFormat(undefined, {
+    currency: donation.Event.donationCurrency,
+    minimumFractionDigits: 0,
+    style: "currency"
+  });
+
   const responseTemplate = handlebars.compile(donation.Event.responseTemplate);
   const responseMd = responseTemplate({
     charity: { name: donation.Charity.name, url: donation.Charity.website },
-    donationAmount: USDollar.format(donation.Event.donationAmount.toNumber()),
+    donationAmount: Currency.format(donation.Event.donationAmount.toNumber()),
     event: { name: donation.Event.name }
   });
   const responseHtml = processMarkdownToHtml(responseMd.trim());
@@ -51,7 +57,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     charity: donation.Charity.twitter
       ? `@${donation.Charity.twitter}`
       : donation.Charity.name,
-    donationAmount: USDollar.format(donation.Event.donationAmount.toNumber()),
+    donationAmount: Currency.format(donation.Event.donationAmount.toNumber()),
     event: donation.Event.twitter
       ? `@${donation.Event.twitter}`
       : donation.Event.name
