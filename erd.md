@@ -13,6 +13,15 @@ CONVERSATION conversation
 MEETING_REQUESTED meeting_requested
         }
     
+
+
+        crdb_internal_region {
+            aws_ap_south_1 aws-ap-south-1
+aws_eu_central_1 aws-eu-central-1
+aws_us_east_1 aws-us-east-1
+aws_us_west_2 aws-us-west-2
+        }
+    
   "users" {
     String id "🗝️"
     String email 

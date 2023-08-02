@@ -133,3 +133,10 @@ model i18n {
   @@id([key, language])
   @@index([language, translation])
 }
+
+enum crdb_internal_region {
+  aws_ap_south_1   @map("aws-ap-south-1")
+  aws_eu_central_1 @map("aws-eu-central-1")
+  aws_us_east_1    @map("aws-us-east-1")
+  aws_us_west_2    @map("aws-us-west-2")
+}

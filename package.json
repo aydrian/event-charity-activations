@@ -12,7 +12,7 @@
     "lint:fix": "eslint --fix --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "cross-env NODE_ENV=production node ./server.js",
     "typecheck": "tsc",
-    "test": "ts-node --require tsconfig-paths/register prisma/test.ts"
+    "test": "tsx prisma/test.ts"
   },
   "eslintIgnore": [
     "/node_modules",
@@ -91,14 +91,13 @@
     "prisma-erd-generator": "^1.9.0-alpha.1",
     "remix-flat-routes": "^0.5.10",
     "tailwindcss": "^3.3.3",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
+    "tsx": "^3.12.7",
     "typescript": "^5.1.6"
   },
   "engines": {
     "node": ">=18"
   },
   "prisma": {
-    "seed": "ts-node --esm --require tsconfig-paths/register prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   }
 }
