@@ -70,6 +70,7 @@ export function DonationForm({
     }[];
     collectLeads: boolean;
     donationAmount: string;
+    donationCurrency: string;
     id: string;
     legalBlurb: null | string;
     name: string;
