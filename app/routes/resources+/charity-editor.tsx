@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
-import { ErrorList, Field, SubmitButton } from "~/utils/forms.tsx";
+import { ErrorList, Field, SubmitButton } from "~/components/forms.tsx";
 import slugify from "~/utils/slugify.ts";
 
 import { FileUploader } from "./upload.tsx";

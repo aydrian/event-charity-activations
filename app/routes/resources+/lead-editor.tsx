@@ -10,7 +10,7 @@ import type { getLeads } from "~/models/leads.server.ts";
 import { LeadScoreSelector } from "~/components/lead-score-selector.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
-import { ErrorList, SubmitButton, TextareaField } from "~/utils/forms.tsx";
+import { ErrorList, SubmitButton, TextareaField } from "~/components/forms.tsx";
 
 type LeadType = Awaited<ReturnType<typeof getLeads>>[number];
 

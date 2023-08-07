@@ -1,6 +1,6 @@
 import { useInputEvent } from "@conform-to/react";
 import { clsx } from "clsx";
-import { useId, useRef } from "react";
+import React, { useId, useRef } from "react";
 
 import {
   TemplateEditor,
@@ -10,9 +10,12 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  type SelectProps,
   SelectTrigger,
   SelectValue
 } from "~/components/ui/select.tsx";
+
+import { Label } from "./ui/label.tsx";
 
 export type ListOfErrors = Array<null | string | undefined> | null | undefined;
 
@@ -45,7 +48,7 @@ export function Field({
   className?: string;
   errors?: ListOfErrors;
   inputProps: Omit<JSX.IntrinsicElements["input"], "className">;
-  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
+  labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
 }) {
   const fallbackId = useId();
   const id = inputProps.id ?? fallbackId;
@@ -53,7 +56,7 @@ export function Field({
 
   return (
     <div className={clsx("flex flex-col", className)}>
-      <label
+      <Label
         htmlFor={id}
         {...labelProps}
         className="font-bold text-brand-deep-purple"
@@ -81,7 +84,7 @@ export function TextareaField({
 }: {
   className?: string;
   errors?: ListOfErrors;
-  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
+  labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
   textareaProps: Omit<JSX.IntrinsicElements["textarea"], "className">;
 }) {
   const fallbackId = useId();
@@ -89,7 +92,7 @@ export function TextareaField({
   const errorId = errors?.length ? `${id}-error` : undefined;
   return (
     <div className={clsx("flex flex-col", className)}>
-      <label
+      <Label
         htmlFor={id}
         {...labelProps}
         className="font-bold text-brand-deep-purple"
@@ -117,7 +120,7 @@ export function TemplateEditorField({
 }: {
   className?: string;
   errors?: ListOfErrors;
-  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
+  labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
   templateEditorProps: TemplateEditorProps;
 }) {
   const fallbackId = useId();
@@ -125,7 +128,7 @@ export function TemplateEditorField({
   const errorId = errors?.length ? `${id}-error` : undefined;
   return (
     <div className={clsx("flex flex-col", className)}>
-      <label
+      <Label
         htmlFor={id}
         {...labelProps}
         className="font-bold text-brand-deep-purple"
@@ -146,39 +149,67 @@ export function TemplateEditorField({
 }
 
 export function SelectField({
+  buttonProps,
   className,
   errors,
-  inputProps,
   labelProps,
   options
 }: {
+  buttonProps: SelectProps;
   className?: string;
   errors?: ListOfErrors;
-  inputProps: Omit<JSX.IntrinsicElements["input"], "className">;
-  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
+  labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
   options: { label: string; value: string }[];
 }) {
-  const shadowInputRef = useRef<HTMLInputElement>(null);
-  const control = useInputEvent({ ref: shadowInputRef });
+  const [open, setOpen] = React.useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const control = useInputEvent({
+    onFocus: () => buttonRef.current?.focus(),
+    ref: () =>
+      buttonRef.current?.form?.elements.namedItem(buttonProps.name ?? "")
+  });
   const fallbackId = useId();
-  const id = inputProps.id ?? inputProps.name ?? fallbackId;
+  const id = buttonProps.name ?? fallbackId;
   const errorId = errors?.length ? `${id}-error` : undefined;
+  const { name, ...props } = buttonProps;
 
   return (
     <div className={clsx("flex flex-col", className)}>
-      <input ref={shadowInputRef} type="hidden" {...inputProps} />
-      <label
+      <Label
         htmlFor={id}
         {...labelProps}
         className="font-bold text-brand-deep-purple"
       />
       <Select
         defaultValue={
-          inputProps.defaultValue ? String(inputProps.defaultValue) : undefined
+          buttonProps.defaultValue
+            ? String(buttonProps.defaultValue)
+            : undefined
         }
-        onValueChange={control.change}
+        name={name}
+        onOpenChange={setOpen}
+        open={open}
       >
-        <SelectTrigger>
+        <SelectTrigger
+          aria-describedby={errorId}
+          aria-invalid={errorId ? true : undefined}
+          id={id}
+          ref={buttonRef}
+          {...props}
+          onBlur={(event) => {
+            control.blur();
+            buttonProps.onBlur?.(event);
+          }}
+          onChange={(state) => {
+            control.change(state.currentTarget.value);
+            buttonProps.onChange?.(state);
+          }}
+          onFocus={(event) => {
+            control.focus();
+            buttonProps.onFocus?.(event);
+          }}
+          type="button"
+        >
           <SelectValue placeholder={labelProps.children} />
         </SelectTrigger>
         <SelectContent>
@@ -207,7 +238,7 @@ export function CheckboxField({
   };
   className?: string;
   errors?: ListOfErrors;
-  labelProps: Omit<JSX.IntrinsicElements["label"], "className">;
+  labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
 }) {
   const fallbackId = useId();
   const id = checkboxProps.id ?? checkboxProps.name ?? fallbackId;
@@ -215,7 +246,7 @@ export function CheckboxField({
   return (
     <div className={clsx("flex flex-col", className)}>
       <div className="flex flex-row gap-1">
-        <label
+        <Label
           htmlFor={id}
           {...labelProps}
           className="font-bold text-brand-deep-purple"

@@ -1,4 +1,4 @@
-import { ErrorList, type ListOfErrors } from "~/utils/forms.tsx";
+import { ErrorList, type ListOfErrors } from "~/components/forms.tsx";
 import { hexToRgbA } from "~/utils/misc.ts";
 
 type CharityPickerProps = {

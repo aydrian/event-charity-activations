@@ -10,8 +10,6 @@ import {
   type CharityItemWithColor,
   CharitySelector
 } from "~/components/charity-selector.tsx";
-import { requireUserId } from "~/utils/auth.server.ts";
-import { prisma } from "~/utils/db.server.ts";
 import {
   CheckboxField,
   ErrorList,
@@ -20,7 +18,9 @@ import {
   SubmitButton,
   TemplateEditorField,
   TextareaField
-} from "~/utils/forms.tsx";
+} from "~/components/forms.tsx";
+import { requireUserId } from "~/utils/auth.server.ts";
+import { prisma } from "~/utils/db.server.ts";
 import slugify from "~/utils/slugify.ts";
 
 const EventWithLeads = z.object({
@@ -254,7 +254,7 @@ export function EventEditor({
           errors={fields.donationAmount.errors}
         />
         <SelectField
-          inputProps={{
+          buttonProps={{
             ...conform.input(fields.donationCurrency, { ariaAttributes: true }),
             defaultValue: event?.donationCurrency ?? "usd"
           }}
