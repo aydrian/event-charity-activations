@@ -6,9 +6,9 @@ import { useFetcher } from "@remix-run/react";
 import { type ChangeEvent, useRef } from "react";
 import { z } from "zod";
 
+import { ErrorList, Field, SubmitButton } from "~/components/forms.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
-import { ErrorList, Field, SubmitButton } from "~/components/forms.tsx";
 import slugify from "~/utils/slugify.ts";
 
 import { FileUploader } from "./upload.tsx";
@@ -114,11 +114,11 @@ export function CharityEditor({
       <Field
         inputProps={{
           ...conform.input(fields.slug),
-          defaultValue: charity?.slug,
-          ref: slugRef
+          defaultValue: charity?.slug
         }}
         errors={fields.slug.errors}
         labelProps={{ children: "Slug", htmlFor: fields.slug.id }}
+        ref={slugRef}
       />
       <Field
         inputProps={{

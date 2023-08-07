@@ -203,11 +203,11 @@ export function EventEditor({
       <Field
         inputProps={{
           ...conform.input(fields.slug),
-          defaultValue: event?.slug,
-          ref: slugRef
+          defaultValue: event?.slug
         }}
         errors={fields.slug.errors}
         labelProps={{ children: "Slug", htmlFor: fields.slug.id }}
+        ref={slugRef}
       />
       <div className="flex w-full flex-row justify-between gap-1">
         <Field
@@ -347,10 +347,10 @@ export function EventEditor({
         errors={fields.tweetTemplate.errors}
       />
       <CheckboxField
-        checkboxProps={{
+        buttonProps={{
           ...conform.input(fields.collectLeads),
           defaultChecked: collectLeads,
-          onChange: () => setCollectLeads(!collectLeads),
+          onCheckedChange: () => setCollectLeads(!collectLeads),
           required: false
         }}
         labelProps={{

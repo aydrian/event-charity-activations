@@ -15,7 +15,10 @@ import {
   SelectValue
 } from "~/components/ui/select.tsx";
 
+import { Checkbox, type CheckboxProps } from "./ui/checkbox.tsx";
+import { Input } from "./ui/input.tsx";
 import { Label } from "./ui/label.tsx";
+import { Textarea } from "./ui/textarea.tsx";
 
 export type ListOfErrors = Array<null | string | undefined> | null | undefined;
 
@@ -29,9 +32,9 @@ export function ErrorList({
   const errorsToRender = errors?.filter(Boolean);
   if (!errorsToRender?.length) return null;
   return (
-    <ul className="space-y-1" id={id}>
+    <ul className="flex flex-col gap-1" id={id}>
       {errorsToRender.map((e) => (
-        <li className="text-brand-danger text-xs" key={e}>
+        <li className="text-brand-danger text-[10px]" key={e}>
           {e}
         </li>
       ))}
@@ -39,7 +42,42 @@ export function ErrorList({
   );
 }
 
-export function Field({
+export const Field = React.forwardRef<
+  HTMLInputElement,
+  {
+    className?: string;
+    errors?: ListOfErrors;
+    inputProps: React.InputHTMLAttributes<HTMLInputElement>;
+    labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
+  }
+>(({ className, errors, inputProps, labelProps }, ref) => {
+  const fallbackId = useId();
+  const id = inputProps.id ?? fallbackId;
+  const errorId = errors?.length ? `${id}-error` : undefined;
+
+  return (
+    <div className={clsx("flex flex-col gap-1", className)}>
+      <Label
+        htmlFor={id}
+        {...labelProps}
+        className="font-bold text-brand-deep-purple"
+      />
+      <Input
+        aria-describedby={errorId}
+        aria-invalid={errorId ? true : undefined}
+        id={id}
+        {...inputProps}
+        ref={ref}
+      />
+      <div className="px-4 pb-3 pt-1">
+        {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
+      </div>
+    </div>
+  );
+});
+Field.displayName = "Field";
+
+export function OldField({
   className,
   errors,
   inputProps,
@@ -47,7 +85,7 @@ export function Field({
 }: {
   className?: string;
   errors?: ListOfErrors;
-  inputProps: Omit<JSX.IntrinsicElements["input"], "className">;
+  inputProps: React.InputHTMLAttributes<HTMLInputElement>;
   labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
 }) {
   const fallbackId = useId();
@@ -55,19 +93,17 @@ export function Field({
   const errorId = errors?.length ? `${id}-error` : undefined;
 
   return (
-    <div className={clsx("flex flex-col", className)}>
+    <div className={clsx("flex flex-col gap-1", className)}>
       <Label
         htmlFor={id}
         {...labelProps}
         className="font-bold text-brand-deep-purple"
       />
-      <input
+      <Input
         aria-describedby={errorId}
         aria-invalid={errorId ? true : undefined}
         id={id}
-        placeholder=" "
         {...inputProps}
-        className="!text-brand-gray rounded-none border-b border-b-brand-deep-purple p-2 font-normal"
       />
       <div className="px-4 pb-3 pt-1">
         {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
@@ -85,26 +121,25 @@ export function TextareaField({
   className?: string;
   errors?: ListOfErrors;
   labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
-  textareaProps: Omit<JSX.IntrinsicElements["textarea"], "className">;
+  textareaProps: React.InputHTMLAttributes<HTMLTextAreaElement>;
 }) {
   const fallbackId = useId();
   const id = textareaProps.id ?? textareaProps.name ?? fallbackId;
   const errorId = errors?.length ? `${id}-error` : undefined;
   return (
-    <div className={clsx("flex flex-col", className)}>
+    <div className={clsx("flex flex-col gap-1", className)}>
       <Label
         htmlFor={id}
         {...labelProps}
         className="font-bold text-brand-deep-purple"
       />
-      <textarea
+      <Textarea
         aria-describedby={errorId}
         aria-invalid={errorId ? true : undefined}
         id={id}
         placeholder=" "
         {...textareaProps}
-        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-      ></textarea>
+      ></Textarea>
       <div className="px-4 pb-3 pt-1">
         {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
       </div>
@@ -127,7 +162,7 @@ export function TemplateEditorField({
   const id = templateEditorProps.id ?? templateEditorProps.name ?? fallbackId;
   const errorId = errors?.length ? `${id}-error` : undefined;
   return (
-    <div className={clsx("flex flex-col", className)}>
+    <div className={clsx("flex flex-col gap-1", className)}>
       <Label
         htmlFor={id}
         {...labelProps}
@@ -174,7 +209,7 @@ export function SelectField({
   const { name, ...props } = buttonProps;
 
   return (
-    <div className={clsx("flex flex-col", className)}>
+    <div className={clsx("flex flex-col gap-1", className)}>
       <Label
         htmlFor={id}
         {...labelProps}
@@ -228,36 +263,56 @@ export function SelectField({
 }
 
 export function CheckboxField({
-  checkboxProps,
+  buttonProps,
   className,
   errors,
   labelProps
 }: {
-  checkboxProps: Omit<JSX.IntrinsicElements["input"], "className" | "type"> & {
-    type?: string;
-  };
+  buttonProps: CheckboxProps;
   className?: string;
   errors?: ListOfErrors;
   labelProps: React.LabelHTMLAttributes<HTMLLabelElement>;
 }) {
   const fallbackId = useId();
-  const id = checkboxProps.id ?? checkboxProps.name ?? fallbackId;
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  // To emulate native events that Conform listen to:
+  // See https://conform.guide/integrations
+  const control = useInputEvent({
+    // Retrieve the checkbox element by name instead as Radix does not expose the internal checkbox element
+    onFocus: () => buttonRef.current?.focus(),
+    // See https://github.com/radix-ui/primitives/discussions/874
+    ref: () =>
+      buttonRef.current?.form?.elements.namedItem(buttonProps.name ?? "")
+  });
+  const id = buttonProps.id ?? buttonProps.name ?? fallbackId;
   const errorId = errors?.length ? `${id}-error` : undefined;
   return (
-    <div className={clsx("flex flex-col", className)}>
-      <div className="flex flex-row gap-1">
+    <div className={className}>
+      <div className="flex gap-2">
         <Label
+          className="font-bold text-brand-deep-purple"
           htmlFor={id}
           {...labelProps}
-          className="font-bold text-brand-deep-purple"
         />
-        <input
+        <Checkbox
           aria-describedby={errorId}
           aria-invalid={errorId ? true : undefined}
           id={id}
-          {...checkboxProps}
-          type="checkbox"
-          value="on"
+          ref={buttonRef}
+          {...buttonProps}
+          onBlur={(event) => {
+            control.blur();
+            buttonProps.onBlur?.(event);
+          }}
+          onCheckedChange={(state) => {
+            control.change(Boolean(state.valueOf()));
+            buttonProps.onCheckedChange?.(state);
+          }}
+          onFocus={(event) => {
+            control.focus();
+            buttonProps.onFocus?.(event);
+          }}
+          type="button"
         />
       </div>
       <div className="px-4 pb-3 pt-1">
