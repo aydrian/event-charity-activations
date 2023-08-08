@@ -15,7 +15,7 @@ export default function TweetButton({
   return (
     <Button
       asChild
-      className={cn("bg-[#1d9bf0] hover:bg-[#0c7abf]", className)}
+      className={cn("bg-[#1d9bf0] duration-300 hover:bg-[#0c7abf]", className)}
     >
       <a
         className="no-underline"

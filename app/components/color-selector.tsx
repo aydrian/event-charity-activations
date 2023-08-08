@@ -57,8 +57,8 @@ export function ColorSelector({
             <>
               <div
                 className={clsx(
-                  "aspect-[4/3] h-6 border",
-                  isOpen ? "border-2 border-brand-yellow" : "border-black"
+                  "aspect-[4/3] h-6 rounded border",
+                  isOpen ? "border-brand-yellow border-2" : "border-black"
                 )}
                 style={{ backgroundColor: selectedItem.hex }}
                 title={selectedItem.name}
@@ -90,9 +90,9 @@ export function ColorSelector({
             >
               <div
                 className={clsx(
-                  "aspect-[4/3] h-6 border border-black",
+                  "aspect-[4/3] h-6 rounded border border-black",
                   selectedItem === item
-                    ? "border-2 border-brand-yellow"
+                    ? "border-brand-yellow border-2"
                     : "border-black"
                 )}
                 style={{ backgroundColor: item.hex }}

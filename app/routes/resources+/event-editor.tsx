@@ -393,6 +393,7 @@ export function EventEditor({
       <ErrorList errors={form.errors} id={form.errorId} />
       <SubmitButton
         className="mt-4 px-6 py-2 md:min-w-[150px] md:self-start"
+        size="lg"
         state={eventEditorFetcher.state}
         type="submit"
       >

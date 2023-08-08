@@ -5,6 +5,9 @@ import React, { useCallback } from "react";
 import type { CharityItem } from "~/models/charity.server.ts";
 
 import { ColorSelector } from "./color-selector.tsx";
+import { Button } from "./ui/button.tsx";
+import { Input } from "./ui/input.tsx";
+import { Label } from "./ui/label.tsx";
 
 export type CharityItemWithColor = CharityItem & { color?: string };
 
@@ -116,63 +119,64 @@ export function CharitySelector({
 
   return (
     <div className="w-full">
-      <div className="flex flex-col gap-1">
-        <label className="w-fit" {...getLabelProps()}>
+      <div className="flex flex-col gap-1.5">
+        <Label className="w-fit" {...getLabelProps()}>
           Select up to {maxItems} charities:
-        </label>
-        <div className="inline-flex flex-wrap items-center gap-2 bg-white p-1.5 shadow-sm">
-          {selectedItems.map(function renderSelectedItem(
-            selectedItemForRender,
-            index
-          ) {
-            return (
-              <span
-                className="flex items-center gap-1 rounded-md bg-gray-100 px-1"
-                key={`selected-item-${index}`}
-                {...getSelectedItemProps({
-                  index,
-                  selectedItem: selectedItemForRender
-                })}
-              >
-                <ColorSelector
-                  name={`${name}[${index}].color`}
-                  selectedColor={selectedItemForRender.color}
-                />
-                <span>{selectedItemForRender.name}</span>
-                <input
-                  name={`${name}[${index}].charityId`}
-                  type="hidden"
-                  value={selectedItemForRender.id}
-                />
+        </Label>
+        <div className="inline-flex flex-wrap items-center gap-2 bg-white">
+          {selectedItems.map(
+            function renderSelectedItem(selectedItemForRender, index) {
+              return (
                 <span
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeSelectedItem(selectedItemForRender);
-                  }}
-                  className="cursor-pointer px-1"
+                  className="flex items-center gap-1 rounded-md bg-gray-100 px-1"
+                  key={`selected-item-${index}`}
+                  {...getSelectedItemProps({
+                    index,
+                    selectedItem: selectedItemForRender
+                  })}
                 >
-                  &#10005;
+                  <ColorSelector
+                    name={`${name}[${index}].color`}
+                    selectedColor={selectedItemForRender.color}
+                  />
+                  <span className="font-medium">
+                    {selectedItemForRender.name}
+                  </span>
+                  <input
+                    name={`${name}[${index}].charityId`}
+                    type="hidden"
+                    value={selectedItemForRender.id}
+                  />
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeSelectedItem(selectedItemForRender);
+                    }}
+                    className="cursor-pointer px-1"
+                  >
+                    &#10005;
+                  </span>
                 </span>
-              </span>
-            );
-          })}
+              );
+            }
+          )}
           <div
-            className={`flex grow gap-0.5 ${
+            className={`flex grow gap-1.5 ${
               selectedItems.length >= maxItems && "hidden"
             }`}
           >
-            <input
-              className="w-full rounded-none border-b border-b-brand-deep-purple p-2 font-normal !text-brand-gray"
+            <Input
+              className="!text-brand-gray w-full p-2 font-normal"
               {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
             />
-            <button
+            <Button
               aria-label="toggle menu"
-              className="px-2"
+              className="bg-brand-electric-purple px-2 duration-300 hover:bg-brand-electric-purple/90"
               type="button"
               {...getToggleButtonProps()}
             >
               &#8595;
-            </button>
+            </Button>
           </div>
         </div>
       </div>

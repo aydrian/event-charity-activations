@@ -15,6 +15,7 @@ import {
   SelectValue
 } from "~/components/ui/select.tsx";
 
+import { Button, type ButtonProps } from "./ui/button.tsx";
 import { Checkbox, type CheckboxProps } from "./ui/checkbox.tsx";
 import { Input } from "./ui/input.tsx";
 import { Label } from "./ui/label.tsx";
@@ -174,7 +175,6 @@ export function TemplateEditorField({
         id={id}
         placeholder=" "
         {...templateEditorProps}
-        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
       ></TemplateEditor>
       <div className="px-4 pb-3 pt-1">
         {errorId ? <ErrorList errors={errors} id={errorId} /> : null}
@@ -326,20 +326,20 @@ export function SubmitButton({
   state = "idle",
   submittingText = "Submitting...",
   ...props
-}: React.ComponentPropsWithRef<"button"> & {
+}: ButtonProps & {
   state?: "idle" | "loading" | "submitting";
   submittingText?: string;
 }) {
   return (
-    <button
+    <Button
       {...props}
       className={clsx(
         props.className,
-        "rounded bg-brand-electric-purple text-xl font-medium text-white duration-300 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:bg-brand-electric-purple/50"
+        "bg-brand-electric-purple duration-300 hover:bg-brand-electric-purple/90 disabled:bg-brand-electric-purple/50"
       )}
       disabled={props.disabled || state !== "idle"}
     >
-      <span>{state === "submitting" ? submittingText : props.children}</span>
-    </button>
+      {state !== "idle" ? submittingText : props.children}
+    </Button>
   );
 }
