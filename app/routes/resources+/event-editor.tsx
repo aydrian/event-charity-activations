@@ -29,20 +29,20 @@ const EventWithLeads = z.object({
     .max(4, "A max of 4 charities is allowed")
     .min(1, "At least 1 charity is required"),
   collectLeads: z.literal("on"),
-  donationAmount: z.coerce.number().default(3.0),
+  donationAmount: z.number().default(3.0),
   donationCurrency: z.string().default("usd"),
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   id: z.string().optional(),
-  legalBlurb: z.string(),
+  legalBlurb: z.string().optional(),
   location: z.string({ required_error: "Location is required" }),
-  name: z.string().min(1, { message: "Name is required" }),
-  responseTemplate: z
-    .string()
-    .min(1, { message: "Response Template is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
+  name: z.string({ required_error: "Name is required" }),
+  responseTemplate: z.string({
+    required_error: "Response Template is required"
+  }),
+  slug: z.string({ required_error: "Slug is required" }),
   startDate: z.coerce.date({ required_error: "Start Date is required" }),
   tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
-  twitter: z.string()
+  twitter: z.string().optional()
 });
 
 const EventWithoutLeads = z.object({
@@ -51,19 +51,19 @@ const EventWithoutLeads = z.object({
     .max(4, "A max of 4 charities is allowed")
     .min(1, "At least 1 charity is required"),
   collectLeads: z.undefined(),
-  donationAmount: z.coerce.number().default(3.0),
+  donationAmount: z.number().default(3.0),
   donationCurrency: z.string().default("usd"),
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   id: z.string().optional(),
   location: z.string({ required_error: "Location is required" }),
-  name: z.string().min(1, { message: "Name is required" }),
-  responseTemplate: z
-    .string()
-    .min(1, { message: "Response Template is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
+  name: z.string({ required_error: "Name is required" }),
+  responseTemplate: z.string({
+    required_error: "Response Template is required"
+  }),
+  slug: z.string({ required_error: "Slug is required" }),
   startDate: z.coerce.date({ required_error: "Start Date is required" }),
   tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
-  twitter: z.string()
+  twitter: z.string().optional()
 });
 
 export const EventEditorSchema = z
@@ -77,7 +77,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
-    acceptMultipleErrors: () => true,
     schema: EventEditorSchema
   });
   if (!submission.value) {

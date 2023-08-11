@@ -14,11 +14,11 @@ import slugify from "~/utils/slugify.ts";
 import { FileUploader } from "./upload.tsx";
 
 export const CharityEditorSchema = z.object({
-  description: z.string().min(1, { message: "Description is required" }),
+  description: z.string({ required_error: "Description is required" }),
   id: z.string().optional(),
   logoSVG: z.string().optional(),
-  name: z.string().min(1, { message: "Name is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
+  name: z.string({ required_error: "Name is required" }),
+  slug: z.string({ required_error: "Slug is required" }),
   twitter: z.string().optional(),
   website: z.string().url().optional()
 });
@@ -27,7 +27,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
-    acceptMultipleErrors: () => true,
     schema: CharityEditorSchema
   });
   if (!submission.value) {

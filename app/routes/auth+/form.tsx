@@ -14,13 +14,14 @@ const LoginFormSchema = z.object({
   email: z
     .string({ required_error: "Email is required" })
     .email("Must be a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters long")
+  password: z
+    .string({ required_error: "Password is required" })
+    .min(6, "Password must be at least 6 characters long")
 });
 
 export const action = async ({ request }: DataFunctionArgs) => {
   const formData = await request.formData();
   const submission = parse(formData, {
-    acceptMultipleErrors: () => true,
     schema: LoginFormSchema
   });
   if (!submission.value || submission.intent !== "submit") {
@@ -50,7 +51,7 @@ export const action = async ({ request }: DataFunctionArgs) => {
           submission: {
             ...submission,
             error: {
-              "": error.message
+              "": [error.message]
             }
           }
         } as const,
