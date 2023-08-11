@@ -52,7 +52,7 @@ export function OktaLoginButton({
       <OktaAuraLogo
         className={clsx(
           "mr-2 h-8 w-8 text-white",
-          state !== "idle" && "inline-block animate-spin-slow"
+          state !== "idle" && "animate-spin-slow inline-block"
         )}
       />
       <span>{title}</span>
