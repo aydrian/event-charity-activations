@@ -1,10 +1,10 @@
 import type { ActionArgs, UploadHandler } from "@remix-run/node";
 
-import { DocumentPlusIcon } from "@heroicons/react/24/outline";
 import { json, unstable_parseMultipartFormData } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import React from "react";
 
+import { Icon, type IconProps } from "~/components/icon.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 
 const uploadHandler: UploadHandler = async ({
@@ -35,7 +35,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 type UploaderProps = {
-  UploadIcon?: typeof DocumentPlusIcon;
+  UploadIcon?: React.ReactElement<IconProps>;
   className?: string;
   defaultValue?: string;
   fileTypes?: string;
@@ -45,7 +45,7 @@ type UploaderProps = {
 };
 
 export function FileUploader({
-  UploadIcon = DocumentPlusIcon,
+  UploadIcon = <Icon name="document-plus-outline" />,
   className = "",
   defaultValue = "",
   fileTypes,
@@ -56,6 +56,11 @@ export function FileUploader({
   const fetcher = useFetcher<typeof action>();
   const svgString = fetcher.data?.svgString || defaultValue;
   const [draggingOver, setDraggingOver] = React.useState(false);
+
+  const clonedUploadIcon = React.cloneElement(UploadIcon, {
+    "aria-hidden": true,
+    className: "h-12 w-12 text-gray-500"
+  });
 
   const preventDefaults = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -107,11 +112,7 @@ export function FileUploader({
         />
       ) : (
         <div className="pointer-events-none flex select-none flex-col items-center">
-          <UploadIcon
-            aria-hidden="true"
-            className="h-12 w-12 text-gray-500"
-            title="Upload File"
-          />
+          {clonedUploadIcon}
           <p className="text-xl text-gray-700">Drop file to upload</p>
           <p className="mb-2 text-gray-700">or</p>
           <label className="pointer-events-auto inline-flex h-9 cursor-pointer items-center rounded border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2">

@@ -1,12 +1,12 @@
 import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
-import { PhotoIcon } from "@heroicons/react/24/outline";
 import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { type ChangeEvent, useRef } from "react";
 import { z } from "zod";
 
 import { ErrorList, Field, SubmitButton } from "~/components/forms.tsx";
+import { Icon } from "~/components/icon.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
 import slugify from "~/utils/slugify.ts";
@@ -130,7 +130,7 @@ export function CharityEditor({
       <div className="flex flex-col gap-1">
         <span className="font-bold !text-brand-deep-purple">Logo</span>
         <FileUploader
-          UploadIcon={PhotoIcon}
+          UploadIcon={<Icon name="photo-outline" />}
           className="h-52"
           defaultValue={charity?.logoSVG ?? undefined}
           fileTypes=".svg"

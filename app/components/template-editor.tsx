@@ -1,6 +1,6 @@
-import { PlusIcon } from "@heroicons/react/24/outline";
 import * as React from "react";
 
+import { Icon } from "~/components/icon.tsx";
 import { Textarea, type TextareaProps } from "~/components/ui/textarea.tsx";
 import { cn } from "~/utils/misc.ts";
 
@@ -44,7 +44,7 @@ const TemplateEditor = React.forwardRef<
             onClick={() => insertAtCursor(variable.value)}
             role="button"
           >
-            <PlusIcon className="h-4 w-auto" />
+            <Icon className="mr-1 h-4 w-4" name="plus-outline" />
             <span>{variable.displayName}</span>
           </Badge>
         ))}

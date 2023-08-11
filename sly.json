@@ -20,6 +20,16 @@
         "build:icons"
       ],
       "transformers": []
+    },
+    {
+      "name": "tailwindlabs/heroicons",
+      "directory": "./svg-icons",
+      "postinstall": [
+        "npm",
+        "run",
+        "build:icons"
+      ],
+      "transformers": []
     }
   ]
 }

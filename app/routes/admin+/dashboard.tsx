@@ -1,10 +1,10 @@
 import type { LoaderArgs } from "@remix-run/node";
 
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 
 import EventCard from "~/components/event-card.tsx";
+import { Icon } from "~/components/icon.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
 
@@ -49,10 +49,7 @@ export default function AdminDashboard() {
               Events
             </h2>
             <Link to="/admin/events/new">
-              <PlusCircleIcon
-                className="aspect-square h-6"
-                title="Add Charity"
-              />
+              <Icon className="aspect-square h-6" name="plus-circle-outline" />
               <span className="sr-only">Add Event</span>
             </Link>
           </div>
@@ -72,10 +69,7 @@ export default function AdminDashboard() {
               Charities
             </h2>
             <Link to="/admin/charities/new">
-              <PlusCircleIcon
-                className="aspect-square h-6"
-                title="Add Charity"
-              />
+              <Icon className="aspect-square h-6" name="plus-circle-outline" />
               <span className="sr-only">Add Charity</span>
             </Link>
           </div>

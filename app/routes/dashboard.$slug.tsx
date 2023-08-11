@@ -1,6 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
 
-import { BanknotesIcon, GiftIcon } from "@heroicons/react/24/outline";
 import { Response, json } from "@remix-run/node";
 import {
   isRouteErrorResponse,
@@ -21,6 +20,7 @@ import { Bar } from "react-chartjs-2";
 import { useEventSource } from "remix-utils";
 
 import appConfig from "~/app.config.ts";
+import { Icon } from "~/components/icon.tsx";
 import { getDashboardCharities } from "~/models/charity.server.ts";
 import { prisma } from "~/utils/db.server.ts";
 import env from "~/utils/env.server.ts";
@@ -112,7 +112,10 @@ export default function EventDashboard() {
             <div className="flex shrink flex-col justify-stretch gap-4 text-center">
               <div className="border-brand-gray-b flex grow flex-col items-center justify-center rounded border bg-white p-2">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-electric-purple p-2">
-                  <GiftIcon className="aspect-square h-full text-gray-100" />
+                  <Icon
+                    className="aspect-square h-full text-gray-100"
+                    name="gift-outline"
+                  />
                 </div>
                 <div className="text-3xl font-extrabold">
                   {charities.reduce((acc, cur) => acc + cur.count, 0)}
@@ -123,7 +126,10 @@ export default function EventDashboard() {
               </div>
               <div className="border-brand-gray-b flex grow flex-col items-center justify-center gap-1 rounded border bg-white p-2">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-iridescent-blue p-2">
-                  <BanknotesIcon className="aspect-square h-full text-gray-600" />
+                  <Icon
+                    className="aspect-square h-full text-gray-600"
+                    name="banknotes-outline"
+                  />
                 </div>
                 <div className="text-3xl font-extrabold">
                   {Currency.format(
