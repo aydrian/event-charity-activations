@@ -16,12 +16,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next";
 
+import iconHref from "~/components/icons/sprite.svg";
 import i18next from "~/utils/i18next.server.ts";
 
 import styles from "./tailwind.css";
 
 export const links: LinksFunction = () => [
   // Preload CSS as a resource to avoid render blocking
+  { as: "image", href: iconHref, rel: "preload", type: "image/svg+xml" },
   { as: "style", href: "/fonts/poppins/font.css", rel: "preload" },
   { as: "style", href: "/fonts/roboto/font.css", rel: "preload" },
   { as: "style", href: styles, rel: "preload" },
