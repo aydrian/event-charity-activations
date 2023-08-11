@@ -1,6 +1,6 @@
 import appConfig from "~/app.config.ts";
 
-import GitHubLogo from "./github-logo.tsx";
+import { Icon } from "./icon.tsx";
 
 export default function Footer() {
   return (
@@ -21,7 +21,7 @@ export default function Footer() {
             rel="noreferrer"
             target="_blank"
           >
-            <GitHubLogo className="aspect-square h-7 text-white" />
+            <Icon className="aspect-square h-7 text-white" name="github" />
           </a>
         </li>
       </ul>

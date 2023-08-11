@@ -5,7 +5,7 @@ import { useLoaderData } from "@remix-run/react";
 
 import appConfig from "~/app.config.ts";
 import CompanyLogo from "~/components/company-logo.tsx";
-import GitHubLogo from "~/components/github-logo.tsx";
+import { Icon } from "~/components/icon.tsx";
 // import { FormLoginForm } from "~/routes/auth+/form.tsx";
 import { OktaLoginForm } from "~/routes/auth+/okta+/_index.tsx";
 import { authenticator } from "~/utils/auth.server.ts";
@@ -50,7 +50,7 @@ export default function AdminIndex() {
             rel="noreferrer"
             target="_blank"
           >
-            <GitHubLogo />
+            <Icon className="h-7 w-7 text-brand-deep-purple" name="github" />
           </a>
         </nav>
       </header>
