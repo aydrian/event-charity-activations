@@ -5,7 +5,12 @@ import { useFetcher } from "@remix-run/react";
 import { type ChangeEvent, useRef } from "react";
 import { z } from "zod";
 
-import { ErrorList, Field, SubmitButton } from "~/components/forms.tsx";
+import {
+  ErrorList,
+  Field,
+  SubmitButton,
+  TextareaField
+} from "~/components/forms.tsx";
 import { Icon } from "~/components/icon.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
@@ -119,9 +124,9 @@ export function CharityEditor({
         labelProps={{ children: "Slug", htmlFor: fields.slug.id }}
         ref={slugRef}
       />
-      <Field
-        inputProps={{
-          ...conform.input(fields.description),
+      <TextareaField
+        textareaProps={{
+          ...conform.textarea(fields.description),
           defaultValue: charity?.description
         }}
         errors={fields.description.errors}
@@ -136,7 +141,7 @@ export function CharityEditor({
           fileTypes=".svg"
           name={fields.logoSVG.name}
         />
-        <span className=" text-xs italic text-gray-700">
+        <span className=" px-4 pb-3 pt-1 text-xs italic text-gray-700">
           Please use a 1-color svg file.
         </span>
       </div>

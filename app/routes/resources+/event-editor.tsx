@@ -208,7 +208,7 @@ export function EventEditor({
         labelProps={{ children: "Slug", htmlFor: fields.slug.id }}
         ref={slugRef}
       />
-      <div className="flex w-full flex-row justify-between gap-1">
+      <div className="flex w-full flex-row justify-between gap-2">
         <Field
           inputProps={{
             ...conform.input(fields.startDate),
@@ -238,7 +238,7 @@ export function EventEditor({
         errors={fields.location.errors}
         labelProps={{ children: "Location", htmlFor: fields.location.id }}
       />
-      <div className="flex w-full flex-row justify-between gap-1">
+      <div className="flex w-full flex-row justify-between gap-2">
         <Field
           inputProps={{
             ...conform.input(fields.donationAmount),
@@ -371,7 +371,7 @@ export function EventEditor({
           errors={fields.legalBlurb.errors}
         />
       ) : null}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         <h3 className="mb-0 text-xl font-semibold text-brand-deep-purple">
           Which charities will this event support?
         </h3>
