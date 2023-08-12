@@ -6,18 +6,18 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { CharityPicker } from "~/components/charity-picker.tsx";
-import { prisma } from "~/utils/db.server.ts";
 import { ErrorList, Field, SubmitButton } from "~/components/forms.tsx";
+import { prisma } from "~/utils/db.server.ts";
 
 const DonationWithLeads = z.object({
   charityId: z.string(),
   collectLeads: z.literal("true"),
-  company: z.string().min(1, { message: "Company is required" }),
-  email: z.string().email({ message: "Company email is invalid" }),
+  company: z.string({ required_error: "Company is required" }),
+  email: z.string({ required_error: "Company email is invalid" }),
   eventId: z.string(),
-  firstName: z.string().min(1, { message: "First name is required" }),
-  jobRole: z.string().min(1, { message: "Job title is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" })
+  firstName: z.string({ required_error: "First name is required" }),
+  jobRole: z.string({ required_error: "Job title is required" }),
+  lastName: z.string({ required_error: "Last name is required" })
 });
 
 const DonationWithoutLeads = z.object({
@@ -34,7 +34,6 @@ const DonationFormSchema = z.discriminatedUnion("collectLeads", [
 export const action = async ({ request }: DataFunctionArgs) => {
   const formData = await request.formData();
   const submission = parse(formData, {
-    acceptMultipleErrors: () => true,
     schema: DonationFormSchema
   });
   if (!submission.value) {

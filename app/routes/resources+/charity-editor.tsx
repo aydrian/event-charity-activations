@@ -1,24 +1,29 @@
 import { conform, useForm } from "@conform-to/react";
 import { getFieldsetConstraint, parse } from "@conform-to/zod";
-import { PhotoIcon } from "@heroicons/react/24/outline";
 import { type DataFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { type ChangeEvent, useRef } from "react";
 import { z } from "zod";
 
+import {
+  ErrorList,
+  Field,
+  SubmitButton,
+  TextareaField
+} from "~/components/forms.tsx";
+import { Icon } from "~/components/icon.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
-import { ErrorList, Field, SubmitButton } from "~/components/forms.tsx";
 import slugify from "~/utils/slugify.ts";
 
 import { FileUploader } from "./upload.tsx";
 
 export const CharityEditorSchema = z.object({
-  description: z.string().min(1, { message: "Description is required" }),
+  description: z.string({ required_error: "Description is required" }),
   id: z.string().optional(),
   logoSVG: z.string().optional(),
-  name: z.string().min(1, { message: "Name is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
+  name: z.string({ required_error: "Name is required" }),
+  slug: z.string({ required_error: "Slug is required" }),
   twitter: z.string().optional(),
   website: z.string().url().optional()
 });
@@ -27,7 +32,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
-    acceptMultipleErrors: () => true,
     schema: CharityEditorSchema
   });
   if (!submission.value) {
@@ -114,15 +118,15 @@ export function CharityEditor({
       <Field
         inputProps={{
           ...conform.input(fields.slug),
-          defaultValue: charity?.slug,
-          ref: slugRef
+          defaultValue: charity?.slug
         }}
         errors={fields.slug.errors}
         labelProps={{ children: "Slug", htmlFor: fields.slug.id }}
+        ref={slugRef}
       />
-      <Field
-        inputProps={{
-          ...conform.input(fields.description),
+      <TextareaField
+        textareaProps={{
+          ...conform.textarea(fields.description),
           defaultValue: charity?.description
         }}
         errors={fields.description.errors}
@@ -131,13 +135,13 @@ export function CharityEditor({
       <div className="flex flex-col gap-1">
         <span className="font-bold !text-brand-deep-purple">Logo</span>
         <FileUploader
-          UploadIcon={PhotoIcon}
+          UploadIcon={<Icon name="photo-outline" />}
           className="h-52"
           defaultValue={charity?.logoSVG ?? undefined}
           fileTypes=".svg"
           name={fields.logoSVG.name}
         />
-        <span className=" text-xs italic text-gray-700">
+        <span className=" px-4 pb-3 pt-1 text-xs italic text-gray-700">
           Please use a 1-color svg file.
         </span>
       </div>

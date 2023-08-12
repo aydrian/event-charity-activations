@@ -1,9 +1,6 @@
 #!/bin/sh
 # Check that local CockroachDB is running
 # command -v cockroachdb >/dev/null 2>&1 || { echo >&2 "Local CockroachDB Node isn't running.\nPlease first execute start_dbserver.sh in another terminal."; exit 1; }
-echo "🪳 Creating the charity_activations database"
-cockroach sql --insecure --execute "CREATE DATABASE charity_activations;"
-
 echo "▵ Creating the database schema using Prisma"
 npx prisma db push
 

@@ -1,12 +1,6 @@
 import type { LeadScore } from "@prisma/client";
 
-import {
-  CalendarDaysIcon,
-  ChatBubbleBottomCenterTextIcon,
-  IdentificationIcon,
-  XCircleIcon
-} from "@heroicons/react/24/outline";
-
+import { Icon } from "~/components/icon.tsx";
 import { titleCase } from "~/utils/misc.ts";
 
 type LeadScoreIconProps = {
@@ -23,7 +17,10 @@ export function LeadScoreIcon({ className = "", score }: LeadScoreIconProps) {
         className={className}
         title={title}
       >
-        <IdentificationIcon className="aspect-square w-full text-gray-50" />
+        <Icon
+          className="aspect-square w-full text-gray-50"
+          name="identification-outline"
+        />
       </LeadScoreIconWrapper>
     );
   }
@@ -34,7 +31,10 @@ export function LeadScoreIcon({ className = "", score }: LeadScoreIconProps) {
         className={className}
         title={title}
       >
-        <ChatBubbleBottomCenterTextIcon className="aspect-square w-full text-gray-50" />
+        <Icon
+          className="aspect-square w-full text-gray-50"
+          name="chat-bubble-bottom-center-text-outline"
+        />
       </LeadScoreIconWrapper>
     );
   }
@@ -45,13 +45,19 @@ export function LeadScoreIcon({ className = "", score }: LeadScoreIconProps) {
         className={className}
         title={title}
       >
-        <CalendarDaysIcon className="aspect-square w-full text-gray-50" />
+        <Icon
+          className="aspect-square w-full text-gray-50"
+          name="calendar-days-outline"
+        />
       </LeadScoreIconWrapper>
     );
   }
   return (
     <LeadScoreIconWrapper className={className} title={title}>
-      <XCircleIcon className="aspect-square w-full text-gray-50" />
+      <Icon
+        className="aspect-square w-full text-gray-50"
+        name="x-circle-outline"
+      />
     </LeadScoreIconWrapper>
   );
 }

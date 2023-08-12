@@ -1,9 +1,9 @@
 import type { LoaderArgs } from "@remix-run/node";
 
-import { PencilIcon } from "@heroicons/react/24/outline";
 import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
 
+import { Icon } from "~/components/icon.tsx";
 import { LeadScoreIcon } from "~/components/lead-score-icon.tsx";
 import { getLeads } from "~/models/leads.server.ts";
 import { requireUserId } from "~/utils/auth.server.ts";
@@ -136,9 +136,9 @@ function LeadRow({ isSelected = false, lead }: LeadRowProps) {
                 reloadDocument={true}
                 to={`./${lead.id}`}
               >
-                <PencilIcon
+                <Icon
                   className="aspect-square h-4 text-brand-deep-purple"
-                  title="Edit Lead"
+                  name="pencil-outline"
                 />
                 <span className="sr-only">Edit Lead</span>
               </Link>

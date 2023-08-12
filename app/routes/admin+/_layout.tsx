@@ -3,10 +3,10 @@ import type { LoaderArgs } from "@remix-run/node";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { Response, json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData } from "@remix-run/react";
-import { LogOut } from "lucide-react";
 
 import CompanyLogo from "~/components/company-logo.tsx";
 import Footer from "~/components/footer.tsx";
+import { Icon } from "~/components/icon.tsx";
 import { Button } from "~/components/ui/button.tsx";
 import {
   DropdownMenu,
@@ -82,7 +82,7 @@ export default function AdminLayout() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <Icon className="mr-2 h-4 w-4" name="log-out" />
                     <Link to="/admin/logout">Log out</Link>
                     <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                   </DropdownMenuItem>

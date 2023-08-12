@@ -1,10 +1,6 @@
-import {
-  ChartBarSquareIcon,
-  DocumentArrowDownIcon,
-  PencilIcon,
-  UserGroupIcon
-} from "@heroicons/react/24/outline";
 import { Link } from "@remix-run/react";
+
+import { Icon } from "~/components/icon.tsx";
 
 type EventCardProps = {
   event: {
@@ -38,14 +34,14 @@ function formatDates(startDate: string, endDate: string) {
 
 export default function EventCard({ event }: EventCardProps) {
   return (
-    <div className="rounded border border-brand-gray-b bg-white">
+    <div className="border-brand-gray-b rounded border bg-white">
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="text-xl font-semibold">{event.name}</div>
           <Link to={`/admin/events/${event.id}/edit`}>
-            <PencilIcon
+            <Icon
               className="aspect-square h-5 text-gray-800"
-              title="Edit Event"
+              name="pencil-outline"
             />
             <span className="sr-only">Edit Event</span>
           </Link>
@@ -57,13 +53,19 @@ export default function EventCard({ event }: EventCardProps) {
       </div>
       <div className="flex gap-2 px-6 pb-2 pt-4">
         <Link title="Event Dashboard" to={`/dashboard/${event.slug}`}>
-          <ChartBarSquareIcon className="h-8 w-8 text-brand-deep-purple" />
+          <Icon
+            className="h-8 w-8 text-brand-deep-purple"
+            name="chart-bar-square-outline"
+          />
           <span className="sr-only">Event Dashboard</span>
         </Link>
         {event.collectLeads ? (
           <>
             <Link title="Leads" to={`/admin/events/${event.id}/leads`}>
-              <UserGroupIcon className="h-8 w-8 text-brand-deep-purple" />
+              <Icon
+                className="h-8 w-8 text-brand-deep-purple"
+                name="user-group-outline"
+              />
               <span className="sr-only">Leads</span>
             </Link>
             <a
@@ -71,7 +73,10 @@ export default function EventCard({ event }: EventCardProps) {
                 ["event_id", event.id]
               ])}`}
             >
-              <DocumentArrowDownIcon className="h-8 w-8 text-brand-deep-purple" />
+              <Icon
+                className="h-8 w-8 text-brand-deep-purple"
+                name="document-arrow-down-outline"
+              />
               <span className="sr-only">Download Leads</span>
             </a>
           </>

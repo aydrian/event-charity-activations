@@ -7,10 +7,10 @@ import { z } from "zod";
 
 import type { getLeads } from "~/models/leads.server.ts";
 
+import { ErrorList, SubmitButton, TextareaField } from "~/components/forms.tsx";
 import { LeadScoreSelector } from "~/components/lead-score-selector.tsx";
 import { requireUserId } from "~/utils/auth.server.ts";
 import { prisma } from "~/utils/db.server.ts";
-import { ErrorList, SubmitButton, TextareaField } from "~/components/forms.tsx";
 
 type LeadType = Awaited<ReturnType<typeof getLeads>>[number];
 
@@ -24,7 +24,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
   await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
-    acceptMultipleErrors: () => true,
     schema: LeadEditorSchema
   });
   if (!submission.value) {

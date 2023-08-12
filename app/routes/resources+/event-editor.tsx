@@ -29,20 +29,20 @@ const EventWithLeads = z.object({
     .max(4, "A max of 4 charities is allowed")
     .min(1, "At least 1 charity is required"),
   collectLeads: z.literal("on"),
-  donationAmount: z.coerce.number().default(3.0),
+  donationAmount: z.number().default(3.0),
   donationCurrency: z.string().default("usd"),
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   id: z.string().optional(),
-  legalBlurb: z.string(),
+  legalBlurb: z.string().optional(),
   location: z.string({ required_error: "Location is required" }),
-  name: z.string().min(1, { message: "Name is required" }),
-  responseTemplate: z
-    .string()
-    .min(1, { message: "Response Template is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
+  name: z.string({ required_error: "Name is required" }),
+  responseTemplate: z.string({
+    required_error: "Response Template is required"
+  }),
+  slug: z.string({ required_error: "Slug is required" }),
   startDate: z.coerce.date({ required_error: "Start Date is required" }),
   tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
-  twitter: z.string()
+  twitter: z.string().optional()
 });
 
 const EventWithoutLeads = z.object({
@@ -51,19 +51,19 @@ const EventWithoutLeads = z.object({
     .max(4, "A max of 4 charities is allowed")
     .min(1, "At least 1 charity is required"),
   collectLeads: z.undefined(),
-  donationAmount: z.coerce.number().default(3.0),
+  donationAmount: z.number().default(3.0),
   donationCurrency: z.string().default("usd"),
   endDate: z.coerce.date({ required_error: "End Date is required" }),
   id: z.string().optional(),
   location: z.string({ required_error: "Location is required" }),
-  name: z.string().min(1, { message: "Name is required" }),
-  responseTemplate: z
-    .string()
-    .min(1, { message: "Response Template is required" }),
-  slug: z.string().min(1, { message: "Slug is required" }),
+  name: z.string({ required_error: "Name is required" }),
+  responseTemplate: z.string({
+    required_error: "Response Template is required"
+  }),
+  slug: z.string({ required_error: "Slug is required" }),
   startDate: z.coerce.date({ required_error: "Start Date is required" }),
   tweetTemplate: z.string({ required_error: "Tweet Template is required" }),
-  twitter: z.string()
+  twitter: z.string().optional()
 });
 
 export const EventEditorSchema = z
@@ -77,7 +77,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const submission = parse(formData, {
-    acceptMultipleErrors: () => true,
     schema: EventEditorSchema
   });
   if (!submission.value) {
@@ -203,13 +202,13 @@ export function EventEditor({
       <Field
         inputProps={{
           ...conform.input(fields.slug),
-          defaultValue: event?.slug,
-          ref: slugRef
+          defaultValue: event?.slug
         }}
         errors={fields.slug.errors}
         labelProps={{ children: "Slug", htmlFor: fields.slug.id }}
+        ref={slugRef}
       />
-      <div className="flex w-full flex-row justify-between gap-1">
+      <div className="flex w-full flex-row justify-between gap-2">
         <Field
           inputProps={{
             ...conform.input(fields.startDate),
@@ -239,7 +238,7 @@ export function EventEditor({
         errors={fields.location.errors}
         labelProps={{ children: "Location", htmlFor: fields.location.id }}
       />
-      <div className="flex w-full flex-row justify-between gap-1">
+      <div className="flex w-full flex-row justify-between gap-2">
         <Field
           inputProps={{
             ...conform.input(fields.donationAmount),
@@ -347,10 +346,10 @@ export function EventEditor({
         errors={fields.tweetTemplate.errors}
       />
       <CheckboxField
-        checkboxProps={{
+        buttonProps={{
           ...conform.input(fields.collectLeads),
           defaultChecked: collectLeads,
-          onChange: () => setCollectLeads(!collectLeads),
+          onCheckedChange: () => setCollectLeads(!collectLeads),
           required: false
         }}
         labelProps={{
@@ -372,7 +371,7 @@ export function EventEditor({
           errors={fields.legalBlurb.errors}
         />
       ) : null}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-2">
         <h3 className="mb-0 text-xl font-semibold text-brand-deep-purple">
           Which charities will this event support?
         </h3>
@@ -393,6 +392,7 @@ export function EventEditor({
       <ErrorList errors={form.errors} id={form.errorId} />
       <SubmitButton
         className="mt-4 px-6 py-2 md:min-w-[150px] md:self-start"
+        size="lg"
         state={eventEditorFetcher.state}
         type="submit"
       >
