@@ -7,12 +7,14 @@ import morgan from "morgan";
 import * as fs from "node:fs";
 import http from "node:http";
 import https from "node:https";
+import sourceMapSupport from "source-map-support";
 
 import * as build from "./build/index.js";
 
-const BUILD_PATH = "./build/index.js";
-
+sourceMapSupport.install();
 installGlobals();
+
+const BUILD_PATH = "./build/index.js";
 
 const app = express();
 
