@@ -7,7 +7,6 @@ import { sessionStorage } from "~/utils/session.server.ts";
 // import { type User } from "@prisma/client";
 // import bcrypt from "bcryptjs";
 // import { verifyLogin } from "~/models/user.server.ts";
-import env from "./env.server.ts";
 
 // Create an instance of the authenticator, pass a generic with what
 // strategies will return and will store in the session
@@ -15,10 +14,10 @@ export const authenticator = new Authenticator<string>(sessionStorage);
 
 const oktaStrategy = new OktaStrategy(
   {
-    callbackURL: env.OKTA_CALLBACK_URL,
-    clientID: env.OKTA_CLIENT_ID,
-    clientSecret: env.OKTA_CLIENT_SECRET,
-    issuer: `${env.OKTA_DOMAIN}/oauth2/default`
+    callbackURL: process.env.OKTA_CALLBACK_URL,
+    clientID: process.env.OKTA_CLIENT_ID,
+    clientSecret: process.env.OKTA_CLIENT_SECRET,
+    issuer: `${process.env.OKTA_DOMAIN}/oauth2/default`
   },
   async ({ accessToken, extraParams, profile, refreshToken }) => {
     const user = await prisma.user.upsert({

@@ -23,7 +23,6 @@ import appConfig from "~/app.config.ts";
 import { Icon } from "~/components/icon.tsx";
 import { getDashboardCharities } from "~/models/charity.server.ts";
 import { prisma } from "~/utils/db.server.ts";
-import env from "~/utils/env.server.ts";
 import { hexToRgbA } from "~/utils/misc.ts";
 
 import type { NewDonationEvent } from "./resources+/crl-cdc-webhook.tsx";
@@ -51,9 +50,9 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   const charities = await getDashboardCharities(event.id);
   const donateLink = `${
-    env.NODE_ENV === "development"
+    process.env.NODE_ENV === "development"
       ? "https://localhost:3000"
-      : `https://${env.FLY_APP_NAME}.fly.dev`
+      : `https://${process.env.FLY_APP_NAME}.fly.dev`
   }/donate/${event.id}`;
   const qrcode = await QRCode.toDataURL(donateLink);
   return json({ charities, donateLink, event, qrcode });

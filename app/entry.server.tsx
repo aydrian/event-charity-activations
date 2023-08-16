@@ -11,6 +11,7 @@ import { PassThrough } from "stream";
 
 import i18n from "~/i18n.ts"; // your i18n configuration file
 
+import "~/utils/env.server.ts";
 import i18next from "~/utils/i18next.server.ts";
 
 import { prisma } from "./utils/db.server.ts";

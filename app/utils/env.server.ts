@@ -1,15 +1,34 @@
-import { z } from "zod";
+import { type TypeOf, z } from "zod";
 
-const envSchema = z.object({
-  DATABASE_URL: z.string().nonempty(),
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv extends TypeOf<typeof zodEnv> {}
+  }
+}
+
+const zodEnv = z.object({
+  DATABASE_URL: z.string(),
   FLY_APP_NAME: z.string().optional(),
-  NODE_ENV: z.enum(["development", "production"]).default("development"),
-  OKTA_CALLBACK_URL: z.string().nonempty(),
-  OKTA_CLIENT_ID: z.string().nonempty(),
-  OKTA_CLIENT_SECRET: z.string().nonempty(),
-  OKTA_DOMAIN: z.string().nonempty(),
-  SESSION_SECRET: z.string().nonempty()
+  OKTA_CALLBACK_URL: z.string(),
+  OKTA_CLIENT_ID: z.string(),
+  OKTA_CLIENT_SECRET: z.string(),
+  OKTA_DOMAIN: z.string(),
+  SESSION_SECRET: z.string()
 });
 
-const env = envSchema.parse(process.env);
-export default env;
+try {
+  zodEnv.parse(process.env);
+} catch (err) {
+  if (err instanceof z.ZodError) {
+    const { fieldErrors } = err.flatten();
+    const errorMessage = Object.entries(fieldErrors)
+      .map(([field, errors]) =>
+        errors ? `${field}: ${errors.join(", ")}` : field
+      )
+      .join("\n ");
+
+    throw new Error(`Missing environment variables:\n  ${errorMessage}`);
+
+    process.exit(1);
+  }
+}
