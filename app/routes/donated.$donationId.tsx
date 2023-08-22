@@ -7,6 +7,7 @@ import {
   useRouteError
 } from "@remix-run/react";
 import handlebars from "handlebars";
+import { useTranslation } from "react-i18next";
 
 import Footer from "~/components/footer.tsx";
 import TweetButton from "~/components/tweet-button.tsx";
@@ -67,6 +68,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export default function DonateConfirm() {
+  const { t } = useTranslation();
   const { donation, responseHtml, tweetText } = useLoaderData<typeof loader>();
   return (
     <>
@@ -81,7 +83,7 @@ export default function DonateConfirm() {
                 __html: responseHtml.content
               }}
             />
-            <TweetButton tweetText={tweetText} />
+            <TweetButton text={t("share-to-twitter")} tweetText={tweetText} />
           </div>
         </section>
       </main>
